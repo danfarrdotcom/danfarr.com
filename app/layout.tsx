@@ -19,46 +19,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${schibsted.className} w-full flex flex-col`}>
         {children}
-        <footer className="text-center w-full h-16">
-          <ol>
-            <li>
-              <a
-                href="
-            https://github.com/danfarr
-      "
-                target="_blank"
-                rel="noreferrer"
-                className="text-gray-400 hover:text-blue-500 transition-colors duration-200"
-              >
-                Github
-              </a>
-            </li>
-            <li>
-              <a
-                className="text-gray-400 hover:text-blue-500 transition-colors duration-200"
-                href="
-            https://linkedin.com/in/danfarr
-            "
-                target="_blank"
-                rel="noreferrer"
-              >
-                Linkedin
-              </a>
-            </li>
-            <li>
-              <a
-                className="text-gray-400 hover:text-blue-500 transition-colors duration-200"
-                href="
-            https://linkedin.com/in/danfarr
-            "
-                target="_blank"
-                rel="noreferrer"
-              >
-                Contact
-              </a>
-            </li>
-          </ol>
-        </footer>
+        <footer className="text-center w-full h-16"></footer>
       </body>
     </html>
   );

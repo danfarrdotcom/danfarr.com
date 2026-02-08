@@ -30,18 +30,19 @@ const notion = new Client({
 });
 
 const formatPost = (page: PageObjectResponse) => {
+  const properties = page.properties as any;
   return {
     id: page.id,
-    summary: page.properties?.summary?.rich_text[0].text.content,
+    summary: properties?.summary?.rich_text?.[0]?.text?.content ?? '',
     created: page.created_time,
-    slug: page.properties?.slug.formula.string,
-    date: page.properties?.date?.date.start,
-    tags: page.properties?.tags?.multi_select.map((tag) => tag.name),
-    image: page.properties?.image?.url,
+    slug: properties?.slug?.formula?.string ?? '',
+    date: properties?.date?.date?.start,
+    tags: properties?.tags?.multi_select?.map((tag: any) => tag.name) ?? [],
+    image: properties?.image?.url,
     last_edited: page.last_edited_time,
-    published: page.properties?.published?.checkbox,
-    duration: page.properties?.duration?.number,
-    title: page.properties?.title?.title[0].plain_text,
+    published: properties?.published?.checkbox,
+    duration: properties?.duration?.number,
+    title: properties?.title?.title?.[0]?.plain_text ?? 'Untitled',
   };
 };
 

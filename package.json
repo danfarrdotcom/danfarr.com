@@ -11,7 +11,7 @@
   "dependencies": {
     "@notionhq/client": "^2.2.14",
     "dayjs": "^1.11.10",
-    "next": "^15.2.2",
+    "next": "^16.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
