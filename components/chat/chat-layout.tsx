@@ -55,7 +55,7 @@ export default function ChatLayout({ children }: ChatLayoutProps) {
     <div className="flex flex-col w-full pb-48">
       {messages.slice(0, visibleCount)}
 
-      {isTyping && <TypingIndicator />}
+      {<TypingIndicator />}
     </div>
   );
 }
