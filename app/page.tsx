@@ -44,15 +44,15 @@ export default async function Page() {
           <ChatMessage role="assistant" avatarUrl={AVATAR_URL}>
             <div className="space-y-2">
               <p>
-                I'm intersted in cybernetics, distributed systems and bionics
-                applied in software engineering
+                I'm interested in cybernetics, distributed systems and bionics
+                applied in software engineering.
               </p>
             </div>
           </ChatMessage>
 
           <ChatMessage role="assistant" avatarUrl={AVATAR_URL}>
             <p>
-              I working as a technical lead at{' '}
+              Currently I'm working as a technical lead at{' '}
               <a
                 className="text-blue-500 font-medium hover:underline"
                 href="https://bluecrestwellness.com"
@@ -66,16 +66,16 @@ export default async function Page() {
           </ChatMessage>
           <ChatMessage role="assistant" avatarUrl={AVATAR_URL}>
             <p>
-              At the moment I'm working as focused on making prevention-focused
-              healthcare more accessible and effective through technology.
+              We have a strong focus on making prevention-focused healthcare
+              more accessible using through technology.
             </p>
           </ChatMessage>
 
           {/* Philosophy */}
           <ChatMessage role="assistant" avatarUrl={AVATAR_URL}>
             <p>
-              I like empowering teams, sharing knowledge and making people feel
-              like they matter.
+              My role is centered around empowering teams, sharing knowledge and
+              making people feel like they matter.
             </p>
           </ChatMessage>
 
