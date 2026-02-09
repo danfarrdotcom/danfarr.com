@@ -58,9 +58,12 @@ export default function ChatLayout({ children }: ChatLayoutProps) {
     const baseDelay = 500;
     const typingSpeed = 15;
     const randomVariance = Math.random() * 500;
-    
+
     // Ensure a minimum duration so it doesn't flash too quickly for very short messages
-    const typingDuration = Math.max(1000, baseDelay + (charCount * typingSpeed) + randomVariance);
+    const typingDuration = Math.max(
+      1000,
+      baseDelay + charCount * typingSpeed + randomVariance
+    );
 
     const timeoutId = setTimeout(() => {
       setIsTyping(false);
