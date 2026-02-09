@@ -18,10 +18,10 @@ export default function ChatMessage({
 
   return (
     <div
-      className={`flex w-full mb-6 ${isAssistant ? 'justify-start' : 'justify-end'} animate-fade-in-up `}
+      className={`flex w-full mb-3 ${isAssistant ? 'justify-start' : 'justify-end'} animate-fade-in-up `}
     >
       <div
-        className={`flex p-4 max-w-[100%] md:max-w-[85%] w-fit overflow-hidden bg-zinc-100 text-sm text-zinc-700 dark:bg-zinc-900 dark:text-zinc-400 dark:shadow-none !max-w-[450px] rounded-[20px] ${isAssistant ? 'flex-row items-start' : 'flex-row-reverse items-start'}`}
+        className={`flex p-4 max-w-[100%] md:max-w-[85%] w-fit overflow-hidden bg-zinc-100 text-xs text-zinc-700 dark:bg-zinc-900 dark:text-zinc-400 dark:shadow-none !max-w-[450px] rounded-[20px] ${isAssistant ? 'flex-row items-start' : 'flex-row-reverse items-start'}`}
       >
         {/* Avatar */}
         {/* {isAssistant && (

@@ -7,6 +7,26 @@ interface ChatLayoutProps {
   children: React.ReactNode;
 }
 
+const getMessageText = (node: React.ReactNode): string => {
+  if (typeof node === 'string') return node;
+  if (typeof node === 'number') return String(node);
+  if (!node) return '';
+
+  if (Array.isArray(node)) {
+    return node.map(getMessageText).join('');
+  }
+
+  if (React.isValidElement(node)) {
+    // Traverse down into children
+    const props = node.props as { children?: React.ReactNode };
+    if (props.children) {
+      return getMessageText(props.children);
+    }
+  }
+
+  return '';
+};
+
 export default function ChatLayout({ children }: ChatLayoutProps) {
   const [visibleCount, setVisibleCount] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
@@ -28,10 +48,19 @@ export default function ChatLayout({ children }: ChatLayoutProps) {
       behavior: 'smooth',
     });
 
-    // Vary the delay slightly to feel more natural.
-    // We'll use a wider range to simulate thinking/typing of longer messages.
-    // 1500ms base + up to 2000ms variance = 1.5s to 3.5s per message
-    const typingDuration = 1500 + Math.random() * 2000;
+    const nextMessage = messages[visibleCount];
+    const textContent = getMessageText(nextMessage);
+    const charCount = textContent.length;
+
+    // Calculate delay based on character count
+    // Base delay of 500ms + 15ms per character
+    // Add a small random variance of 0-500ms
+    const baseDelay = 500;
+    const typingSpeed = 15;
+    const randomVariance = Math.random() * 500;
+    
+    // Ensure a minimum duration so it doesn't flash too quickly for very short messages
+    const typingDuration = Math.max(1000, baseDelay + (charCount * typingSpeed) + randomVariance);
 
     const timeoutId = setTimeout(() => {
       setIsTyping(false);

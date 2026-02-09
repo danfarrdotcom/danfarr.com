@@ -49,6 +49,12 @@ const formatPost = (page: PageObjectResponse) => {
 export const getDatabase = cache(async () => {
   const response = await notion.databases.query({
     database_id: databaseId as string,
+    filter: {
+      property: 'published',
+      checkbox: {
+        equals: true,
+      },
+    },
   });
   return response.results as PageObjectResponse[];
 });

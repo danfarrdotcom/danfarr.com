@@ -5,6 +5,7 @@ import ChatInput from '../components/chat/input';
 import ChatLayout from '../components/chat/chat-layout';
 import '../styles/globals.css';
 import { Metadata } from 'next';
+import { FaGithub, FaLinkedin } from 'react-icons/fa';
 
 export const metadata: Metadata = {
   title: 'Dan Farr',
@@ -37,28 +38,21 @@ export default async function Page() {
           </ChatMessage>
           <ChatMessage role="assistant" avatarUrl={AVATAR_URL}>
             <div className="space-y-2">
-              <p>It's nice to meet you.</p>
+              <p>Nice to meet you!</p>
             </div>
           </ChatMessage>
-          {/* <ChatMessage role="assistant" avatarUrl={AVATAR_URL}>
-            <p>
-              I'm a{' '}
-              <a
-                href={AVATAR_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="underline decoration-blue-400/50 hover:decoration-blue-500 hover:text-blue-600 transition-all"
-              >
-                skeptical optimist
-              </a>{' '}
-              who sometimes expresses ideas using code.
-            </p>
-          </ChatMessage> */}
+          <ChatMessage role="assistant" avatarUrl={AVATAR_URL}>
+            <div className="space-y-2">
+              <p>
+                I'm intersted in cybernetics, distributed systems and bionics
+                applied in software engineering
+              </p>
+            </div>
+          </ChatMessage>
 
-          {/* Current Role */}
           <ChatMessage role="assistant" avatarUrl={AVATAR_URL}>
             <p>
-              I'm currently a technical lead at{' '}
+              I working as a technical lead at{' '}
               <a
                 className="text-blue-500 font-medium hover:underline"
                 href="https://bluecrestwellness.com"
@@ -106,7 +100,7 @@ export default async function Page() {
                       <div className="font-serif italic text-lg text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                         {post.title}
                       </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
                         {post.summary || 'No description available.'}
                       </div>
                     </Link>
@@ -124,28 +118,46 @@ export default async function Page() {
               .
             </p>
           </ChatMessage>
+          <ChatMessage role="assistant" avatarUrl={AVATAR_URL}>
+            <p>
+              Or you can check out some experiments and projects I've been
+              working on by{' '}
+              <Link className="text-blue-500 underline" href="/articles">
+                clicking here
+              </Link>
+              .
+            </p>
+          </ChatMessage>
 
           {/* Social Links */}
           <ChatMessage role="assistant" avatarUrl={AVATAR_URL}>
-            <p className="mb-2">You can also find me elsewhere on the web:</p>
-            <div className="flex flex-wrap gap-2">
-              <a
-                href="https://github.com/danfarr"
-                target="_blank"
-                rel="noreferrer"
-                className="px-4 py-2 bg-gray-100 dark:bg-zinc-900 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors"
-              >
-                GitHub
-              </a>
-              <a
-                href="https://linkedin.com/in/danfarr"
-                target="_blank"
-                rel="noreferrer"
-                className="px-4 py-2 bg-gray-100 dark:bg-zinc-900 rounded-lg text-sm font-medium hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 transition-colors"
-              >
-                LinkedIn
-              </a>
-            </div>
+            <p className="mb-2">You can also find me </p>
+          </ChatMessage>
+          <ChatMessage role="assistant" avatarUrl={AVATAR_URL}>
+            <a
+              href="https://github.com/danfarr"
+              target="_blank"
+              rel="noreferrer"
+              className="py-2 flex bg-gray-100 gap-x-1 dark:bg-zinc-900 rounded-lg hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors"
+            >
+              <i>@danfarr</i>
+              on
+              <div>GitHub</div>
+              <FaGithub size={20} />
+            </a>
+          </ChatMessage>
+          <ChatMessage role="assistant" avatarUrl={AVATAR_URL}>
+            <a
+              href="https://github.com/danfarr"
+              target="_blank"
+              rel="noreferrer"
+              className="py-2 flex bg-gray-100 gap-x-1 dark:bg-zinc-900 rounded-lg hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors"
+            >
+              <i>@drfarr</i>
+              on
+              <div>LinkedIn</div>
+              <FaLinkedin size={20} />
+            </a>
           </ChatMessage>
         </ChatLayout>
       </div>
