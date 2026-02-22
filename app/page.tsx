@@ -119,19 +119,71 @@ export default async function Page() {
             </p>
           </ChatMessage>
           <ChatMessage role="assistant" avatarUrl={AVATAR_URL}>
-            <p>
-              Or you can check out some experiments and projects I've been
-              working on by{' '}
-              <Link className="text-blue-500 underline" href="/articles">
-                clicking here
-              </Link>
-              .
-            </p>
+            <div className="flex flex-col">
+              <div className="pb-4 mb-4 border-b border-gray-200 dark:border-gray-700">
+                <p>Here's some things I've been working on:</p>
+              </div>
+              <div className="flex flex-col gap-6">
+                <a
+                  href="https://danny.engineering"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group block transition-all relative pl-3 border-l-2 border-transparent hover:border-blue-400"
+                >
+                  <div className="font-serif italic text-lg text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    danny.engineering
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                    My engineering portfolio and technical writing.
+                  </div>
+                </a>
+                <a
+                  href="https://practically.dev"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group block transition-all relative pl-3 border-l-2 border-transparent hover:border-blue-400"
+                >
+                  <div className="font-serif italic text-lg text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    practically.dev
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                    A product focused education platform for non-technical
+                    people.
+                  </div>
+                </a>
+                <a
+                  href="https://loveyourepo.dev"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group block transition-all relative pl-3 border-l-2 border-transparent hover:border-blue-400"
+                >
+                  <div className="font-serif italic text-lg text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    loveyourepo.dev
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                    A tool to help you maintain your repositories.
+                  </div>
+                </a>
+                {/* <a
+                  href="https://barbequeue.co.uk"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group block transition-all relative pl-3 border-l-2 border-transparent hover:border-blue-400"
+                >
+                  <div className="font-serif italic text-lg text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    barbequeue.co.uk
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                    A Slack queueing tool.
+                  </div>
+                </a> */}
+              </div>
+            </div>
           </ChatMessage>
 
           {/* Social Links */}
           <ChatMessage role="assistant" avatarUrl={AVATAR_URL}>
-            <p className="mb-2">You can also find me </p>
+            <p className="mb-2">Feel free to reach out and connect: </p>
           </ChatMessage>
           <ChatMessage role="assistant" avatarUrl={AVATAR_URL}>
             <a
