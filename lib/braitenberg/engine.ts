@@ -83,7 +83,9 @@ function cloneSources(sources: BraitenbergSource[]) {
   return sources.map((source) => ({ ...source }));
 }
 
-function createDefaultVehicle(config: BraitenbergVehicleConfig): RuntimeVehicle {
+function createDefaultVehicle(
+  config: BraitenbergVehicleConfig
+): RuntimeVehicle {
   return {
     x: config.startX,
     y: config.startY,
@@ -92,7 +94,10 @@ function createDefaultVehicle(config: BraitenbergVehicleConfig): RuntimeVehicle 
   };
 }
 
-function drawSourceGlyph(ctx: CanvasRenderingContext2D, source: BraitenbergSource) {
+function drawSourceGlyph(
+  ctx: CanvasRenderingContext2D,
+  source: BraitenbergSource
+) {
   ctx.save();
   ctx.translate(source.x, source.y);
   ctx.strokeStyle = 'rgba(24, 24, 24, 0.9)';
@@ -304,8 +309,10 @@ export class BraitenbergEngine {
   step(delta = 1) {
     for (const sensor of this.config.vehicle.sensors) {
       const sensorHeading = this.vehicle.heading + sensor.angleOffset;
-      const sensorX = this.vehicle.x + Math.cos(sensorHeading) * sensor.distance;
-      const sensorY = this.vehicle.y + Math.sin(sensorHeading) * sensor.distance;
+      const sensorX =
+        this.vehicle.x + Math.cos(sensorHeading) * sensor.distance;
+      const sensorY =
+        this.vehicle.y + Math.sin(sensorHeading) * sensor.distance;
       const reading = clamp(
         this.sampleField(sensorX, sensorY) * sensor.gain,
         0,
@@ -324,8 +331,7 @@ export class BraitenbergEngine {
         }
 
         const reading = this.sensorReadings[connection.sensorId] ?? 0;
-        const signed =
-          connection.sign === 'excitatory' ? reading : -reading;
+        const signed = connection.sign === 'excitatory' ? reading : -reading;
         drive += signed * connection.weight;
       }
 
@@ -349,10 +355,8 @@ export class BraitenbergEngine {
     } else {
       const left = this.motorOutputs.left ?? 0;
       const right = this.motorOutputs.right ?? 0;
-      const targetSpeed =
-        ((left + right) / 2) * this.config.vehicle.speedScale;
-      const turn =
-        (right - left) * this.config.vehicle.turnRate * 0.08 * delta;
+      const targetSpeed = ((left + right) / 2) * this.config.vehicle.speedScale;
+      const turn = (right - left) * this.config.vehicle.turnRate * 0.08 * delta;
 
       this.vehicle.speed += (targetSpeed - this.vehicle.speed) * 0.16 * delta;
       this.vehicle.speed *= 1 - this.config.vehicle.friction * 0.14 * delta;
@@ -360,9 +364,11 @@ export class BraitenbergEngine {
     }
 
     let nextX =
-      this.vehicle.x + Math.cos(this.vehicle.heading) * this.vehicle.speed * delta;
+      this.vehicle.x +
+      Math.cos(this.vehicle.heading) * this.vehicle.speed * delta;
     let nextY =
-      this.vehicle.y + Math.sin(this.vehicle.heading) * this.vehicle.speed * delta;
+      this.vehicle.y +
+      Math.sin(this.vehicle.heading) * this.vehicle.speed * delta;
     const padding = this.config.vehicle.radius + 6;
 
     if (nextX <= padding || nextX >= this.config.world.width - padding) {
@@ -428,8 +434,10 @@ export class BraitenbergEngine {
 
       for (const sensor of this.config.vehicle.sensors) {
         const sensorHeading = this.vehicle.heading + sensor.angleOffset;
-        const sensorX = this.vehicle.x + Math.cos(sensorHeading) * sensor.distance;
-        const sensorY = this.vehicle.y + Math.sin(sensorHeading) * sensor.distance;
+        const sensorX =
+          this.vehicle.x + Math.cos(sensorHeading) * sensor.distance;
+        const sensorY =
+          this.vehicle.y + Math.sin(sensorHeading) * sensor.distance;
 
         ctx.beginPath();
         ctx.moveTo(this.vehicle.x, this.vehicle.y);

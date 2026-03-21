@@ -105,7 +105,10 @@ function formatReading(value: number) {
 }
 
 export default function VehicleOneLab({ variant }: VehicleOneLabProps) {
-  const initialSources = useMemo(() => initialSourcesForVariant(variant), [variant]);
+  const initialSources = useMemo(
+    () => initialSourcesForVariant(variant),
+    [variant]
+  );
   const defaults = useMemo(() => defaultsForVariant(variant), [variant]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<BraitenbergEngine | null>(null);

@@ -35,7 +35,7 @@ export default function ArticleShell({
             Dan Farr
           </Link>
           <span>/</span>
-          <Link className="hover:text-stone-900" href="/scribbles/braitenberg">
+          <Link className="hover:text-stone-900" href="/essays/braitenberg">
             Vehicles, Translated
           </Link>
         </div>

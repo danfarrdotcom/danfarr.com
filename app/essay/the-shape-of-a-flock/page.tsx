@@ -16,9 +16,9 @@ export default function FlockPage() {
         <div className="prose prose-p:text-xl prose-2xl dark:prose-invert prose-blue max-w-none">
           <p className="lead text-xl md:text-2xl leading-relaxed font-light text-gray-800 dark:text-gray-200 mb-8">
             A starling murmuration looks like choreography, but there is no
-            choreographer. Tens of thousands of birds fold, split, and rejoin
-            as if sharing a single intention. What you are seeing is not
-            central planning, but local sensing: each bird updates from nearby
+            choreographer. Tens of thousands of birds fold, split, and rejoin as
+            if sharing a single intention. What you are seeing is not central
+            planning, but local sensing: each bird updates from nearby
             neighbors, and the sky itself becomes computation.
           </p>
 
@@ -55,9 +55,9 @@ export default function FlockPage() {
               Key Concept
             </h3>
             <p className="m-0 text-base">
-              Murmuration is distributed control: <strong>policy without a
-              planner</strong>. Each bird executes a tiny local policy; the
-              flock is the aggregate rollout.
+              Murmuration is distributed control:{' '}
+              <strong>policy without a planner</strong>. Each bird executes a
+              tiny local policy; the flock is the aggregate rollout.
             </p>
           </div>
 
@@ -98,10 +98,10 @@ export default function FlockPage() {
           </h2>
 
           <p>
-            A flock also encodes information in density. Compressed regions carry
-            stronger directional consensus; sparse regions allow exploratory
-            drift. If color maps local density, the flock reveals where control
-            is concentrated.
+            A flock also encodes information in density. Compressed regions
+            carry stronger directional consensus; sparse regions allow
+            exploratory drift. If color maps local density, the flock reveals
+            where control is concentrated.
           </p>
 
           <p>
@@ -314,12 +314,12 @@ function Sim3() {
       <canvas ref={canvasRef} className="w-full block bg-black" height={220} />
       <div className="p-3 flex gap-4 justify-center bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 text-xs text-gray-400">
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#4c7fd1]"></span> Low
-          local coupling
+          <span className="w-2 h-2 rounded-full bg-[#4c7fd1]"></span> Low local
+          coupling
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#d17a4c]"></span> High
-          local coupling
+          <span className="w-2 h-2 rounded-full bg-[#d17a4c]"></span> High local
+          coupling
         </div>
       </div>
     </div>
@@ -383,7 +383,10 @@ function Sim4() {
       <canvas ref={canvasRef} className="w-full block bg-black" height={220} />
       <div className="py-4 bg-white flex items-center gap-3 text-md">
         <input ref={toggleRef} type="checkbox" id="pred-toggle" />
-        <label htmlFor="pred-toggle" className="text-xs text-gray-500 uppercase">
+        <label
+          htmlFor="pred-toggle"
+          className="text-xs text-gray-500 uppercase"
+        >
           Enable predator
         </label>
       </div>

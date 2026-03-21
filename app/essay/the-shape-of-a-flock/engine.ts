@@ -315,8 +315,7 @@ export function makeEngine(canvas: HTMLCanvasElement, opts: EngineOpts = {}) {
   function computeAvgSpeed(): number {
     if (birds.length === 0) return 0;
     let total = 0;
-    for (const b of birds)
-      total += Math.sqrt(b.vx * b.vx + b.vy * b.vy);
+    for (const b of birds) total += Math.sqrt(b.vx * b.vx + b.vy * b.vy);
     return total / birds.length;
   }
 

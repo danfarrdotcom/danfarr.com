@@ -169,7 +169,7 @@ export function getBraitenbergNeighbors(slug: string) {
 }
 
 export function getBraitenbergPath(slug: string) {
-  return `/scribbles/braitenberg/${slug}`;
+  return `/essays/braitenberg/${slug}`;
 }
 
 export function getBraitenbergLabel(entry: BraitenbergSeriesEntry) {
@@ -177,4 +177,3 @@ export function getBraitenbergLabel(entry: BraitenbergSeriesEntry) {
     ? 'Introduction'
     : `Vehicle ${entry.chapter}`;
 }
-

@@ -4,7 +4,7 @@ Implementation brief for a Braitenberg-inspired interactive article series on `d
 
 ## Goal
 
-Create a flagship series of interactive essays that takes each chapter in *Vehicles: Experiments in Synthetic Psychology* and reinterprets its core mechanism through original writing and browser-based simulations.
+Create a flagship series of interactive essays that takes each chapter in _Vehicles: Experiments in Synthetic Psychology_ and reinterprets its core mechanism through original writing and browser-based simulations.
 
 This should feel like a native continuation of the existing interactive essays on the site, not a separate publishing system.
 
@@ -71,12 +71,12 @@ Add a dedicated series area instead of mixing these into one-off scribbles.
 
 ### Proposed routes
 
-- `app/scribbles/braitenberg/page.tsx`
-- `app/scribbles/braitenberg/intro/page.tsx`
-- `app/scribbles/braitenberg/vehicle-1-getting-around/page.tsx`
-- `app/scribbles/braitenberg/vehicle-2-fear-and-aggression/page.tsx`
-- `app/scribbles/braitenberg/vehicle-3-love/page.tsx`
-- `app/scribbles/braitenberg/vehicle-4-values-and-special-tastes/page.tsx`
+- `app/essays/braitenberg/page.tsx`
+- `app/essays/braitenberg/intro/page.tsx`
+- `app/essays/braitenberg/vehicle-1-getting-around/page.tsx`
+- `app/essays/braitenberg/vehicle-2-fear-and-aggression/page.tsx`
+- `app/essays/braitenberg/vehicle-3-love/page.tsx`
+- `app/essays/braitenberg/vehicle-4-values-and-special-tastes/page.tsx`
 
 Continue this route pattern for vehicles 5 through 14.
 
@@ -84,7 +84,7 @@ Continue this route pattern for vehicles 5 through 14.
 
 - Keeps the series coherent as a body of work
 - Makes it easy to add series navigation, progress state, and a landing page
-- Avoids cluttering `app/scribbles/` with 15 sibling entries
+- Avoids cluttering `app/essays/` with 15 sibling entries
 
 ## File Structure
 

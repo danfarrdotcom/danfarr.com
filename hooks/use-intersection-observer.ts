@@ -1,4 +1,4 @@
-import { useEffect, useState, RefObject } from 'react'
+import { useEffect, useState, RefObject } from 'react';
 
 export function useIntersectionObserver(
   elementRef: RefObject<Element | null>,
@@ -9,27 +9,27 @@ export function useIntersectionObserver(
     freezeOnceVisible = false,
   }: IntersectionObserverInit & { freezeOnceVisible?: boolean }
 ): boolean {
-  const [entry, setEntry] = useState<IntersectionObserverEntry>()
+  const [entry, setEntry] = useState<IntersectionObserverEntry>();
 
-  const frozen = entry?.isIntersecting && freezeOnceVisible
+  const frozen = entry?.isIntersecting && freezeOnceVisible;
 
   const updateEntry = ([entry]: IntersectionObserverEntry[]) => {
-    setEntry(entry)
-  }
+    setEntry(entry);
+  };
 
   useEffect(() => {
-    const node = elementRef?.current // DOM Ref
-    const hasIOSupport = !!window.IntersectionObserver
+    const node = elementRef?.current; // DOM Ref
+    const hasIOSupport = !!window.IntersectionObserver;
 
-    if (!hasIOSupport || frozen || !node) return
+    if (!hasIOSupport || frozen || !node) return;
 
-    const observerParams = { threshold, root, rootMargin }
-    const observer = new IntersectionObserver(updateEntry, observerParams)
+    const observerParams = { threshold, root, rootMargin };
+    const observer = new IntersectionObserver(updateEntry, observerParams);
 
-    observer.observe(node)
+    observer.observe(node);
 
-    return () => observer.disconnect()
-  }, [elementRef, JSON.stringify(threshold), root, rootMargin, frozen])
+    return () => observer.disconnect();
+  }, [elementRef, JSON.stringify(threshold), root, rootMargin, frozen]);
 
-  return !!entry?.isIntersecting
+  return !!entry?.isIntersecting;
 }

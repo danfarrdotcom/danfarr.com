@@ -40,7 +40,9 @@ function NavCard({
       <p className="mt-3 text-2xl font-normal tracking-tight text-stone-950">
         {entry.title}
       </p>
-      <p className="mt-2 text-[0.98rem] leading-7 text-stone-600">{entry.hook}</p>
+      <p className="mt-2 text-[0.98rem] leading-7 text-stone-600">
+        {entry.hook}
+      </p>
       <p className="mt-4 text-[11px] uppercase tracking-[0.24em] text-stone-500">
         {entry.status === 'published' ? 'Open entry' : 'Coming soon'}
       </p>
@@ -65,7 +67,7 @@ export default function SeriesNav({ slug }: SeriesNavProps) {
         </p>
         <Link
           className="text-sm text-stone-700 underline decoration-stone-300 underline-offset-4 hover:text-stone-950"
-          href="/scribbles/braitenberg"
+          href="/essays/braitenberg"
         >
           Series index
         </Link>
