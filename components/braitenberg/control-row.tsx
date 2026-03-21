@@ -46,12 +46,12 @@ export function RangeControl({
 
   return (
     <label className="min-w-[180px] px-3 py-2">
-      <div className="mb-2 flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-stone-500">
+      <div className="mb-2 flex items-center justify-between gap-3 text-sm font-sans text-black">
         <span>{label}</span>
         <span>{valueLabel ?? value.toFixed(2)}</span>
       </div>
       <input
-        className="w-full accent-stone-700"
+        className="w-full accent-black"
         max={max}
         min={min}
         onChange={handleChange}
@@ -66,10 +66,10 @@ export function RangeControl({
 export function ToggleChip({ active, label, onClick }: ToggleChipProps) {
   return (
     <button
-      className={`border px-3 py-2 font-sans rounded-2xl text-sm transition-colors ${
+      className={`border px-3 py-2 font-sans rounded-3xl text-sm transition-colors ${
         active
-          ? 'border-stone-900 bg-stone-900 text-[#fbfaf4]'
-          : 'border-stone-300 bg-transparent text-stone-600 hover:border-stone-400'
+          ? 'border-black bg-black text-[#fbfaf4]'
+          : 'border-stone-300 bg-transparent text-black hover:border-stone-400'
       }`}
       onClick={onClick}
       type="button"
@@ -82,7 +82,7 @@ export function ToggleChip({ active, label, onClick }: ToggleChipProps) {
 export function ActionButton({ children, onClick }: ActionButtonProps) {
   return (
     <button
-      className="border border-stone-300 rounded-2xl bg-transparent px-3 py-2 text-md font-sans text-md uppercase text-stone-700 transition-colors hover:border-stone-400"
+      className="border border-stone-300 rounded-3xl bg-transparent px-3 py-2 text-md font-sans text-sm text-black transition-colors hover:border-stone-400"
       onClick={onClick}
       type="button"
     >

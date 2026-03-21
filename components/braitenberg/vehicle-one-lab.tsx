@@ -336,7 +336,7 @@ export default function VehicleOneLab({ variant }: VehicleOneLabProps) {
         />
       </div>
 
-      <p className="mt-4 text-[0.98rem] leading-7 text-stone-600">
+      <p className="mt-4 text-[0.98rem] leading-7 text-black">
         {defaults.helpText}
       </p>
 

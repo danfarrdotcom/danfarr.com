@@ -18,7 +18,7 @@ export default function VehicleOnePage() {
       readingTime="9 min read"
       slug="vehicle-1-getting-around"
     >
-      <section className="space-y-6 text-[1.08rem] leading-8 text-stone-700">
+      <section className="space-y-6 text-[1.08rem] leading-8 text-black">
         <p>
           The first Braitenberg vehicle is almost offensively small. It does not
           store a map. It does not classify the world. It does not decide
@@ -41,7 +41,7 @@ export default function VehicleOnePage() {
         </p>
       </Callout>
 
-      <section className="space-y-6 text-[1.08rem] leading-8 text-stone-700">
+      <section className="space-y-6 text-[1.08rem] leading-8 text-black">
         <h2 className="text-[2rem] font-normal tracking-tight text-stone-950">
           One loop, no steering
         </h2>
@@ -62,7 +62,7 @@ export default function VehicleOnePage() {
         <VehicleOneLab variant="bare" />
       </FigureBlock>
 
-      <section className="space-y-6 text-[1.08rem] leading-8 text-stone-700">
+      <section className="space-y-6 text-[1.08rem] leading-8 text-black">
         <h2 className="text-[2rem] font-normal tracking-tight text-stone-950">
           Temperament is often physics in disguise
         </h2>
@@ -97,7 +97,7 @@ export default function VehicleOnePage() {
         </p>
       </Callout>
 
-      <section className="space-y-6 text-[1.08rem] leading-8 text-stone-700">
+      <section className="space-y-6 text-[1.08rem] leading-8 text-black">
         <h2 className="text-[2rem] font-normal tracking-tight text-stone-950">
           The environment co-authors the behavior
         </h2>
@@ -122,15 +122,15 @@ export default function VehicleOnePage() {
         <VehicleOneLab variant="editor" />
       </FigureBlock>
 
-      <section className="space-y-6 text-[1.08rem] leading-8 text-stone-700">
+      <section className="space-y-6 text-[1.08rem] leading-8 text-black">
         <h2 className="text-[2rem] font-normal tracking-tight text-stone-950">
           Open sandbox
         </h2>
         <p>
           The full loop is exposed here: source layout, field strength, sensor
           gain, motor gain, trail, and run reset. This is not a big simulator
-          because it does not need to be. Braitenberg&apos;s point survives contact
-          with the browser precisely because the mechanism stays small.
+          because it does not need to be. Braitenberg&apos;s point survives
+          contact with the browser precisely because the mechanism stays small.
         </p>
         <p>
           What matters is that the threshold for apparent psychology is lower

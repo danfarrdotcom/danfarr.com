@@ -20,7 +20,7 @@ function NavCard({
 }) {
   if (!entry) {
     return (
-      <div className="border-b border-dashed border-stone-300 pb-5 text-sm text-stone-500">
+      <div className="border-b border-dashed border-stone-300 pb-5 text-sm text-black">
         <p className="text-[11px] uppercase tracking-[0.28em] text-stone-400">
           {label}
         </p>
@@ -34,16 +34,14 @@ function NavCard({
       <p className="text-[11px] uppercase tracking-[0.28em] text-stone-400">
         {label}
       </p>
-      <p className="mt-2 text-[11px] uppercase tracking-[0.24em] text-stone-500">
+      <p className="mt-2 text-[11px] uppercase tracking-[0.24em] text-black">
         {getBraitenbergLabel(entry)}
       </p>
       <p className="mt-3 text-2xl font-normal tracking-tight text-stone-950">
         {entry.title}
       </p>
-      <p className="mt-2 text-[0.98rem] leading-7 text-stone-600">
-        {entry.hook}
-      </p>
-      <p className="mt-4 text-[11px] uppercase tracking-[0.24em] text-stone-500">
+      <p className="mt-2 text-[0.98rem] leading-7 text-black">{entry.hook}</p>
+      <p className="mt-4 text-[11px] uppercase tracking-[0.24em] text-black">
         {entry.status === 'published' ? 'Open entry' : 'Coming soon'}
       </p>
     </div>
@@ -62,11 +60,11 @@ export default function SeriesNav({ slug }: SeriesNavProps) {
   return (
     <nav className="mt-16 border-t border-stone-300 pt-8">
       <div className="mb-5 flex items-center justify-between gap-3">
-        <p className="text-[11px] uppercase tracking-[0.28em] text-stone-500">
+        <p className="text-[11px] uppercase tracking-[0.28em] text-black">
           Continue the series
         </p>
         <Link
-          className="text-sm text-stone-700 underline decoration-stone-300 underline-offset-4 hover:text-stone-950"
+          className="text-sm text-black underline decoration-stone-300 underline-offset-4 hover:text-stone-950"
           href="/essays/braitenberg"
         >
           Series index

@@ -7,7 +7,7 @@ export default function BraitenbergLayout({
 }) {
   return (
     <div
-      className="min-h-screen text-stone-900"
+      className="min-h-screen text-black"
       style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
     >
       {children}
