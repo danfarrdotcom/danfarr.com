@@ -36,11 +36,23 @@ export default function ChatLayout({ children }: ChatLayoutProps) {
   const messages = React.Children.toArray(children);
 
   useEffect(() => {
+    // Check if we've already shown the intro
+    const hasSeenIntro = localStorage.getItem('chat-intro-seen');
+
+    if (hasSeenIntro) {
+      setVisibleCount(messages.length);
+      return;
+    }
+
     // If we've shown all messages, stop.
-    if (visibleCount >= messages.length) return;
+    if (visibleCount >= messages.length) {
+      localStorage.setItem('chat-intro-seen', 'true');
+      return;
+    }
 
     // Start "typing"
     setIsTyping(true);
+
 
     // Scroll to bottom when typing starts
     window.scrollTo({

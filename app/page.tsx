@@ -15,8 +15,7 @@ export const metadata: Metadata = {
 const AVATAR_URL = '/e9381a823d59bde3d9b0a011a36fb74f.jpg';
 
 export default async function Page() {
-  const _posts = await getPosts();
-  const posts = _posts.splice(0, 3); // Show only the 5 most recent posts
+  const posts = await getPosts(3);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('en-US', {

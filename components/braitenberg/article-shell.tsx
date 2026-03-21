@@ -8,6 +8,7 @@ import {
 } from '../../lib/braitenberg/series';
 import SeriesNav from './series-nav';
 import Logo from '../logo';
+import { FaArrowLeft } from 'react-icons/fa';
 
 type ArticleShellProps = {
   slug: string;
@@ -32,13 +33,12 @@ export default function ArticleShell({
     <main className="min-h-screen px-5 py-8 md:px-8 md:py-12">
       <article className="mx-auto max-w-[44rem]">
         <div className="mb-12 flex flex-wrap items-center gap-3 text-[11px] uppercase tracking-[0.28em] text-black">
-          <Link className="hover:text-black" href="/">
-            {'< back'}
+          <Link
+            className="group flex items-center gap-2 hover:text-black"
+            href="/"
+          >
+            <FaArrowLeft className="text-lg transition-transform group-hover:-translate-x-1" />
             <Logo />
-          </Link>
-          <span>/</span>
-          <Link className="hover:text-black" href="/essays/braitenberg">
-            Vehicles, Translated
           </Link>
         </div>
 
