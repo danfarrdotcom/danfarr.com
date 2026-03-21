@@ -141,7 +141,9 @@ export const getBlocks = cache(async (blockID: string): Promise<any[]> => {
         blocks.reduce<any[]>((acc, curr: any) => {
           if (curr.type === 'bulleted_list_item') {
             if (acc[acc.length - 1]?.type === 'bulleted_list') {
-              acc[acc.length - 1][acc[acc.length - 1].type].children?.push(curr);
+              acc[acc.length - 1][acc[acc.length - 1].type].children?.push(
+                curr
+              );
             } else {
               acc.push({
                 id: getRandomInt(10 ** 99, 10 ** 100).toString(),
@@ -151,7 +153,9 @@ export const getBlocks = cache(async (blockID: string): Promise<any[]> => {
             }
           } else if (curr.type === 'numbered_list_item') {
             if (acc[acc.length - 1]?.type === 'numbered_list') {
-              acc[acc.length - 1][acc[acc.length - 1].type].children?.push(curr);
+              acc[acc.length - 1][acc[acc.length - 1].type].children?.push(
+                curr
+              );
             } else {
               acc.push({
                 id: getRandomInt(10 ** 99, 10 ** 100).toString(),

@@ -100,10 +100,6 @@ function defaultsForVariant(variant: VehicleOneLabVariant) {
   };
 }
 
-function formatReading(value: number) {
-  return value.toFixed(2);
-}
-
 export default function VehicleOneLab({ variant }: VehicleOneLabProps) {
   const initialSources = useMemo(
     () => initialSourcesForVariant(variant),
@@ -115,10 +111,6 @@ export default function VehicleOneLab({ variant }: VehicleOneLabProps) {
   const frameRef = useRef<number>();
   const editorActiveRef = useRef(false);
   const idRef = useRef(0);
-  const fieldRef = useRef<HTMLSpanElement>(null);
-  const speedRef = useRef<HTMLSpanElement>(null);
-  const sourceRef = useRef<HTMLSpanElement>(null);
-  const motorRef = useRef<HTMLSpanElement>(null);
 
   const isVisible = useIntersectionObserver(canvasRef, {
     threshold: 0,
@@ -148,25 +140,6 @@ export default function VehicleOneLab({ variant }: VehicleOneLabProps) {
     }
 
     engine.render(context);
-    const telemetry = engine.getTelemetry();
-
-    if (fieldRef.current) {
-      fieldRef.current.textContent = formatReading(telemetry.field);
-    }
-
-    if (speedRef.current) {
-      speedRef.current.textContent = formatReading(telemetry.speed);
-    }
-
-    if (sourceRef.current) {
-      sourceRef.current.textContent = telemetry.sourceCount.toString();
-    }
-
-    if (motorRef.current) {
-      motorRef.current.textContent = formatReading(
-        telemetry.motorOutputs.single ?? 0
-      );
-    }
   };
 
   useEffect(() => {

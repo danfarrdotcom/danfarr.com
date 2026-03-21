@@ -4,11 +4,8 @@ import Link from 'next/link';
 import {
   getBraitenbergEntry,
   getBraitenbergLabel,
-  getBraitenbergPath,
 } from '../../lib/braitenberg/series';
 import SeriesNav from './series-nav';
-import Logo from '../logo';
-import { FaArrowLeft } from 'react-icons/fa';
 
 type ArticleShellProps = {
   slug: string;
@@ -31,22 +28,29 @@ export default function ArticleShell({
 
   return (
     <main className="min-h-screen px-5 py-8 md:px-8 md:py-12">
-      <article className="mx-auto max-w-[44rem]">
-        <div className="mb-12 flex flex-wrap items-center gap-3 text-[11px] uppercase tracking-[0.28em] text-black">
-          <Link
-            className="group flex items-center gap-2 hover:text-black"
-            href="/"
-          >
-            <FaArrowLeft className="text-lg transition-transform group-hover:-translate-x-1" />
-            <Logo />
+      <article className="mx-auto max-w-[42rem]">
+        <div className="mb-12 flex flex-wrap items-center justify-between gap-3 text-[11px] uppercase tracking-[0.28em] text-stone-700">
+          <Link className="hover:text-black" href="/essays">
+            Essays
+          </Link>
+          <Link className="hover:text-black" href="/essays/braitenberg">
+            Series index
           </Link>
         </div>
 
         <header className="mb-14 border-b border-stone-300 pb-10">
-          <h1 className="max-w-2xl text-4xl font-normal tracking-tight text-stone-950">
+          <p className="text-[11px] uppercase tracking-[0.28em] text-stone-700">
+            {getBraitenbergLabel(entry)}
+          </p>
+          <h1 className="mt-4 max-w-2xl text-4xl font-normal tracking-tight text-stone-950 md:text-5xl">
             {entry.title}
           </h1>
-          <p className="mt-6 max-w-2xl leading-9 text-black text-md">{dek}</p>
+          <p className="mt-6 max-w-2xl text-[1.08rem] leading-8 text-black">
+            {dek}
+          </p>
+          <p className="mt-6 text-[11px] uppercase tracking-[0.24em] text-stone-700">
+            {readingTime}
+          </p>
         </header>
 
         <div className="space-y-14">{children}</div>

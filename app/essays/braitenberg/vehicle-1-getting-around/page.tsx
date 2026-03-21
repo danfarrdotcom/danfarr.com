@@ -18,7 +18,7 @@ export default function VehicleOnePage() {
       readingTime="9 min read"
       slug="vehicle-1-getting-around"
     >
-      <section className="space-y-6 font-sans text-[1.08rem] leading-8 text-black">
+      <section className="space-y-6 text-[1.08rem] leading-8 text-black">
         <p>
           The first Braitenberg vehicle is almost offensively small. It does not
           store a map. It does not classify the world. It does not decide

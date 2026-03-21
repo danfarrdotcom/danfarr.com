@@ -20,28 +20,32 @@ function NavCard({
 }) {
   if (!entry) {
     return (
-      <div className="border-b border-dashed border-stone-300 pb-5 text-sm text-black">
-        <p className="text-[11px] uppercase tracking-[0.28em] text-stone-400">
+      <div className="border-t border-stone-300 pt-4 text-sm text-black">
+        <p className="text-[11px] uppercase tracking-[0.28em] text-stone-500">
           {label}
         </p>
-        <p className="mt-3">No entry here yet.</p>
+        <p className="mt-3 text-[0.98rem] leading-7 text-stone-700">
+          No entry here yet.
+        </p>
       </div>
     );
   }
 
   const content = (
-    <div className="border-b border-stone-300 pb-5 transition-colors">
-      <p className="text-[11px] uppercase tracking-[0.28em] text-stone-400">
+    <div className="border-t border-stone-300 pt-4 transition-colors">
+      <p className="text-[11px] uppercase tracking-[0.28em] text-stone-500">
         {label}
       </p>
-      <p className="mt-2 text-[11px] uppercase tracking-[0.24em] text-black">
+      <p className="mt-3 text-[11px] uppercase tracking-[0.24em] text-stone-700">
         {getBraitenbergLabel(entry)}
       </p>
       <p className="mt-3 text-2xl font-normal tracking-tight text-stone-950">
         {entry.title}
       </p>
-      <p className="mt-2 text-[0.98rem] leading-7 text-black">{entry.hook}</p>
-      <p className="mt-4 text-[11px] uppercase tracking-[0.24em] text-black">
+      <p className="mt-2 text-[0.98rem] leading-7 text-stone-700">
+        {entry.hook}
+      </p>
+      <p className="mt-4 text-[11px] uppercase tracking-[0.24em] text-stone-700">
         {entry.status === 'published' ? 'Open entry' : 'Coming soon'}
       </p>
     </div>

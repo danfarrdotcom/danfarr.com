@@ -28,7 +28,11 @@ type ActionButtonProps = {
 };
 
 export function ControlRow({ children }: ControlRowProps) {
-  return <div className="mt-4 flex flex-wrap gap-2">{children}</div>;
+  return (
+    <div className="mt-4 flex flex-wrap gap-2 border-t border-stone-300 pt-3">
+      {children}
+    </div>
+  );
 }
 
 export function RangeControl({
@@ -45,8 +49,8 @@ export function RangeControl({
   };
 
   return (
-    <label className="min-w-[180px] px-3 py-2">
-      <div className="mb-2 flex items-center justify-between gap-3 text-sm font-sans text-black">
+    <label className="min-w-[180px] px-2 py-1">
+      <div className="mb-2 flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-stone-700">
         <span>{label}</span>
         <span>{valueLabel ?? value.toFixed(2)}</span>
       </div>
@@ -66,10 +70,10 @@ export function RangeControl({
 export function ToggleChip({ active, label, onClick }: ToggleChipProps) {
   return (
     <button
-      className={`border px-3 py-2 font-sans rounded-3xl text-sm transition-colors ${
+      className={`border px-3 py-2 text-[11px] uppercase tracking-[0.22em] transition-colors ${
         active
-          ? 'border-black bg-black text-[#fbfaf4]'
-          : 'border-stone-300 bg-transparent text-black hover:border-stone-400'
+          ? 'border-black bg-black text-white'
+          : 'border-stone-300 bg-transparent text-black hover:border-stone-500'
       }`}
       onClick={onClick}
       type="button"
@@ -82,7 +86,7 @@ export function ToggleChip({ active, label, onClick }: ToggleChipProps) {
 export function ActionButton({ children, onClick }: ActionButtonProps) {
   return (
     <button
-      className="border border-stone-300 rounded-3xl bg-transparent px-3 py-2 text-md font-sans text-sm text-black transition-colors hover:border-stone-400"
+      className="border border-stone-300 bg-transparent px-3 py-2 text-[11px] uppercase tracking-[0.22em] text-black transition-colors hover:border-stone-500"
       onClick={onClick}
       type="button"
     >

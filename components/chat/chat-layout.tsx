@@ -53,7 +53,6 @@ export default function ChatLayout({ children }: ChatLayoutProps) {
     // Start "typing"
     setIsTyping(true);
 
-
     // Scroll to bottom when typing starts
     window.scrollTo({
       top: document.body.scrollHeight,
