@@ -70,7 +70,7 @@ export function RangeControl({
 export function ToggleChip({ active, label, onClick }: ToggleChipProps) {
   return (
     <button
-      className={`border px-3 py-2 text-[11px] uppercase tracking-[0.22em] transition-colors ${
+      className={`rounded-2xl border px-3 py-2 text-[11px] transition-colors ${
         active
           ? 'border-black bg-black text-white'
           : 'border-stone-300 bg-transparent text-black hover:border-stone-500'
@@ -86,7 +86,7 @@ export function ToggleChip({ active, label, onClick }: ToggleChipProps) {
 export function ActionButton({ children, onClick }: ActionButtonProps) {
   return (
     <button
-      className="border border-stone-300 bg-transparent px-3 py-2 text-[11px] uppercase tracking-[0.22em] text-black transition-colors hover:border-stone-500"
+      className="rounded-3xl border border-stone-300 bg-transparent px-3 py-2 text-[11px] uppercase tracking-[0.22em] text-black transition-colors hover:border-stone-500"
       onClick={onClick}
       type="button"
     >

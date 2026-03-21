@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import ArticleShell from '../../../../components/braitenberg/article-shell';
+import ArticleSection from '../../../../components/braitenberg/article-section';
 import Callout from '../../../../components/braitenberg/callout';
 import FigureBlock from '../../../../components/braitenberg/figure-block';
 import VehicleOneLab from '../../../../components/braitenberg/vehicle-one-lab';
@@ -18,7 +19,7 @@ export default function VehicleOnePage() {
       readingTime="9 min read"
       slug="vehicle-1-getting-around"
     >
-      <section className="space-y-6 text-[1.08rem] leading-8 text-black">
+      <ArticleSection>
         <p>
           The first Braitenberg vehicle is almost offensively small. It does not
           store a map. It does not classify the world. It does not decide
@@ -31,7 +32,7 @@ export default function VehicleOnePage() {
           like temperament. It rushes, hesitates, overshoots, lingers, and
           rebounds. The mechanism is trivial. The interpretation is not.
         </p>
-      </section>
+      </ArticleSection>
 
       <Callout label="Key idea">
         <p>
@@ -41,10 +42,7 @@ export default function VehicleOnePage() {
         </p>
       </Callout>
 
-      <section className="space-y-6 text-[1.08rem] leading-8 text-black">
-        <h2 className="text-[2rem] font-normal tracking-tight text-stone-950">
-          One loop, no steering
-        </h2>
+      <ArticleSection title="One loop, no steering">
         <p>
           In this first figure, warmer regions simply make the motor drive
           harder. The heading only changes because of drift and wall contact.
@@ -52,7 +50,7 @@ export default function VehicleOnePage() {
           manufactured by the interaction between body and environment, not by a
           hidden decision process.
         </p>
-      </section>
+      </ArticleSection>
 
       <FigureBlock
         caption="More signal means more speed. The vehicle does not know where the warm region is, and it never turns toward it on purpose."
@@ -62,10 +60,7 @@ export default function VehicleOnePage() {
         <VehicleOneLab variant="bare" />
       </FigureBlock>
 
-      <section className="space-y-6 text-[1.08rem] leading-8 text-black">
-        <h2 className="text-[2rem] font-normal tracking-tight text-stone-950">
-          Temperament is often physics in disguise
-        </h2>
+      <ArticleSection title="Temperament is often physics in disguise">
         <p>
           The fastest way to make the same system look like a different
           personality is not to give it memory. It is to change the physical
@@ -79,7 +74,7 @@ export default function VehicleOnePage() {
           effect of response curves, latency, damping, and environmental
           structure.
         </p>
-      </section>
+      </ArticleSection>
 
       <FigureBlock
         caption="Tune friction, noise, and field strength. The wiring does not change, but the character reading does."
@@ -97,10 +92,7 @@ export default function VehicleOnePage() {
         </p>
       </Callout>
 
-      <section className="space-y-6 text-[1.08rem] leading-8 text-black">
-        <h2 className="text-[2rem] font-normal tracking-tight text-stone-950">
-          The environment co-authors the behavior
-        </h2>
+      <ArticleSection title="The environment co-authors the behavior">
         <p>
           If you only watch the body, it is easy to over-credit the vehicle. If
           you move the field around, the illusion loosens. The route is partly a
@@ -112,7 +104,7 @@ export default function VehicleOnePage() {
           one. The same loop behaves differently because the world is different,
           not because the vehicle became smarter.
         </p>
-      </section>
+      </ArticleSection>
 
       <FigureBlock
         caption="Click the canvas to edit the field. This makes the environment visible as part of the computation."
@@ -122,10 +114,7 @@ export default function VehicleOnePage() {
         <VehicleOneLab variant="editor" />
       </FigureBlock>
 
-      <section className="space-y-6 text-[1.08rem] leading-8 text-black">
-        <h2 className="text-[2rem] font-normal tracking-tight text-stone-950">
-          Open sandbox
-        </h2>
+      <ArticleSection title="Open sandbox">
         <p>
           The full loop is exposed here: source layout, field strength, sensor
           gain, motor gain, trail, and run reset. This is not a big simulator
@@ -138,7 +127,7 @@ export default function VehicleOnePage() {
           preferring in any rich sense. We are reading those things into the
           motion because we are built to do that.
         </p>
-      </section>
+      </ArticleSection>
 
       <FigureBlock
         caption="Use the sandbox to push the simple loop until the behavior stops feeling accidental and starts feeling interpretable."

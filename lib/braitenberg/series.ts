@@ -35,7 +35,7 @@ const entries: BraitenbergSeriesEntry[] = [
     hook: 'Cross one wire and approach becomes avoidance.',
     description:
       'How same-side and crossed excitation create radically different behavior.',
-    status: 'planned',
+    status: 'published',
   },
   {
     slug: 'vehicle-3-love',

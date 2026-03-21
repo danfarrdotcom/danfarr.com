@@ -42,7 +42,7 @@ export default function ArticleShell({
           <p className="text-[11px] uppercase tracking-[0.28em] text-stone-700">
             {getBraitenbergLabel(entry)}
           </p>
-          <h1 className="mt-4 max-w-2xl text-4xl font-normal tracking-tight text-stone-950 md:text-5xl">
+          <h1 className="mt-4 max-w-2xl font-serif text-4xl font-normal tracking-tight text-stone-950 md:text-5xl">
             {entry.title}
           </h1>
           <p className="mt-6 max-w-2xl text-[1.08rem] leading-8 text-black">

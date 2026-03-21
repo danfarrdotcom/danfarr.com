@@ -5,12 +5,5 @@ export default function BraitenbergLayout({
 }: {
   children: ReactNode;
 }) {
-  return (
-    <div
-      className="min-h-screen text-black"
-      style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-    >
-      {children}
-    </div>
-  );
+  return <div className="min-h-screen font-sans text-black">{children}</div>;
 }

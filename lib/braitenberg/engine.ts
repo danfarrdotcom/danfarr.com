@@ -1,5 +1,6 @@
 export type ConnectionSign = 'excitatory' | 'inhibitory';
 export type MotorId = 'left' | 'right' | 'single';
+export type VehicleTwoWiring = 'direct' | 'crossed';
 
 export type BraitenbergSource = {
   id: string;
@@ -356,7 +357,8 @@ export class BraitenbergEngine {
       const left = this.motorOutputs.left ?? 0;
       const right = this.motorOutputs.right ?? 0;
       const targetSpeed = ((left + right) / 2) * this.config.vehicle.speedScale;
-      const turn = (right - left) * this.config.vehicle.turnRate * 0.08 * delta;
+      // Differential drive: the vehicle turns toward the slower side.
+      const turn = (left - right) * this.config.vehicle.turnRate * 0.08 * delta;
 
       this.vehicle.speed += (targetSpeed - this.vehicle.speed) * 0.16 * delta;
       this.vehicle.speed *= 1 - this.config.vehicle.friction * 0.14 * delta;
@@ -523,6 +525,102 @@ export function createVehicleOneConfig(
           y: height * 0.34,
           strength: 0.85,
           spread: 110,
+        },
+      ],
+    },
+  };
+}
+
+export function createVehicleTwoConfig(
+  width = 720,
+  height = 320,
+  wiring: VehicleTwoWiring = 'direct'
+): BraitenbergEngineConfig {
+  return {
+    showSensors: false,
+    showTrail: true,
+    vehicle: {
+      startX: width * 0.18,
+      startY: height * 0.68,
+      startHeading: -0.08,
+      radius: 10,
+      baseSpeed: 0.1,
+      speedScale: 5.4,
+      turnRate: 2.9,
+      friction: 0.05,
+      noise: 0.06,
+      sensors: [
+        {
+          id: 'left-eye',
+          angleOffset: -0.52,
+          distance: 18,
+          gain: 1,
+        },
+        {
+          id: 'right-eye',
+          angleOffset: 0.52,
+          distance: 18,
+          gain: 1,
+        },
+      ],
+      motors: [
+        {
+          id: 'left',
+          gain: 1,
+          min: 0.04,
+          max: 1.3,
+        },
+        {
+          id: 'right',
+          gain: 1,
+          min: 0.04,
+          max: 1.3,
+        },
+      ],
+      connections:
+        wiring === 'direct'
+          ? [
+              {
+                sensorId: 'left-eye',
+                motorId: 'left',
+                sign: 'excitatory',
+                weight: 0.9,
+              },
+              {
+                sensorId: 'right-eye',
+                motorId: 'right',
+                sign: 'excitatory',
+                weight: 0.9,
+              },
+            ]
+          : [
+              {
+                sensorId: 'left-eye',
+                motorId: 'right',
+                sign: 'excitatory',
+                weight: 0.9,
+              },
+              {
+                sensorId: 'right-eye',
+                motorId: 'left',
+                sign: 'excitatory',
+                weight: 0.9,
+              },
+            ],
+    },
+    world: {
+      width,
+      height,
+      ambient: 0.16,
+      fieldScale: 1,
+      trailLength: 460,
+      sources: [
+        {
+          id: 'warm-1',
+          x: width * 0.76,
+          y: height * 0.26,
+          strength: 0.88,
+          spread: 108,
         },
       ],
     },

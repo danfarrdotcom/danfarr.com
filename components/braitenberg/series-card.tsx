@@ -11,42 +11,40 @@ type SeriesCardProps = {
 };
 
 export default function SeriesCard({ entry }: SeriesCardProps) {
-  const content = (
-    <div className="border-t border-stone-300 py-5">
-      <div className="grid gap-3 md:grid-cols-[8rem_minmax(0,1fr)_6rem] md:items-start">
-        <p className="text-[11px] uppercase tracking-[0.28em] text-stone-700">
-          {getBraitenbergLabel(entry)}
+  const card = (
+    <div className="flex flex-col p-4 max-w-[100%] md:max-w-[85%] w-fit overflow-hidden bg-zinc-100 text-xs text-zinc-700 dark:bg-zinc-900 dark:text-zinc-400 dark:shadow-none !max-w-[450px] rounded-[20px] items-start gap-y-4">
+      <div className="text-[11px] hover:blue-400 uppercase tracking-[0.28em] text-black">
+        {getBraitenbergLabel(entry)}
+      </div>
+      <div>
+        <h2 className="font-serif font-semibold italic text-lg text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+          <Link
+            className="hover:text-blue-600"
+            href={getBraitenbergPath(entry.slug)}
+          >
+            {entry.title}
+          </Link>
+        </h2>
+        <p className="mt-2 text-[1.02rem] font-sans leading-7 text-black">
+          {entry.hook}
         </p>
-        <div>
-          <h2 className="text-[1.5rem] font-normal tracking-tight text-stone-950">
-            {entry.status === 'published' ? (
-              <Link
-                className="underline decoration-transparent underline-offset-4 transition-colors hover:decoration-stone-400"
-                href={getBraitenbergPath(entry.slug)}
-              >
-                {entry.title}
-              </Link>
-            ) : (
-              entry.title
-            )}
-          </h2>
-          <p className="mt-2 text-[1.02rem] leading-7 text-black">
-            {entry.hook}
-          </p>
-          <p className="mt-2 text-[0.98rem] leading-7 text-stone-700">
-            {entry.description}
-          </p>
-        </div>
-        <p className="text-[11px] uppercase tracking-[0.24em] text-stone-700 md:pt-1 md:text-right">
-          {entry.status === 'published' ? 'Read' : 'Planned'}
+        <p className="mt-2 text-[0.95rem] font-sans leading-6 text-black">
+          {entry.description}
         </p>
       </div>
+      {/* <div className="text-[11px] uppercase tracking-[0.24em] text-black md:pt-1">
+        {entry.status}
+      </div> */}
     </div>
   );
 
   if (entry.status !== 'published') {
-    return content;
+    return card;
   }
 
-  return content;
+  return (
+    <Link className="block" href={getBraitenbergPath(entry.slug)}>
+      {card}
+    </Link>
+  );
 }
