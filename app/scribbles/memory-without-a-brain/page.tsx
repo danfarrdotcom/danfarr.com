@@ -6,7 +6,7 @@ import { makeEngine } from './engine';
 export default function MemoryPage() {
   return (
     <main className="min-h-screen bg-white dark:bg-black font-sans text-gray-900 dark:text-gray-100 px-6 py-12 md:py-20 selection:bg-blue-100 dark:selection:bg-blue-900">
-      <div className="max-w-2xl mx-auto">
+      <article className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 leading-tight">
@@ -17,11 +17,15 @@ export default function MemoryPage() {
         {/* Introduction */}
         <div className="prose prose-p:text-xl prose-2xl dark:prose-invert prose-blue max-w-none">
           <p className="lead text-xl md:text-2xl leading-relaxed font-light text-gray-800 dark:text-gray-200 mb-8">
-            Ants don't understand how to read maps. There is no foreman, no
-            schematic, no ant that has seen both the nest and the food
-            simultaneously and plotted the optimal line between them. The colony
-            solves a complex spatial optimisation problem by using only a single
-            mechanism: writing to the ground, and reading from the ground.
+            Ants don't understand how to read maps.
+          </p>
+          <p className="lead text-xl md:text-2xl leading-relaxed font-light text-gray-800 dark:text-gray-200 mb-8">
+            {' '}
+            There is no foreman, no schematic, no ant that has seen both the
+            nest and the food simultaneously and plotted the optimal line
+            between them. The colony solves a complex spatial optimisation
+            problem by using only a single mechanism: writing to the ground, and
+            reading from the ground.
           </p>
 
           <p>
@@ -344,7 +348,7 @@ export default function MemoryPage() {
         <hr className="my-12 border-gray-200 dark:border-gray-800" />
 
         <Sandbox />
-      </div>
+      </article>
     </main>
   );
 }

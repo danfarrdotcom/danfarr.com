@@ -89,6 +89,39 @@ export default async function Page() {
                 </p>
               </div>
               <div className="flex flex-col gap-6">
+                <Link
+                  href="/scribbles/the-shape-of-a-flock"
+                  className="group block transition-all relative pl-3 border-l-2 border-transparent hover:border-blue-400"
+                >
+                  <div className="font-serif italic text-lg text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    The shape of a flock
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                    A starling murmuration looks like choreography.
+                  </div>
+                </Link>
+                <Link
+                  href="/scribbles/memory-without-a-brain"
+                  className="group block transition-all relative pl-3 border-l-2 border-transparent hover:border-blue-400"
+                >
+                  <div className="font-serif italic text-lg text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    Memory without a brain
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                    Ants don't understand how to read maps.
+                  </div>
+                </Link>
+                <Link
+                  href="/scribbles/braitenberg"
+                  className="group block transition-all relative pl-3 border-l-2 border-transparent hover:border-blue-400"
+                >
+                  <div className="font-serif italic text-lg text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    Vehicles, Translated
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                    Braitenberg rebuilt as an interactive essay series.
+                  </div>
+                </Link>
                 {posts.map((post) => {
                   const slug = post.slug.toLowerCase().replace(/\s+/g, '-');
                   return (
