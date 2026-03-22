@@ -6,6 +6,7 @@ import {
   getBraitenbergLabel,
 } from '../../lib/braitenberg/series';
 import SeriesNav from './series-nav';
+import VehicleDemonstration from './vehicle-demonstration';
 
 type ArticleShellProps = {
   slug: string;
@@ -53,7 +54,10 @@ export default function ArticleShell({
           </p>
         </header>
 
-        <div className="space-y-14">{children}</div>
+        <div className="space-y-14">
+          <VehicleDemonstration slug={slug} />
+          {children}
+        </div>
 
         <SeriesNav slug={slug} />
       </article>

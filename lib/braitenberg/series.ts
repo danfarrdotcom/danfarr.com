@@ -17,7 +17,7 @@ const entries: BraitenbergSeriesEntry[] = [
     hook: 'Simple sensorimotor loops still explain more than we admit.',
     description:
       'A short opening essay on why Vehicles still matters for AI, robotics, and software.',
-    status: 'planned',
+    status: 'published',
   },
   {
     slug: 'vehicle-1-getting-around',
@@ -44,7 +44,7 @@ const entries: BraitenbergSeriesEntry[] = [
     hook: 'Inhibitory wiring makes machines linger, orbit, and appear selective.',
     description:
       'Tiny changes in coupling can produce behavior that looks social.',
-    status: 'planned',
+    status: 'published',
   },
   {
     slug: 'vehicle-4-values-and-special-tastes',
@@ -53,7 +53,7 @@ const entries: BraitenbergSeriesEntry[] = [
     hook: 'Preference lives in the transfer curve.',
     description:
       'How tuned nonlinear responses begin to look like taste and aversion.',
-    status: 'planned',
+    status: 'published',
   },
   {
     slug: 'vehicle-5-logic',
@@ -62,7 +62,7 @@ const entries: BraitenbergSeriesEntry[] = [
     hook: 'Thresholds are where mechanism starts to look rule-like.',
     description:
       'Simple gates, compound triggers, and the illusion of deliberation.',
-    status: 'planned',
+    status: 'published',
   },
   {
     slug: 'vehicle-6-selection-the-impersonal-engineer',
@@ -71,7 +71,7 @@ const entries: BraitenbergSeriesEntry[] = [
     hook: 'Competence can accumulate without a planner.',
     description:
       'Selection pressure as a search process for viable mechanisms.',
-    status: 'planned',
+    status: 'published',
   },
   {
     slug: 'vehicle-7-concepts',
@@ -80,7 +80,7 @@ const entries: BraitenbergSeriesEntry[] = [
     hook: 'Categories can emerge from use before they exist as symbols.',
     description:
       'Concept-like behavior from recurrent structure and selective response.',
-    status: 'planned',
+    status: 'published',
   },
   {
     slug: 'vehicle-8-space-things-and-movements',
@@ -89,7 +89,7 @@ const entries: BraitenbergSeriesEntry[] = [
     hook: 'A world model can be implicit in the loop, not explicit in memory.',
     description:
       'How sensorimotor coupling starts to look like spatial understanding.',
-    status: 'planned',
+    status: 'published',
   },
   {
     slug: 'vehicle-9-shapes',
@@ -98,7 +98,7 @@ const entries: BraitenbergSeriesEntry[] = [
     hook: 'Form can be inferred from how interaction unfolds over time.',
     description:
       'Shape perception as accumulated relation, not static inspection.',
-    status: 'planned',
+    status: 'published',
   },
   {
     slug: 'vehicle-10-getting-ideas',
@@ -107,7 +107,7 @@ const entries: BraitenbergSeriesEntry[] = [
     hook: 'Novelty often looks like recombination before it looks like insight.',
     description:
       'Internal activation, recombination, and the mechanics of idea-like behavior.',
-    status: 'planned',
+    status: 'published',
   },
   {
     slug: 'vehicle-11-rules-and-regularities',
@@ -116,7 +116,7 @@ const entries: BraitenbergSeriesEntry[] = [
     hook: 'Pattern sensitivity is a mechanism before it is a theorem.',
     description:
       'What it means for a simple system to become responsive to regularity.',
-    status: 'planned',
+    status: 'published',
   },
   {
     slug: 'vehicle-12-trains-of-thought',
@@ -125,7 +125,7 @@ const entries: BraitenbergSeriesEntry[] = [
     hook: 'Persistence and chaining make sequences feel cognitive.',
     description:
       'How recurring transitions and retained activation begin to look like thought.',
-    status: 'planned',
+    status: 'published',
   },
   {
     slug: 'vehicle-13-foresight',
@@ -134,7 +134,7 @@ const entries: BraitenbergSeriesEntry[] = [
     hook: 'Prediction can appear long before explicit planning does.',
     description:
       'Anticipation, delayed effects, and mechanism that feels prospective.',
-    status: 'planned',
+    status: 'published',
   },
   {
     slug: 'vehicle-14-egotism-and-optimism',
@@ -143,7 +143,7 @@ const entries: BraitenbergSeriesEntry[] = [
     hook: 'Bias is one of the fastest ways to make a system feel human.',
     description:
       'Asymmetric evaluation, self-reference, and observer-friendly distortion.',
-    status: 'planned',
+    status: 'published',
   },
 ];
 

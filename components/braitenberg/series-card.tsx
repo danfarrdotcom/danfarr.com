@@ -18,12 +18,7 @@ export default function SeriesCard({ entry }: SeriesCardProps) {
       </div>
       <div>
         <h2 className="font-serif font-semibold italic text-lg text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-          <Link
-            className="hover:text-blue-600"
-            href={getBraitenbergPath(entry.slug)}
-          >
-            {entry.title}
-          </Link>
+          {entry.title}
         </h2>
         <p className="mt-2 text-[1.02rem] font-sans leading-7 text-black">
           {entry.hook}

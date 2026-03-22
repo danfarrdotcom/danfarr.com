@@ -1,6 +1,7 @@
 export type ConnectionSign = 'excitatory' | 'inhibitory';
 export type MotorId = 'left' | 'right' | 'single';
 export type VehicleTwoWiring = 'direct' | 'crossed';
+export type VehicleThreeWiring = 'direct' | 'crossed';
 
 export type BraitenbergSource = {
   id: string;
@@ -605,6 +606,102 @@ export function createVehicleTwoConfig(
                 motorId: 'left',
                 sign: 'excitatory',
                 weight: 0.9,
+              },
+            ],
+    },
+    world: {
+      width,
+      height,
+      ambient: 0.16,
+      fieldScale: 1,
+      trailLength: 460,
+      sources: [
+        {
+          id: 'warm-1',
+          x: width * 0.76,
+          y: height * 0.26,
+          strength: 0.88,
+          spread: 108,
+        },
+      ],
+    },
+  };
+}
+
+export function createVehicleThreeConfig(
+  width = 720,
+  height = 320,
+  wiring: VehicleThreeWiring = 'direct'
+): BraitenbergEngineConfig {
+  return {
+    showSensors: false,
+    showTrail: true,
+    vehicle: {
+      startX: width * 0.18,
+      startY: height * 0.68,
+      startHeading: -0.08,
+      radius: 10,
+      baseSpeed: 0.98,
+      speedScale: 5.1,
+      turnRate: 2.7,
+      friction: 0.045,
+      noise: 0.05,
+      sensors: [
+        {
+          id: 'left-eye',
+          angleOffset: -0.52,
+          distance: 18,
+          gain: 1,
+        },
+        {
+          id: 'right-eye',
+          angleOffset: 0.52,
+          distance: 18,
+          gain: 1,
+        },
+      ],
+      motors: [
+        {
+          id: 'left',
+          gain: 1,
+          min: 0.02,
+          max: 1.2,
+        },
+        {
+          id: 'right',
+          gain: 1,
+          min: 0.02,
+          max: 1.2,
+        },
+      ],
+      connections:
+        wiring === 'direct'
+          ? [
+              {
+                sensorId: 'left-eye',
+                motorId: 'left',
+                sign: 'inhibitory',
+                weight: 0.92,
+              },
+              {
+                sensorId: 'right-eye',
+                motorId: 'right',
+                sign: 'inhibitory',
+                weight: 0.92,
+              },
+            ]
+          : [
+              {
+                sensorId: 'left-eye',
+                motorId: 'right',
+                sign: 'inhibitory',
+                weight: 0.92,
+              },
+              {
+                sensorId: 'right-eye',
+                motorId: 'left',
+                sign: 'inhibitory',
+                weight: 0.92,
               },
             ],
     },
