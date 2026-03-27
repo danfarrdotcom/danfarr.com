@@ -6,7 +6,6 @@ interface Bird {
   vx: number;
   vy: number;
   trail: { x: number; y: number }[];
-  hue: number;
   turnRate: number; // per-bird jitter for visual diversity
 }
 
@@ -106,7 +105,6 @@ export function makeEngine(canvas: HTMLCanvasElement, opts: EngineOpts = {}) {
         vx: Math.cos(dir) * speed,
         vy: Math.sin(dir) * speed,
         trail: [],
-        hue: 200 + Math.random() * 40, // blue-ish base
         turnRate: 0.8 + Math.random() * 0.4,
       });
     }
@@ -330,54 +328,51 @@ export function makeEngine(canvas: HTMLCanvasElement, opts: EngineOpts = {}) {
 
   function render() {
     if (!ctx) return;
-    // Semi-transparent black for motion blur / trail fade
-    ctx.fillStyle = p.showTrails ? 'rgba(0,0,0,0.15)' : 'rgba(0,0,0,1)';
+    ctx.fillStyle = p.showTrails ? 'rgba(255,255,255,0.18)' : '#ffffff';
     ctx.fillRect(0, 0, W, H);
 
-    // Draw trails
     if (p.showTrails) {
       for (const bird of birds) {
         if (bird.trail.length < 2) continue;
         const heading = Math.atan2(bird.vy, bird.vx);
-        const hue = getHue(bird, heading);
+        const tone = getTone(bird, heading);
         ctx.beginPath();
         ctx.moveTo(bird.trail[0].x, bird.trail[0].y);
         for (let i = 1; i < bird.trail.length; i++) {
           ctx.lineTo(bird.trail[i].x, bird.trail[i].y);
         }
-        ctx.strokeStyle = `hsla(${hue}, 55%, 60%, 0.3)`;
-        ctx.lineWidth = 0.8;
+        ctx.strokeStyle = `rgba(${tone}, ${tone}, ${tone}, 0.22)`;
+        ctx.lineWidth = 0.9;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
         ctx.stroke();
       }
     }
 
-    // Draw birds
     if (p.showBirds) {
       for (const bird of birds) {
         const heading = Math.atan2(bird.vy, bird.vx);
         const speed = Math.sqrt(bird.vx * bird.vx + bird.vy * bird.vy);
-        const hue = getHue(bird, heading);
+        const tone = getTone(bird, heading);
         const size = 2.5 + speed * 0.2;
 
         ctx.save();
         ctx.translate(bird.x, bird.y);
         ctx.rotate(heading);
 
-        // Bird as a tiny wedge
         ctx.beginPath();
         ctx.moveTo(size, 0);
         ctx.lineTo(-size * 0.5, size * 0.45);
         ctx.lineTo(-size * 0.3, 0);
         ctx.lineTo(-size * 0.5, -size * 0.45);
         ctx.closePath();
-        ctx.fillStyle = `hsl(${hue}, 50%, 70%)`;
+        ctx.fillStyle = `rgba(${tone}, ${tone}, ${tone}, 0.9)`;
         ctx.fill();
 
         ctx.restore();
       }
     }
 
-    // Draw predators
     for (const pred of predators) {
       ctx.save();
       ctx.translate(pred.x, pred.y);
@@ -390,37 +385,39 @@ export function makeEngine(canvas: HTMLCanvasElement, opts: EngineOpts = {}) {
       ctx.lineTo(-3, 0);
       ctx.lineTo(-5, -4);
       ctx.closePath();
-      ctx.fillStyle = '#e55';
+      ctx.fillStyle = 'rgba(24,24,24,0.92)';
       ctx.fill();
 
-      // Danger ring
       ctx.beginPath();
       ctx.arc(0, 0, p.predatorRange, 0, TWO_PI);
-      ctx.strokeStyle = 'rgba(255,80,80,0.08)';
-      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 6]);
+      ctx.strokeStyle = 'rgba(24,24,24,0.12)';
+      ctx.lineWidth = 0.9;
       ctx.stroke();
 
       ctx.restore();
     }
   }
 
-  function getHue(bird: Bird, heading: number): number {
+  function getTone(bird: Bird, heading: number): number {
     switch (p.colorMode) {
-      case 'heading':
-        return ((heading / TWO_PI) * 360 + 360) % 360;
       case 'speed': {
         const speed = Math.sqrt(bird.vx * bird.vx + bird.vy * bird.vy);
         const t = (speed - p.minSpeed) / (p.maxSpeed - p.minSpeed);
-        return 200 + t * 60; // blue to purple
+        return 32 + Math.round(Math.max(0, Math.min(1, t)) * 92);
       }
       case 'density': {
         const neighbors = getNeighbors(bird, p.visualRange);
         const t = Math.min(1, neighbors.length / 15);
-        return 200 - t * 160; // blue to warm
+        return 36 + Math.round(t * 110);
+      }
+      case 'heading': {
+        const t = (((heading / TWO_PI) * 360 + 360) % 360) / 360;
+        return 42 + Math.round(t * 70);
       }
       case 'mono':
       default:
-        return bird.hue;
+        return 28;
     }
   }
 

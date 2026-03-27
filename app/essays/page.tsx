@@ -12,6 +12,24 @@ export const metadata: Metadata = {
 
 const entries: EssayEntry[] = [
   {
+    slug: 'flow-without-traffic-lights',
+    title: 'Flow without traffic lights',
+    hook: 'Crowds discover lanes on their own.',
+    description:
+      'How separation, alignment, and destination bias let a busy pavement organize itself without a controller.',
+    status: 'published',
+    label: 'Cities',
+  },
+  {
+    slug: 'the-map-that-nobody-drew',
+    title: 'The map that nobody drew',
+    hook: 'A city can sort itself by accident.',
+    description:
+      "How Schelling's segregation model turns mild local preference into hard urban borders, districts, and dead seams.",
+    status: 'published',
+    label: 'Cities',
+  },
+  {
     slug: 'braitenberg',
     title: 'Vehicles',
     hook: 'Simple mechanisms, emergent behavior.',

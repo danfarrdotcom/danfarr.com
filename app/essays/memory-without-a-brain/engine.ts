@@ -214,20 +214,35 @@ export function makeEngine(canvas: HTMLCanvasElement, opts: EngineOpts = {}) {
           for (let dx = 0; dx < CELL; dx++) {
             const pi = ((gy * CELL + dy) * W + (gx * CELL + dx)) * 4;
             if (walls[ci]) {
-              d[pi] = 28;
-              d[pi + 1] = 28;
-              d[pi + 2] = 32;
+              d[pi] = 176;
+              d[pi + 1] = 176;
+              d[pi + 2] = 176;
               d[pi + 3] = 255;
             } else if (p.dualColor) {
-              d[pi] = Math.min(255, (12 + ph * b * 160 + pf * b * 30) | 0);
-              d[pi + 1] = Math.min(255, (12 + ph * b * 80 + pf * b * 80) | 0);
-              d[pi + 2] = Math.min(255, (14 + ph * b * 20 + pf * b * 170) | 0);
+              const base = 248 - Math.min(150, (ph + pf) * b * 86);
+              const homeMark = (gx + dy + dx) % 2 === 0;
+              const foodMark = (gy + dx) % 3 === 0;
+              let tone = base;
+
+              if (homeMark) {
+                tone -= Math.min(52, ph * b * 72);
+              }
+
+              if (foodMark) {
+                tone -= Math.min(36, pf * b * 54);
+              }
+
+              const clipped = Math.max(36, tone) | 0;
+              d[pi] = clipped;
+              d[pi + 1] = clipped;
+              d[pi + 2] = clipped;
               d[pi + 3] = 255;
             } else {
               const t = Math.min(1, (ph + pf) * b * 0.65);
-              d[pi] = (12 + t * 160) | 0;
-              d[pi + 1] = (12 + t * 130) | 0;
-              d[pi + 2] = (14 + t * 90) | 0;
+              const tone = (248 - t * 170) | 0;
+              d[pi] = tone;
+              d[pi + 1] = tone;
+              d[pi + 2] = tone;
               d[pi + 3] = 255;
             }
           }
@@ -236,27 +251,37 @@ export function makeEngine(canvas: HTMLCanvasElement, opts: EngineOpts = {}) {
     }
     ctx.putImageData(imgData, 0, 0);
 
-    // food
-    ctx.fillStyle = '#a8d890';
+    ctx.fillStyle = 'rgba(24,24,24,0.84)';
     for (const f of foods) {
       ctx.beginPath();
       ctx.arc(f.gx * CELL + CELL / 2, f.gy * CELL + CELL / 2, 2, 0, TWO_PI);
       ctx.fill();
     }
 
-    // nest
-    ctx.strokeStyle = 'rgba(200,169,110,0.6)';
+    ctx.strokeStyle = 'rgba(24,24,24,0.62)';
     ctx.lineWidth = 1;
+    ctx.setLineDash([2, 3]);
     ctx.beginPath();
     ctx.arc(nest.cx * CELL, nest.cy * CELL, 10, 0, TWO_PI);
     ctx.stroke();
+    ctx.setLineDash([]);
 
     if (p.showAnts) {
       for (const ant of ants) {
-        ctx.fillStyle = ant.hasFood ? '#5a9e6e' : 'rgba(200,169,110,0.7)';
-        ctx.beginPath();
-        ctx.arc(ant.x, ant.y, 1.2, 0, TWO_PI);
-        ctx.fill();
+        if (ant.hasFood) {
+          ctx.beginPath();
+          ctx.arc(ant.x, ant.y, 1.5, 0, TWO_PI);
+          ctx.fillStyle = '#ffffff';
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(24,24,24,0.86)';
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        } else {
+          ctx.fillStyle = 'rgba(24,24,24,0.72)';
+          ctx.beginPath();
+          ctx.arc(ant.x, ant.y, 1.2, 0, TWO_PI);
+          ctx.fill();
+        }
       }
     }
 

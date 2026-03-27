@@ -1,164 +1,134 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+import ArticleSection from '../../../components/braitenberg/article-section';
+import Callout from '../../../components/braitenberg/callout';
+import FigureBlock from '../../../components/braitenberg/figure-block';
+import {
+  ActionButton,
+  ControlRow,
+  ToggleChip,
+} from '../../../components/braitenberg/control-row';
+import EssayShell from '../../../components/essay-shell';
 import { makeEngine } from './engine';
 
 export default function FlockPage() {
   return (
-    <main className="min-h-screen bg-white dark:bg-black font-sans text-gray-900 dark:text-gray-100 px-6 py-12 md:py-20 selection:bg-blue-100 dark:selection:bg-blue-900">
-      <div className="max-w-2xl mx-auto">
-        <div className="mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 leading-tight">
-            The shape of a flock
-          </h1>
-        </div>
+    <EssayShell
+      dek="A starling murmuration looks like choreography, but there is no choreographer. Tens of thousands of birds fold, split, and rejoin through local sensing alone, until the sky itself starts to look like computation."
+      readingTime="9 min read"
+      title="The shape of a flock"
+    >
+      <ArticleSection>
+        <p>
+          The classical model is simple. Each bird balances three forces:
+          <strong> separation</strong> (avoid collisions),
+          <strong> alignment</strong> (match heading), and
+          <strong> cohesion</strong> (stay with the group). No bird knows the
+          global geometry. Yet coherent structures emerge that look designed.
+        </p>
+        <p>
+          This is useful now because the same pattern appears across modern AI
+          and complex systems: global behaviour formed from local update rules.
+          In transformers, graph neural nets, and multi-agent reinforcement
+          learning, we keep rediscovering the same principle: large-scale order
+          can be produced without any single unit representing the whole.
+        </p>
+      </ArticleSection>
 
-        <div className="prose prose-p:text-xl prose-2xl dark:prose-invert prose-blue max-w-none">
-          <p className="lead text-xl md:text-2xl leading-relaxed font-light text-gray-800 dark:text-gray-200 mb-8">
-            A starling murmuration looks like choreography, but there is no
-            choreographer. Tens of thousands of birds fold, split, and rejoin as
-            if sharing a single intention. What you are seeing is not central
-            planning, but local sensing: each bird updates from nearby
-            neighbors, and the sky itself becomes computation.
-          </p>
+      <ArticleSection title="Local Rules, Global Geometry">
+        <p>
+          In computational terms, murmuration is a dynamic vector field. Each
+          bird writes velocity into space by moving through it, and every nearby
+          bird reads that motion as signal. The flock boundary, the internal
+          vortices, and the wavefronts are all side effects of this repeated
+          local read/write loop.
+        </p>
+      </ArticleSection>
 
-          <p>
-            The classical model is simple. Each bird balances three forces:
-            <strong> separation</strong> (avoid collisions),
-            <strong> alignment</strong> (match heading), and
-            <strong> cohesion</strong> (stay with the group). No bird knows the
-            global geometry. Yet coherent structures emerge that look designed.
-          </p>
+      <Callout label="Key idea">
+        <p>
+          Murmuration is distributed control:
+          <strong> policy without a planner</strong>. Each bird executes a tiny
+          local policy; the flock is the aggregate rollout.
+        </p>
+      </Callout>
 
-          <p>
-            This is useful now because the same pattern appears across modern AI
-            and complex systems: global behaviour formed from local update
-            rules. In transformers, graph neural nets, and multi-agent RL, we
-            keep rediscovering the same principle: large-scale order can be
-            produced without any single unit representing the whole.
-          </p>
-
-          <h2 className="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-800 pb-2">
-            Local Rules, Global Geometry
-          </h2>
-
-          <p>
-            In computational terms, murmuration is a dynamic vector field. Each
-            bird writes velocity into space by moving through it, and every
-            nearby bird reads that motion as signal. The flock boundary, the
-            internal vortices, and the wavefronts are all side effects of this
-            repeated local read/write loop.
-          </p>
-
-          <div className="my-8 p-6 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
-            <h3 className="text-md font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-2">
-              Key Concept
-            </h3>
-            <p className="m-0 text-base">
-              Murmuration is distributed control:{' '}
-              <strong>policy without a planner</strong>. Each bird executes a
-              tiny local policy; the flock is the aggregate rollout.
-            </p>
-          </div>
-
-          <p>
-            The first simulation strips this down to the raw flow of headings.
-            Watch for laminar bands and rotating pockets appearing from nothing
-            but local coupling.
-          </p>
-        </div>
+      <ArticleSection>
+        <p>
+          The first simulation strips this down to the raw flow of headings.
+          Watch for laminar bands and rotating pockets appearing from nothing
+          but local coupling.
+        </p>
+      </ArticleSection>
 
         <Sim1 />
 
-        <div className="prose prose-xl dark:prose-invert prose-blue max-w-none mt-12">
-          <h2 className="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-800 pb-2">
-            Stability vs Responsiveness
-          </h2>
-
-          <p>
-            Real flocks must be stable enough to hold shape and responsive
-            enough to turn instantly under threat. In the model, this tradeoff
-            sits in the alignment coefficient. Too low, and the flock dissolves
-            into noise. Too high, and it becomes rigid, slow to adapt, easy to
-            over-steer.
-          </p>
-
-          <p>
-            This is the same tension as gain tuning in control systems and
-            learning-rate schedules in optimization. Coordination requires a
-            narrow operating band.
-          </p>
-        </div>
+      <ArticleSection title="Stability vs Responsiveness">
+        <p>
+          Real flocks must be stable enough to hold shape and responsive enough
+          to turn instantly under threat. In the model, this tradeoff sits in
+          the alignment coefficient. Too low, and the flock dissolves into
+          noise. Too high, and it becomes rigid, slow to adapt, easy to
+          over-steer.
+        </p>
+        <p>
+          This is the same tension as gain tuning in control systems and
+          learning-rate schedules in optimization. Coordination requires a
+          narrow operating band.
+        </p>
+      </ArticleSection>
 
         <Sim2 />
 
-        <div className="prose prose-xl dark:prose-invert prose-blue max-w-none mt-12">
-          <h2 className="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-800 pb-2">
-            Information Through Density
-          </h2>
-
-          <p>
-            A flock also encodes information in density. Compressed regions
-            carry stronger directional consensus; sparse regions allow
-            exploratory drift. If color maps local density, the flock reveals
-            where control is concentrated.
-          </p>
-
-          <p>
-            In graph terms, neighborhood degree modulates influence. High-degree
-            patches stabilize headings; low-degree fringes test alternatives.
-          </p>
-        </div>
+      <ArticleSection title="Information Through Density">
+        <p>
+          A flock also encodes information in density. Compressed regions carry
+          stronger directional consensus; sparse regions allow exploratory
+          drift. If tone tracks local density, the flock reveals where control
+          is concentrated.
+        </p>
+        <p>
+          In graph terms, neighborhood degree modulates influence. High-degree
+          patches stabilize headings; low-degree fringes test alternatives.
+        </p>
+      </ArticleSection>
 
         <Sim3 />
 
-        <div className="prose prose-xl dark:prose-invert prose-blue max-w-none mt-12">
-          <h2 className="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-800 pb-2">
-            Perturbation and Recovery
-          </h2>
-
-          <p>
-            Murmurations are famous for rapid turns under predation. The key is
-            not just reaction speed but recovery: can the flock absorb a shock,
-            propagate a wave, and restore coherent motion without fragmenting?
-          </p>
-
-          <p>
-            In the simulation, add a predator and observe how avoidance pressure
-            reshapes the topology. Then remove it and watch re-convergence.
-          </p>
-        </div>
+      <ArticleSection title="Perturbation and Recovery">
+        <p>
+          Murmurations are famous for rapid turns under predation. The key is
+          not just reaction speed but recovery: can the flock absorb a shock,
+          propagate a wave, and restore coherent motion without fragmenting?
+        </p>
+        <p>
+          In the simulation, add a predator and observe how avoidance pressure
+          reshapes the topology. Then remove it and watch re-convergence.
+        </p>
+      </ArticleSection>
 
         <Sim4 />
 
-        <div className="prose prose-xl dark:prose-invert prose-blue max-w-none mt-12 mb-16">
-          <h2 className="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-800 pb-2">
-            Phase Transitions in Coordination
-          </h2>
-
-          <p>
-            Flocks exhibit phase-like changes: below a threshold of coupling,
-            motion is disordered; above it, coherent flow appears. Push too far,
-            and flexibility collapses. The practical lesson is universal:
-            complex systems need enough coupling to coordinate and enough noise
-            to adapt.
-          </p>
-
-          <p>
-            This is why murmuration keeps resurfacing as a metaphor in machine
-            intelligence, robotics swarms, and distributed systems. It is a
-            living example of emergent optimization under local information
-            constraints.
-          </p>
-        </div>
+      <ArticleSection title="Phase Transitions in Coordination">
+        <p>
+          Flocks exhibit phase-like changes: below a threshold of coupling,
+          motion is disordered; above it, coherent flow appears. Push too far,
+          and flexibility collapses. The practical lesson is universal: complex
+          systems need enough coupling to coordinate and enough noise to adapt.
+        </p>
+        <p>
+          This is why murmuration keeps resurfacing as a metaphor in machine
+          intelligence, robotics swarms, and distributed systems. It is a living
+          example of emergent optimization under local information constraints.
+        </p>
+      </ArticleSection>
 
         <Sim5 />
 
-        <hr className="my-12 border-gray-200 dark:border-gray-800" />
-
         <Sandbox />
-      </div>
-    </main>
+    </EssayShell>
   );
 }
 
@@ -197,13 +167,15 @@ function Sim1() {
   }, []);
 
   return (
-    <div className="my-8 overflow-hidden">
-      <div className="py-2 bg-white flex justify-between items-center text-sm">
-        <span>FIG. 01</span>
-        <span>HEADING FIELD</span>
+    <FigureBlock
+      caption="Local heading updates produce coherent bands and rotating pockets without any bird representing the global shape."
+      figure="01"
+      label="Heading field"
+    >
+      <div className="overflow-hidden bg-white">
+        <canvas ref={canvasRef} className="block w-full bg-white" height={220} />
       </div>
-      <canvas ref={canvasRef} className="w-full block bg-black" height={220} />
-    </div>
+    </FigureBlock>
   );
 }
 
@@ -250,28 +222,32 @@ function Sim2() {
   }, []);
 
   return (
-    <div className="my-8 overflow-hidden">
-      <div className="py-2 bg-white flex justify-between items-center text-sm">
-        <span>FIG. 02</span>
-        <span>ALIGNMENT TUNING</span>
+    <FigureBlock
+      caption="Coordination lives in a narrow gain range. Too little alignment dissolves the flock; too much makes it rigid."
+      figure="02"
+      label="Alignment tuning"
+    >
+      <div className="overflow-hidden bg-white">
+        <canvas ref={canvasRef} className="block w-full bg-white" height={220} />
       </div>
-      <canvas ref={canvasRef} className="w-full block bg-black" height={220} />
-      <div className="py-4 bg-white flex items-center gap-4 text-md">
-        <span className="text-xs text-gray-500 uppercase">Alignment</span>
-        <input
-          ref={sliderRef}
-          type="range"
-          min="0.01"
-          max="0.18"
-          step="0.001"
-          defaultValue="0.065"
-          className="flex-1 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-        />
-        <span ref={valRef} className="text-xs w-16 text-right">
-          0.065
-        </span>
-      </div>
-    </div>
+      <ControlRow>
+        <label className="min-w-[220px] px-2 py-1">
+          <div className="mb-2 flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-stone-700">
+            <span>Alignment</span>
+            <span ref={valRef}>0.065</span>
+          </div>
+          <input
+            ref={sliderRef}
+            type="range"
+            min="0.01"
+            max="0.18"
+            step="0.001"
+            defaultValue="0.065"
+            className="w-full accent-black"
+          />
+        </label>
+      </ControlRow>
+    </FigureBlock>
   );
 }
 
@@ -306,37 +282,33 @@ function Sim3() {
   }, []);
 
   return (
-    <div className="my-8 overflow-hidden">
-      <div className="py-2 bg-white flex justify-between items-center text-sm">
-        <span>FIG. 03</span>
-        <span>DENSITY MAP</span>
+    <FigureBlock
+      caption="Density acts like a moving concentration of control: compressed regions stabilize headings while sparse fringes explore."
+      figure="03"
+      label="Density map"
+    >
+      <div className="overflow-hidden bg-white">
+        <canvas ref={canvasRef} className="block w-full bg-black" height={220} />
       </div>
-      <canvas ref={canvasRef} className="w-full block bg-black" height={220} />
-      <div className="p-3 flex gap-4 justify-center bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 text-xs text-gray-400">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#4c7fd1]"></span> Low local
-          coupling
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#d17a4c]"></span> High local
-          coupling
-        </div>
-      </div>
-    </div>
+      <p className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-[11px] uppercase tracking-[0.22em] text-stone-700">
+        <span>Lighter: low local coupling</span>
+        <span>Darker: high local coupling</span>
+      </p>
+    </FigureBlock>
   );
 }
 
 function Sim4() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const toggleRef = useRef<HTMLInputElement>(null);
+  const engineRef = useRef<any>(null);
+  const [predatorEnabled, setPredatorEnabled] = useState(false);
 
   useEffect(() => {
     if (!canvasRef.current) return;
-    let engine: any;
 
     const observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
-        engine = makeEngine(canvasRef.current!, {
+        engineRef.current = makeEngine(canvasRef.current!, {
           birdCount: 260,
           colorMode: 'heading',
           predator: false,
@@ -346,51 +318,54 @@ function Sim4() {
           predatorAvoid: 13,
           predatorRange: 130,
         });
-        engine?.start();
+        engineRef.current?.start();
         observer.disconnect();
       }
     });
 
     observer.observe(canvasRef.current);
 
-    const handleToggle = (e: Event) => {
-      if (!engine) return;
-      const checked = (e.target as HTMLInputElement).checked;
-      if (checked) {
-        engine.p.predator = true;
-        engine.addPredator();
-      } else {
-        engine.p.predator = false;
-        engine.removePredators();
-      }
-    };
-
-    toggleRef.current?.addEventListener('change', handleToggle);
-
     return () => {
       observer.disconnect();
-      engine?.cleanup();
-      toggleRef.current?.removeEventListener('change', handleToggle);
+      engineRef.current?.cleanup();
+      engineRef.current = null;
     };
   }, []);
 
+  useEffect(() => {
+    const engine = engineRef.current;
+
+    if (!engine) {
+      return;
+    }
+
+    if (predatorEnabled) {
+      engine.p.predator = true;
+      engine.addPredator();
+      return;
+    }
+
+    engine.p.predator = false;
+    engine.removePredators();
+  }, [predatorEnabled]);
+
   return (
-    <div className="my-8 overflow-hidden">
-      <div className="py-2 bg-white flex justify-between items-center text-sm">
-        <span>FIG. 04</span>
-        <span>PREDATOR PERTURBATION</span>
+    <FigureBlock
+      caption="Predation tests not just reaction speed but recovery: whether the flock can absorb a disturbance and recover coherent motion."
+      figure="04"
+      label="Predator perturbation"
+    >
+      <div className="overflow-hidden bg-white">
+        <canvas ref={canvasRef} className="block w-full bg-white" height={220} />
       </div>
-      <canvas ref={canvasRef} className="w-full block bg-black" height={220} />
-      <div className="py-4 bg-white flex items-center gap-3 text-md">
-        <input ref={toggleRef} type="checkbox" id="pred-toggle" />
-        <label
-          htmlFor="pred-toggle"
-          className="text-xs text-gray-500 uppercase"
-        >
-          Enable predator
-        </label>
-      </div>
-    </div>
+      <ControlRow>
+        <ToggleChip
+          active={predatorEnabled}
+          label={predatorEnabled ? 'Predator on' : 'Predator off'}
+          onClick={() => setPredatorEnabled((current) => !current)}
+        />
+      </ControlRow>
+    </FigureBlock>
   );
 }
 
@@ -438,28 +413,32 @@ function Sim5() {
   }, []);
 
   return (
-    <div className="my-8 overflow-hidden">
-      <div className="py-2 bg-white flex justify-between items-center text-sm">
-        <span>FIG. 05</span>
-        <span>COUPLING THRESHOLD</span>
+    <FigureBlock
+      caption="Push coupling too low and the flock disperses; too high and flexibility collapses. The usable regime is a narrow middle band."
+      figure="05"
+      label="Coupling threshold"
+    >
+      <div className="overflow-hidden bg-white">
+        <canvas ref={canvasRef} className="block w-full bg-white" height={240} />
       </div>
-      <canvas ref={canvasRef} className="w-full block bg-black" height={240} />
-      <div className="py-4 bg-white flex items-center gap-4 text-md">
-        <span className="text-xs text-gray-500 uppercase">Separation</span>
-        <input
-          ref={noiseRef}
-          type="range"
-          min="0.8"
-          max="4.0"
-          step="0.05"
-          defaultValue="2.2"
-          className="flex-1 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-        />
-        <span ref={valRef} className="text-xs w-16 text-right">
-          2.20
-        </span>
-      </div>
-    </div>
+      <ControlRow>
+        <label className="min-w-[220px] px-2 py-1">
+          <div className="mb-2 flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-stone-700">
+            <span>Separation</span>
+            <span ref={valRef}>2.20</span>
+          </div>
+          <input
+            ref={noiseRef}
+            type="range"
+            min="0.8"
+            max="4.0"
+            step="0.05"
+            defaultValue="2.2"
+            className="w-full accent-black"
+          />
+        </label>
+      </ControlRow>
+    </FigureBlock>
   );
 }
 
@@ -525,26 +504,21 @@ function Sandbox() {
   };
 
   return (
-    <div className="my-12 overflow-hidden bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm">
-      <div className="px-6 py-4 flex justify-between items-center">
-        <h3 className="font-bold text-lg">Interactive Sandbox</h3>
-        <span className="text-xs text-gray-500 uppercase tracking-wide">
-          EXPERIMENTAL
-        </span>
+    <FigureBlock
+      caption="Open the full flock and tune the three local rules directly. The global form changes without ever introducing a central coordinator."
+      figure="06"
+      label="Open plate"
+    >
+      <div className="overflow-hidden bg-white">
+        <canvas ref={canvasRef} className="block w-full bg-white" height={420} />
       </div>
 
-      <canvas ref={canvasRef} className="w-full block bg-black" height={420} />
-
-      <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
-        <div className="space-y-6">
-          <div>
-            <div className="flex justify-between mb-2">
-              <label className="text-md font-medium text-gray-700 dark:text-gray-300">
-                Alignment
-              </label>
-              <span ref={refs.align} className="text-xs text-gray-500">
-                0.065
-              </span>
+      <div className="grid gap-8 border-t border-stone-300 pt-4 md:grid-cols-[minmax(0,1fr)_200px]">
+        <div className="space-y-4">
+          <label className="block px-2 py-1">
+            <div className="mb-2 flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-stone-700">
+              <span>Alignment</span>
+              <span ref={refs.align}>0.065</span>
             </div>
             <input
               type="range"
@@ -552,7 +526,7 @@ function Sandbox() {
               max="0.18"
               step="0.001"
               defaultValue="0.065"
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+              className="w-full accent-black"
               onInput={(e) =>
                 updateParam(
                   'alignment',
@@ -560,16 +534,12 @@ function Sandbox() {
                 )
               }
             />
-          </div>
+          </label>
 
-          <div>
-            <div className="flex justify-between mb-2">
-              <label className="text-md font-medium text-gray-700 dark:text-gray-300">
-                Cohesion
-              </label>
-              <span ref={refs.coh} className="text-xs text-gray-500">
-                0.005
-              </span>
+          <label className="block px-2 py-1">
+            <div className="mb-2 flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-stone-700">
+              <span>Cohesion</span>
+              <span ref={refs.coh}>0.005</span>
             </div>
             <input
               type="range"
@@ -577,7 +547,7 @@ function Sandbox() {
               max="0.02"
               step="0.001"
               defaultValue="0.005"
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+              className="w-full accent-black"
               onInput={(e) =>
                 updateParam(
                   'cohesion',
@@ -585,16 +555,12 @@ function Sandbox() {
                 )
               }
             />
-          </div>
+          </label>
 
-          <div>
-            <div className="flex justify-between mb-2">
-              <label className="text-md font-medium text-gray-700 dark:text-gray-300">
-                Separation
-              </label>
-              <span ref={refs.sep} className="text-xs text-gray-500">
-                2.20
-              </span>
+          <label className="block px-2 py-1">
+            <div className="mb-2 flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-stone-700">
+              <span>Separation</span>
+              <span ref={refs.sep}>2.20</span>
             </div>
             <input
               type="range"
@@ -602,7 +568,7 @@ function Sandbox() {
               max="4.0"
               step="0.05"
               defaultValue="2.2"
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+              className="w-full accent-black"
               onInput={(e) =>
                 updateParam(
                   'separation',
@@ -610,60 +576,40 @@ function Sandbox() {
                 )
               }
             />
-          </div>
+          </label>
 
-          <div className="flex gap-2">
-            <button
-              onClick={reset}
-              className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md text-md font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-            >
-              Reset Flock
-            </button>
-            <button
-              onClick={() => engineRef.current?.addPredator()}
-              className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md text-md font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-            >
-              + Add Predator
-            </button>
-            <button
-              onClick={() => engineRef.current?.scatter()}
-              className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md text-md font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-            >
+          <ControlRow>
+            <ActionButton onClick={reset}>Reset flock</ActionButton>
+            <ActionButton onClick={() => engineRef.current?.addPredator()}>
+              Add predator
+            </ActionButton>
+            <ActionButton onClick={() => engineRef.current?.scatter()}>
               Scatter
-            </button>
-          </div>
+            </ActionButton>
+          </ControlRow>
         </div>
 
-        <div className="md:border-l md:border-gray-200 md:dark:border-gray-700 md:pl-8 flex flex-col justify-center space-y-2 text-md text-gray-600 dark:text-gray-400">
-          <div className="flex justify-between">
-            <span>Bird count:</span>
-            <span
-              ref={refs.stats.birds}
-              className="font-bold text-gray-900 dark:text-gray-100"
-            >
+        <div className="space-y-3 border-t border-stone-300 pt-4 text-[0.98rem] leading-7 text-stone-700 md:border-l md:border-t-0 md:pl-6 md:pt-0">
+          <div className="flex justify-between gap-6">
+            <span>Bird count</span>
+            <span ref={refs.stats.birds} className="text-black">
               —
             </span>
           </div>
-          <div className="flex justify-between">
-            <span>Order parameter:</span>
-            <span
-              ref={refs.stats.order}
-              className="font-bold text-gray-900 dark:text-gray-100"
-            >
+          <div className="flex justify-between gap-6">
+            <span>Order parameter</span>
+            <span ref={refs.stats.order} className="text-black">
               —
             </span>
           </div>
-          <div className="flex justify-between">
-            <span>Local density:</span>
-            <span
-              ref={refs.stats.density}
-              className="font-bold text-gray-900 dark:text-gray-100"
-            >
+          <div className="flex justify-between gap-6">
+            <span>Local density</span>
+            <span ref={refs.stats.density} className="text-black">
               —
             </span>
           </div>
         </div>
       </div>
-    </div>
+    </FigureBlock>
   );
 }

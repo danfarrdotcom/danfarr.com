@@ -1,355 +1,227 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
+
+import ArticleSection from '../../../components/braitenberg/article-section';
+import Callout from '../../../components/braitenberg/callout';
+import FigureBlock from '../../../components/braitenberg/figure-block';
+import {
+  ActionButton,
+  ControlRow,
+} from '../../../components/braitenberg/control-row';
+import EssayShell from '../../../components/essay-shell';
 import { makeEngine } from './engine';
 
 export default function MemoryPage() {
   return (
-    <main className="min-h-screen bg-white dark:bg-black font-sans text-gray-900 dark:text-gray-100 px-6 py-12 md:py-20 selection:bg-blue-100 dark:selection:bg-blue-900">
-      <article className="max-w-2xl mx-auto">
-        {/* Header */}
-        <div className="mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 leading-tight">
-            Memory without a brain
-          </h1>
-        </div>
+    <EssayShell
+      dek="Ants don't understand how to read maps. There is no foreman, no schematic, and no ant that has seen both the nest and the food simultaneously and plotted the optimal route."
+      readingTime="11 min read"
+      title="Memory without a brain"
+    >
+      <ArticleSection>
+        <p>
+          The colony solves a complex spatial optimisation problem by using only
+          a single mechanism: writing to the ground and reading from the ground.
+        </p>
+        <p>
+          This is <strong>stigmergy</strong>: coordination through a shared,
+          writable medium. The ground itself becomes the colony&apos;s external
+          memory. Every ant is simultaneously a reader, a writer, and a function
+          of what has been written before.
+        </p>
+        <p>
+          What makes it worth studying now is not the ants. It is the
+          architecture of the memory itself. The pheromone field is not just
+          clever biology; it is a primitive but illuminating instance of the
+          same tradeoffs that define every memory system in artificial
+          intelligence:
+          <em> what to encode, how long to retain it, and when to forget.</em>
+        </p>
+      </ArticleSection>
 
-        {/* Introduction */}
-        <div className="prose prose-p:text-xl prose-2xl dark:prose-invert prose-blue max-w-none">
-          <p className="lead text-xl md:text-2xl leading-relaxed font-light text-gray-800 dark:text-gray-200 mb-8">
-            Ants don't understand how to read maps.
-          </p>
-          <p className="lead text-xl md:text-2xl leading-relaxed font-light text-gray-800 dark:text-gray-200 mb-8">
-            {' '}
-            There is no foreman, no schematic, no ant that has seen both the
-            nest and the food simultaneously and plotted the optimal line
-            between them. The colony solves a complex spatial optimisation
-            problem by using only a single mechanism: writing to the ground, and
-            reading from the ground.
-          </p>
+      <ArticleSection title="Memory Without a Brain">
+        <p>
+          The pheromone trail is, in computational terms, a
+          <strong> write-once, decay-over-time key-value store</strong>. The key
+          is a grid coordinate. The value is a scalar concentration.
+        </p>
+        <p>
+          Every passing ant increments the value at its current position. Left
+          alone, every cell&apos;s value approaches zero exponentially. The reading
+          operation, an ant sampling concentration in three forward directions
+          and steering toward the maximum, is essentially a gradient ascent over
+          this field.
+        </p>
+        <p>
+          There is no central index, no pointer structure, no query language.
+          The entire computation is local. And yet the colony &quot;knows&quot; where
+          food is. Or rather, the ground knows, and the ants are the query
+          interface.
+        </p>
+      </ArticleSection>
 
-          <p>
-            This is <strong>stigmergy</strong>: coordination through a shared,
-            writable medium. The ground itself becomes the colony's external
-            memory. Every ant is simultaneously a reader, a writer, and a
-            function of what has been written before. The result is a
-            distributed memory system of extraordinary adaptive power one that
-            neuroscientists, computer scientists, and AI researchers have spent
-            decades attempting to reverse-engineer.
-          </p>
+      <Callout label="Key idea">
+        <p>
+          This is the first deep parallel with modern AI:
+          <strong> knowledge encoded in weights rather than symbols</strong>. A
+          trained neural network does not store facts in named slots; it
+          distributes them as superimposed patterns across millions of
+          floating-point values, readable only by running a forward pass.
+        </p>
+      </Callout>
 
-          <p>
-            What makes it worth studying now, in the era of transformer models
-            and billion-parameter networks, is not the ants. It is the
-            architecture of the memory itself. The pheromone field is not just
-            clever biologyit is a primitive but illuminating instance of the
-            same tradeoffs that define every memory system in artificial
-            intelligence:{' '}
-            <em>what to encode, how long to retain it, and when to forget.</em>
-          </p>
+      <ArticleSection>
+        <p>
+          The simulation below shows the raw pheromone field, with no ants
+          rendered, only the gradient they collectively write. Watch how quickly
+          a meaningful spatial structure emerges from purely local writes.
+        </p>
+      </ArticleSection>
 
-          <h2 className="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-800 pb-2">
-            Memory Without a Brain
-          </h2>
+      <Sim1 />
 
-          <p>
-            The pheromone trail is, in computational terms, a{' '}
-            <strong>write-once, decay-over-time key-value store</strong>. The
-            key is a grid coordinate. The value is a scalar concentrationa
-            number between zero and some maximum. Every passing ant increments
-            the value at its current position. Left alone, every cell's value
-            approaches zero exponentially. The reading operationan ant sampling
-            concentration in three forward directions and steering toward the
-            maximumis essentially a gradient ascent over this field.
-          </p>
+      <ArticleSection title="Learn to Forget">
+        <p>
+          Here is a counterintuitive truth about memory systems:
+          <strong> the ability to forget is as important as the ability to remember.</strong>
+          Evaporation is not a limitation of ant biology; it is load-bearing.
+        </p>
+        <p>
+          Without evaporation, every trail ever laid persists indefinitely.
+          Early random walks etch permanent paths across the ground. When a food
+          source is discovered, the ants must compete against the noise of every
+          previous failed search.
+        </p>
+        <p>
+          This maps directly onto the stability-plasticity dilemma in machine
+          learning: every learning system must negotiate retention against
+          adaptation somewhere.
+        </p>
+      </ArticleSection>
 
-          <p>
-            There is no central index, no pointer structure, no query language.
-            The entire computation is local: an ant only ever interacts with the
-            cells directly around it. And yet the colony "knows" where food is.
-            Or ratherthe ground knows, and the ants are the query interface.
-          </p>
+      <Callout label="Quoted point">
+        <p>
+          &quot;Memory without forgetting is not perfect recall; it is noise
+          accumulation.&quot;
+        </p>
+        <p>Dorigo &amp; Gambardella, 1997.</p>
+      </Callout>
 
-          <div className="my-8 p-6 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
-            <h3 className="text-md font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-2">
-              Key Concept
-            </h3>
-            <p className="m-0 text-base">
-              This is the first deep parallel with modern AI:{' '}
-              <strong>knowledge encoded in weights rather than symbols</strong>.
-              A trained neural network doesn't store facts in named slotsit
-              distributes them as superimposed patterns across millions of
-              floating-point values, readable only by running a forward pass.
-              The pheromone field is the same idea, in the dirt, at insect
-              scale.
-            </p>
-          </div>
+      <ArticleSection>
+        <p>
+          In the ant model, evaporation rate is the negotiation dial. The
+          simulation below exposes it directly.
+        </p>
+      </ArticleSection>
 
-          <p>
-            The simulation below shows the raw pheromone fieldno ants rendered,
-            only the gradient they collectively write. Watch how quickly a
-            meaningful spatial structure emerges from purely local writes. This
-            is memory accreting. There is no author; there is only accumulated
-            behaviour.
-          </p>
-        </div>
+      <Sim2 />
 
-        <Sim1 />
+      <ArticleSection>
+        <p>
+          At high retention, trails calcify and the colony locks early. At high
+          decay, trails vanish before a returning ant reaches home. The optimal
+          sits in a narrow band.
+        </p>
+      </ArticleSection>
 
-        <div className="prose prose-xl dark:prose-invert prose-blue max-w-none mt-12">
-          <h2 className="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-800 pb-2">
-            Learn to forget
-          </h2>
+      <ArticleSection title="Dual Memory Channels">
+        <p>
+          Real ant colonies maintain chemically distinct pheromones for
+          different purposes. The canonical foraging model uses two:
+          <strong> home trail</strong> and a <strong>food trail</strong>.
+        </p>
+        <p>
+          This is a form of
+          <strong> context-dependent memory retrieval</strong>. The same spatial
+          location holds two independent values, and which one an agent reads
+          depends on the agent&apos;s current state.
+        </p>
+        <p>
+          This structure appears in modern AI whenever the same stored
+          representation can be queried differently for different purposes.
+        </p>
+      </ArticleSection>
 
-          <p>
-            Here is a counterintuitive truth about memory systems:{' '}
-            <strong>
-              the ability to forget is as important as the ability to remember.
-            </strong>{' '}
-            Evaporation is not a limitation of ant biology that a
-            better-engineered ant would overcome. It is load-bearing. Remove it,
-            and the system breaks in a specific, instructive way.
-          </p>
+      <Sim3 />
 
-          <p>
-            Without evaporation, every trail ever laid persists indefinitely.
-            Early random walks etch permanent paths across the ground. When a
-            food source is discovered, the ants must compete against the noise
-            of every previous failed search. Worse: when the food is exhausted,
-            the trail to it keeps attracting ants indefinitely, wasting search
-            effort on an empty destination. The colony becomes a prisoner of its
-            own history.
-          </p>
+      <ArticleSection title="Credit Assignment in Space">
+        <p>
+          One of the hardest problems in any learning system is
+          <strong> credit assignment</strong>: if an agent takes a sequence of
+          actions and eventually receives a reward, which actions caused it?
+        </p>
+        <p>
+          The ant colony&apos;s solution is elegant and implicit. Shorter paths get
+          traversed more often per unit time, so they receive more reinforcement
+          per unit time. Path length literally becomes its own reward signal,
+          written into the medium.
+        </p>
+        <p>
+          This is temporal difference learning, avant la lettre. The
+          eligibility trace is the physical trail left by the agent&apos;s body, and
+          time discount is implemented by evaporation.
+        </p>
+      </ArticleSection>
 
-          <blockquote className="pl-6 border-l-4 border-blue-500 italic text-gray-700 dark:text-gray-300 my-8 py-2 bg-gray-50 dark:bg-gray-900">
-            "Memory without forgetting is not perfect recallit is noise
-            accumulation."
-            <footer className="text-md not-italic text-gray-500 mt-2">
-              Dorigo &amp; Gambardella, 1997
-            </footer>
-          </blockquote>
+      <ArticleSection title="To Explore or to Exploit">
+        <p>
+          The single most studied tradeoff in reinforcement learning is
+          <strong> exploration vs. exploitation</strong>. In the ant model, this
+          dial has a name: <strong>randomness</strong>.
+        </p>
+        <p>
+          When the random component is high relative to the gradient signal, the
+          ant wanders. When the gradient signal dominates, the ant follows
+          established trails.
+        </p>
+        <p>
+          Trail strength changes this ratio dynamically, so the colony
+          self-regulates between exploration and exploitation without a central
+          controller setting any parameter.
+        </p>
+      </ArticleSection>
 
-          <p>
-            This maps directly onto a class of problems in machine learning
-            called <strong>catastrophic forgetting</strong>, or more precisely,
-            the <em>stability–plasticity dilemma</em>: a model that learns new
-            information perfectly tends to overwrite old information. A model
-            that perfectly retains old information cannot adapt to new data.
-            Every learning system must negotiate this tradeoff somewhere.
-          </p>
+      <Sim4 />
 
-          <p>
-            In the ant model, evaporation rate is that negotiation dial. The
-            simulation below exposes it directly.
-          </p>
-        </div>
+      <ArticleSection title="Positive Feedback and Convergence">
+        <p>
+          The colony finds the shortest path through
+          <strong> positive feedback</strong>: good paths attract more ants,
+          which make them better, which attracts more ants.
+        </p>
+        <p>
+          But positive feedback without a counter-force is explosive. Evaporation
+          and stochastic steering are the counter-forces that prevent premature
+          convergence and allow the system to respond when the environment
+          changes.
+        </p>
+        <p>
+          The complete simulation below is the system&apos;s catastrophic forgetting
+          test: can accumulated memory of the old path be unlearned fast enough
+          for the colony to adapt?
+        </p>
+      </ArticleSection>
 
-        <Sim2 />
+      <Sim5 />
 
-        <div className="prose prose-xl dark:prose-invert prose-blue max-w-none mt-12">
-          <p>
-            At high retention (evaporation near 1.0) watch trails calcify: the
-            colony locks early, stops exploring. At high decay, trails vanish
-            before the returning ant reaches homethe colony never accumulates a
-            signal strong enough to follow. The optimal sits in a narrow band,
-            and it shifts depending on colony size, environment complexity, and
-            how frequently food sources change.
-          </p>
+      <ArticleSection title="Ant Colony Optimisation">
+        <p>
+          Marco Dorigo&apos;s formalisation of Ant Colony Optimisation in 1992 was
+          part of the broader emergence of
+          <strong> swarm intelligence</strong> as a computational paradigm.
+        </p>
+        <p>
+          The key contribution was not merely a new algorithm. It was an
+          existence proof that useful, adaptive computation could arise from
+          simple agents interacting through shared memory, with no agent needing
+          global knowledge.
+        </p>
+        <p>And the evaporation rate became the learning-rate schedule.</p>
+      </ArticleSection>
 
-          <h2 className="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-800 pb-2">
-            Dual Memory Channels
-          </h2>
-
-          <p>
-            Real ant colonies maintain chemically distinct pheromones for
-            different purposes. The canonical foraging model uses two: a{' '}
-            <strong>home trail</strong> (secreted when searching, encoding "I
-            came from the nest") and a <strong>food trail</strong> (secreted
-            when returning, encoding "this leads to food"). An outbound ant
-            reads food-trail to orient toward food; an inbound ant reads
-            home-trail to orient toward the nest.
-          </p>
-
-          <p>
-            This is a form of{' '}
-            <strong>context-dependent memory retrieval</strong>. The same
-            spatial location holds two independent values, and which one an
-            agent reads depends on the agent's current state. The memory system
-            is not static storageit is a two-channel signal field that different
-            agents interpret differently depending on mode.
-          </p>
-
-          <p>
-            This structure appears in modern AI in multiple forms. Transformer
-            attention mechanisms maintain separate query, key, and value
-            projections precisely so that the same stored representation can be
-            retrieved by different queries for different purposes. The
-            Q-function in reinforcement learning maintains separate value
-            estimates for state-action pairs, playing a directly analogous role
-            to the two pheromone channels: an agent in state <em>searching</em>{' '}
-            queries differently than an agent in state <em>returning</em>.
-          </p>
-        </div>
-
-        <Sim3 />
-
-        <div className="prose prose-xl dark:prose-invert prose-blue max-w-none mt-12">
-          <h2 className="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-800 pb-2">
-            04Credit Assignment in Space
-          </h2>
-
-          <p>
-            One of the hardest problems in any learning system is{' '}
-            <strong>credit assignment</strong>: if an agent takes a sequence of
-            actions and eventually receives a reward, which actions caused the
-            reward? Early actions are temporally distant from outcomes; how does
-            the system trace responsibility backwards?
-          </p>
-
-          <p>
-            The ant colony's solution is elegant and implicit. An ant that finds
-            food returns to the nest, depositing food-trail the entire way. The
-            density of deposit per unit length is roughly uniform. But the path
-            it walked varied in length. The shorter the path, the more times
-            that path gets traversed per unit timebecause each round-trip takes
-            less time. More traversals means more reinforcement per unit time
-            means higher pheromone density. The path length literally becomes
-            its own reward signal, written into the medium.
-          </p>
-
-          <p>
-            This is temporal difference learning, avant la lettre. The
-            "eligibility trace"the memory of which states were recently
-            visitedis simply the physical trail left by the agent's body.
-            Time-discount is implemented by evaporation: older segments of trail
-            have had longer to decay. The colony is computing something
-            structurally identical to TD(&lambda;), but the &lambda; parameter
-            is the pheromone half-life, and the trace is written in chemical ink
-            on soil.
-          </p>
-
-          <h2 className="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-800 pb-2">
-            To explore or to exploite
-          </h2>
-
-          <p>
-            The single most studied tradeoff in reinforcement learning is{' '}
-            <strong>exploration vs. exploitation</strong>: should an agent
-            follow the best known policy (exploit) or deviate from it to
-            discover potentially better alternatives (explore)? Exploit too
-            aggressively and you get stuck at a local optimum. Explore too
-            broadly and you never converge on any good policy.
-          </p>
-
-          <p>
-            In the ant model, this dial has a name: <strong>randomness</strong>.
-            Each ant, when steering, adds a random perturbation to its angle
-            before also steering toward the gradient maximum. When the random
-            component is high relative to the gradient signal, the ant wanders.
-            When the gradient signal dominates, the ant follows established
-            trails.
-          </p>
-
-          <p>
-            Critically, this ratio changes dynamically with trail strength: a
-            weak, nascent trail exerts little pull, so ants near it are
-            effectively exploring. A strong, well-reinforced trail dominates the
-            local signal, reducing effective randomness and converting nearby
-            ants into exploiters. The colony self-regulates between exploration
-            and exploitation{' '}
-            <em>without a central controller setting any parameter</em>the
-            transition is an emergent property of trail dynamics.
-          </p>
-
-          <p>
-            This self-regulating mechanism is a direct analogue of{' '}
-            <strong>simulated annealing</strong> and temperature schedules in
-            neural networks: early training with high learning rates and dropout
-            is high-temperature exploration; late-stage fine-tuning is
-            exploitation of the gradient landscape discovered so far.
-          </p>
-        </div>
-
-        <Sim4 />
-
-        <div className="prose prose-xl dark:prose-invert prose-blue max-w-none mt-12">
-          <h2 className="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-800 pb-2">
-            Positive Feedback and Convergence
-          </h2>
-
-          <p>
-            The colony finds the shortest path through{' '}
-            <strong>positive feedback</strong>: good paths attract more ants,
-            which make them better, which attracts more ants. This is
-            autocatalysis. In machine learning terms it is gradient
-            reinforcementa gradient of reward shapes future behaviour, which
-            generates more reward, which sharpens the gradient.
-          </p>
-
-          <p>
-            But positive feedback without a counter-force is explosiveit
-            collapses all probability onto a single option. Evaporation is the
-            counter-force. So is the stochastic component of ant steering.
-            Together they prevent premature convergence and allow the system to
-            respond to environmental changea food source that disappears, a
-            shorter route that opens up when an obstacle is removed.
-          </p>
-
-          <p>
-            The simulation below runs the complete system. The food clusters
-            will be exhausted over time. When one disappears, watch whether the
-            colony successfully reroutes to the remaining sources. This is the
-            system's <em>catastrophic forgetting test</em>: can accumulated
-            memory of the old path be unlearned fast enough for the colony to
-            adapt?
-          </p>
-        </div>
-
-        <Sim5 />
-
-        <div className="prose prose-xl dark:prose-invert prose-blue max-w-none mt-12 mb-16">
-          <h2 className="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-800 pb-2">
-            Ant Colony Optimisation
-          </h2>
-
-          <p>
-            Marco Dorigo's formalisation of Ant Colony Optimisation in his 1992
-            PhD thesis was part of the broader emergence of{' '}
-            <strong>swarm intelligence</strong> as a computational paradigm. The
-            key contribution was not a new algorithm per seit was an existence
-            proof: that useful, complex, adaptive computation could arise from
-            the interaction of simple agents with a shared memory, with no agent
-            needing global knowledge.
-          </p>
-
-          <p>
-            ACO has since been applied to the Travelling Salesman Problem,
-            vehicle routing, network routing (Cisco's AntNet, 1998), protein
-            structure prediction, and job-shop scheduling. In each domain the
-            key insight is the same: rather than searching a state space with a
-            single powerful agent, distribute the search across many weak
-            agents, let them write to shared memory, and let evaporation make
-            the memory selective.
-          </p>
-
-          <p>
-            The deeper legacy is conceptual. Modern multi-agent reinforcement
-            learningfleets of robots, simulated economies, game-playing AI
-            populationsinherits the architecture directly: agents with local
-            observations, shared value signals, emergent coordination. The
-            pheromone field became the replay buffer, the population gradient,
-            the shared Q-function. The ants became the workers in a distributed
-            training run.
-          </p>
-
-          <p>And the evaporation rate became the learning rate schedule.</p>
-        </div>
-
-        <hr className="my-12 border-gray-200 dark:border-gray-800" />
-
-        <Sandbox />
-      </article>
-    </main>
+      <Sandbox />
+    </EssayShell>
   );
 }
 
@@ -390,13 +262,15 @@ function Sim1() {
   }, []);
 
   return (
-    <div className="my-8 overflow-hidden">
-      <div className="py-2  bg-white flex justify-between items-center text-sm">
-        <span>FIG. 01</span>
-        <span>PHEROMONE FIELD ONLY</span>
+    <FigureBlock
+      caption="A collective memory appears as a writable field before any explicit map exists. The colony accumulates structure locally and reads it back as guidance."
+      figure="01"
+      label="Pheromone field only"
+    >
+      <div className="overflow-hidden bg-white">
+        <canvas ref={canvasRef} className="block w-full bg-white" height={200} />
       </div>
-      <canvas ref={canvasRef} className="w-full block bg-black" height={200} />
-    </div>
+    </FigureBlock>
   );
 }
 
@@ -446,28 +320,32 @@ function Sim2() {
   }, []);
 
   return (
-    <div className="my-8 overflow-hidden">
-      <div className="py-2  bg-white flex justify-between items-center text-sm">
-        <span>FIG. 02</span>
-        <span>MEMORY DECAY INTERACTIVE</span>
+    <FigureBlock
+      caption="Forgetting is not a defect in the memory system. It is the mechanism that keeps the colony from becoming trapped by stale paths."
+      figure="02"
+      label="Memory decay interactive"
+    >
+      <div className="overflow-hidden bg-white">
+        <canvas ref={canvasRef} className="block w-full bg-white" height={200} />
       </div>
-      <canvas ref={canvasRef} className="w-full block bg-black" height={200} />
-      <div className="py-4 bg-white flex items-center gap-4 text-md">
-        <span className=" text-xs text-gray-500 uppercase">Decay Rate</span>
-        <input
-          ref={sliderRef}
-          type="range"
-          min="0.970"
-          max="0.9995"
-          step="0.0005"
-          defaultValue="0.994"
-          className="flex-1 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-        />
-        <span ref={valRef} className=" text-xs w-16 text-right">
-          0.9940
-        </span>
-      </div>
-    </div>
+      <ControlRow>
+        <label className="min-w-[220px] px-2 py-1">
+          <div className="mb-2 flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-stone-700">
+            <span>Decay rate</span>
+            <span ref={valRef}>0.9940</span>
+          </div>
+          <input
+            ref={sliderRef}
+            type="range"
+            min="0.970"
+            max="0.9995"
+            step="0.0005"
+            defaultValue="0.994"
+            className="w-full accent-black"
+          />
+        </label>
+      </ControlRow>
+    </FigureBlock>
   );
 }
 
@@ -500,25 +378,20 @@ function Sim3() {
   }, []);
 
   return (
-    <div className="my-8 overflow-hidden">
-      <div className="py-2  bg-white flex justify-between items-center text-sm">
-        <span>FIG. 03</span>
-        <span>DUAL CHANNEL MEMORY</span>
+    <FigureBlock
+      caption="The same terrain can hold multiple memories at once. Which channel matters depends on the agent’s current state."
+      figure="03"
+      label="Dual channel memory"
+    >
+      <div className="overflow-hidden bg-white">
+        <canvas ref={canvasRef} className="block w-full bg-white" height={220} />
       </div>
-      <canvas ref={canvasRef} className="w-full block bg-black" height={220} />
-      <div className="p-3 flex gap-4 justify-center bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 text-xs text-gray-400">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#c87840]"></span> Home trail
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#4888b8]"></span> Food trail
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#5a9e6e]"></span> Carrying
-          food
-        </div>
-      </div>
-    </div>
+      <p className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-[11px] uppercase tracking-[0.22em] text-stone-700">
+        <span>Darker weave: home trail</span>
+        <span>Lighter weave: food trail</span>
+        <span>Outlined ant: carrying food</span>
+      </p>
+    </FigureBlock>
   );
 }
 
@@ -568,28 +441,32 @@ function Sim4() {
   }, []);
 
   return (
-    <div className="my-8 overflow-hidden">
-      <div className="py-2  bg-white flex justify-between items-center text-sm">
-        <span>FIG. 04</span>
-        <span>EXPLORATION VS EXPLOITATION</span>
+    <FigureBlock
+      caption="Exploration and exploitation are not separately commanded. They emerge from the changing balance between noise and trail strength."
+      figure="04"
+      label="Exploration vs exploitation"
+    >
+      <div className="overflow-hidden bg-white">
+        <canvas ref={canvasRef} className="block w-full bg-white" height={200} />
       </div>
-      <canvas ref={canvasRef} className="w-full block bg-black" height={200} />
-      <div className="py-4 bg-white flex items-center gap-4 text-md">
-        <span className=" text-xs text-gray-500 uppercase">Randomness</span>
-        <input
-          ref={sliderRef}
-          type="range"
-          min="0.02"
-          max="1.5"
-          step="0.01"
-          defaultValue="0.45"
-          className="flex-1 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-        />
-        <span ref={valRef} className=" text-xs w-16 text-right">
-          0.45
-        </span>
-      </div>
-    </div>
+      <ControlRow>
+        <label className="min-w-[220px] px-2 py-1">
+          <div className="mb-2 flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-stone-700">
+            <span>Randomness</span>
+            <span ref={valRef}>0.45</span>
+          </div>
+          <input
+            ref={sliderRef}
+            type="range"
+            min="0.02"
+            max="1.5"
+            step="0.01"
+            defaultValue="0.45"
+            className="w-full accent-black"
+          />
+        </label>
+      </ControlRow>
+    </FigureBlock>
   );
 }
 
@@ -625,13 +502,15 @@ function Sim5() {
   }, []);
 
   return (
-    <div className="my-8 overflow-hidden">
-      <div className="py-2  bg-white flex justify-between items-center text-sm">
-        <span>FIG. 05</span>
-        <span>RESOURCE DEPLETION</span>
+    <FigureBlock
+      caption="When resources disappear, the colony has to unlearn its best path quickly enough to converge on the next one."
+      figure="05"
+      label="Resource depletion"
+    >
+      <div className="overflow-hidden bg-white">
+        <canvas ref={canvasRef} className="block w-full bg-white" height={240} />
       </div>
-      <canvas ref={canvasRef} className="w-full block bg-black" height={240} />
-    </div>
+    </FigureBlock>
   );
 }
 
@@ -713,27 +592,21 @@ function Sandbox() {
   };
 
   return (
-    <div className="my-12 overflow-hidden bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm">
-      <div className="px-6 py-4 flex justify-between items-center">
-        <h3 className="font-bold text-lg">Interactive Sandbox</h3>
-        <span className="text-xs text-gray-500 uppercase tracking-wide">
-          EXPERIMENTAL
-        </span>
+    <FigureBlock
+      caption="Open the colony model and tune evaporation and randomness directly. The memory field thickens, thins, and reroutes as the balance changes."
+      figure="06"
+      label="Open plate"
+    >
+      <div className="overflow-hidden bg-white">
+        <canvas ref={canvasRef} className="block w-full bg-white" height={400} />
       </div>
 
-      <canvas ref={canvasRef} className="w-full block bg-black" height={400} />
-
-      <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
-        {/* Controls */}
-        <div className="space-y-6">
-          <div>
-            <div className="flex justify-between mb-2">
-              <label className="text-md font-medium text-gray-700 dark:text-gray-300">
-                Evaporation Rate
-              </label>
-              <span ref={refs.evap} className=" text-xs text-gray-500">
-                0.9940
-              </span>
+      <div className="grid gap-8 border-t border-stone-300 pt-4 md:grid-cols-[minmax(0,1fr)_200px]">
+        <div className="space-y-4">
+          <label className="block px-2 py-1">
+            <div className="mb-2 flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-stone-700">
+              <span>Evaporation</span>
+              <span ref={refs.evap}>0.9940</span>
             </div>
             <input
               ref={inputRefs.evap}
@@ -742,7 +615,7 @@ function Sandbox() {
               max="0.9995"
               step="0.0005"
               defaultValue="0.994"
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+              className="w-full accent-black"
               onInput={(e) =>
                 updateParam(
                   'evap',
@@ -750,16 +623,12 @@ function Sandbox() {
                 )
               }
             />
-          </div>
+          </label>
 
-          <div>
-            <div className="flex justify-between mb-2">
-              <label className="text-md font-medium text-gray-700 dark:text-gray-300">
-                Randomness (Explore/Exploit)
-              </label>
-              <span ref={refs.rand} className=" text-xs text-gray-500">
-                0.45
-              </span>
+          <label className="block px-2 py-1">
+            <div className="mb-2 flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-stone-700">
+              <span>Randomness</span>
+              <span ref={refs.rand}>0.45</span>
             </div>
             <input
               ref={inputRefs.rand}
@@ -768,7 +637,7 @@ function Sandbox() {
               max="1.5"
               step="0.01"
               defaultValue="0.45"
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+              className="w-full accent-black"
               onInput={(e) =>
                 updateParam(
                   'randomness',
@@ -776,55 +645,37 @@ function Sandbox() {
                 )
               }
             />
-          </div>
+          </label>
 
-          <div className="flex gap-2">
-            <button
-              onClick={reset}
-              className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md text-md font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-            >
-              Reset World
-            </button>
-            <button
-              onClick={() => engineRef.current?.addFood(30)}
-              className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md text-md font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-            >
-              + Add Food
-            </button>
-          </div>
+          <ControlRow>
+            <ActionButton onClick={reset}>Reset world</ActionButton>
+            <ActionButton onClick={() => engineRef.current?.addFood(30)}>
+              Add food
+            </ActionButton>
+          </ControlRow>
         </div>
 
-        {/* Stats */}
-        <div className="md:border-l md:border-gray-200 md:dark:border-gray-700 md:pl-8 flex flex-col justify-center space-y-2  text-md text-gray-600 dark:text-gray-400">
-          <div className="flex justify-between">
-            <span>Ant Population:</span>
-            <span
-              ref={refs.stats.ants}
-              className="font-bold text-gray-900 dark:text-gray-100"
-            >
+        <div className="space-y-3 border-t border-stone-300 pt-4 text-[0.98rem] leading-7 text-stone-700 md:border-l md:border-t-0 md:pl-6 md:pt-0">
+          <div className="flex justify-between gap-6">
+            <span>Ant population</span>
+            <span ref={refs.stats.ants} className="text-black">
               —
             </span>
           </div>
-          <div className="flex justify-between">
-            <span>Food sources:</span>
-            <span
-              ref={refs.stats.food}
-              className="font-bold text-gray-900 dark:text-gray-100"
-            >
+          <div className="flex justify-between gap-6">
+            <span>Food sources</span>
+            <span ref={refs.stats.food} className="text-black">
               —
             </span>
           </div>
-          <div className="flex justify-between">
-            <span>Memory Load:</span>
-            <span
-              ref={refs.stats.mem}
-              className="font-bold text-gray-900 dark:text-gray-100"
-            >
+          <div className="flex justify-between gap-6">
+            <span>Memory load</span>
+            <span ref={refs.stats.mem} className="text-black">
               —
             </span>
           </div>
         </div>
       </div>
-    </div>
+    </FigureBlock>
   );
 }
