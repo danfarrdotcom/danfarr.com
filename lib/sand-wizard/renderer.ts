@@ -102,6 +102,43 @@ const DUCK_FRAME: string[] = [
   '........',
 ];
 
+// --- Sprite-sheet walk cycle ---
+const SHEET_COLS = 4;
+const SHEET_ROWS = 2;
+const WALK_FRAME_COUNT = SHEET_COLS * SHEET_ROWS; // 8
+const SHEET_FRAME_W = 384; // source px per frame (1536 / 4)
+const SHEET_FRAME_H = 512; // source px per frame (1024 / 2)
+const WIZARD_WALK_W = 36;  // dest canvas px
+const WIZARD_WALK_H = 48;  // dest canvas px
+
+let _wizardSheet: HTMLCanvasElement | null = null;
+let _sheetPending = false;
+
+function loadWizardSheet(): void {
+  if (_sheetPending) return;
+  _sheetPending = true;
+  const img = new Image();
+  img.src = '/wizard-walk.png';
+  img.onload = () => {
+    const off = document.createElement('canvas');
+    off.width = img.width;
+    off.height = img.height;
+    const oc = off.getContext('2d')!;
+    oc.drawImage(img, 0, 0);
+    const id = oc.getImageData(0, 0, img.width, img.height);
+    const d = id.data;
+    const [br, bg, bb] = [d[0], d[1], d[2]];
+    const tol = 25;
+    for (let i = 0; i < d.length; i += 4) {
+      if (Math.abs(d[i] - br) < tol && Math.abs(d[i + 1] - bg) < tol && Math.abs(d[i + 2] - bb) < tol) {
+        d[i + 3] = 0;
+      }
+    }
+    oc.putImageData(id, 0, 0);
+    _wizardSheet = off;
+  };
+}
+
 let _imageData: ImageData | null = null;
 
 export function renderFrame(
@@ -237,16 +274,25 @@ function renderPlayer(
   const sx = Math.round(player.x) * SCALE;
   const baseY = Math.round(player.y);
 
-  let bitmap: string[];
-
   if (player.state === 'duck') {
-    bitmap = DUCK_FRAME;
+    const sy = (baseY - DUCK_FRAME.length) * SCALE;
+    drawSprite(ctx, sx, sy, DUCK_FRAME, WIZARD_PALETTE);
   } else if (player.state === 'jump') {
-    bitmap = JUMP_FRAME;
+    const sy = (baseY - JUMP_FRAME.length) * SCALE;
+    drawSprite(ctx, sx, sy, JUMP_FRAME, WIZARD_PALETTE);
+  } else if (_wizardSheet) {
+    const fi = Math.floor(frame / 8) % WALK_FRAME_COUNT;
+    const col = fi % SHEET_COLS;
+    const row = Math.floor(fi / SHEET_COLS);
+    ctx.drawImage(
+      _wizardSheet,
+      col * SHEET_FRAME_W, row * SHEET_FRAME_H, SHEET_FRAME_W, SHEET_FRAME_H,
+      sx, baseY * SCALE - WIZARD_WALK_H, WIZARD_WALK_W, WIZARD_WALK_H,
+    );
   } else {
-    bitmap = WALK_FRAMES[Math.floor(frame / 8) % 3];
+    loadWizardSheet();
+    const bitmap = WALK_FRAMES[Math.floor(frame / 8) % 3];
+    const sy = (baseY - bitmap.length) * SCALE;
+    drawSprite(ctx, sx, sy, bitmap, WIZARD_PALETTE);
   }
-
-  const sy = (baseY - bitmap.length) * SCALE;
-  drawSprite(ctx, sx, sy, bitmap, WIZARD_PALETTE);
 }
