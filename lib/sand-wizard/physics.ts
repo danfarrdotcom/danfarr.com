@@ -28,3 +28,21 @@ export function stepSand(grid: Uint8Array, width = LOGICAL_W, height = LOGICAL_H
     }
   }
 }
+
+/**
+ * Shift the entire grid left by `pixels` columns (integer).
+ * Columns that scroll off the left are discarded.
+ * New columns on the right are filled with empty (0).
+ */
+export function shiftGridLeft(grid: Uint8Array, width: number, height: number, pixels: number): void {
+  const cols = Math.floor(pixels);
+  if (cols <= 0) return;
+
+  // Shift rows left
+  for (let y = 0; y < height; y++) {
+    const rowOffset = y * width;
+    grid.copyWithin(rowOffset, rowOffset + cols, rowOffset + width);
+    // Clear the newly exposed right columns
+    grid.fill(0, rowOffset + width - cols, rowOffset + width);
+  }
+}

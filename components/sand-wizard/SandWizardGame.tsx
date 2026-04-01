@@ -5,7 +5,7 @@ import {
   CANVAS_W, CANVAS_H, SAND_MAX, LOGICAL_W, LOGICAL_H, WALK_SPEED,
 } from '../../lib/sand-wizard/constants';
 import { createInitialState, createInitialPlayer } from '../../lib/sand-wizard/state';
-import { stepSand } from '../../lib/sand-wizard/physics';
+import { stepSand, shiftGridLeft } from '../../lib/sand-wizard/physics';
 import { renderFrame } from '../../lib/sand-wizard/renderer';
 import { applyBrush, regenSand } from '../../lib/sand-wizard/input';
 import { updatePlayer } from '../../lib/sand-wizard/player';
@@ -24,6 +24,7 @@ export default function SandWizardGame() {
   });
   const rafRef = useRef<number>(0);
   const frameCountRef = useRef(0);
+  const scrollAccRef = useRef(0);
 
   const [hud, setHud] = useState({ sand: SAND_MAX, score: 0, phase: 'title' as GameState['phase'] });
 
@@ -32,6 +33,8 @@ export default function SandWizardGame() {
     stateRef.current.phase = 'playing';
     playerRef.current = createInitialPlayer();
     frameCountRef.current = 0;
+    scrollAccRef.current = 0;
+    keysRef.current.clear();
     setHud({ sand: SAND_MAX, score: 0, phase: 'playing' });
   }, []);
 
@@ -72,7 +75,8 @@ export default function SandWizardGame() {
     canvas.addEventListener('mousemove', onMouseMove);
     canvas.addEventListener('mousedown', onMouseDown);
     canvas.addEventListener('mouseup', onMouseUp);
-    canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+    const onContextMenu = (e: Event) => e.preventDefault();
+    canvas.addEventListener('contextmenu', onContextMenu);
 
     let lastHudUpdate = 0;
 
@@ -87,6 +91,14 @@ export default function SandWizardGame() {
         applyBrush(state, mouseRef.current.x, mouseRef.current.y, mouseRef.current.action);
         stepSand(state.grid, state.gridWidth, state.gridHeight, frame);
         regenSand(state);
+
+        scrollAccRef.current += WALK_SPEED;
+        const colsToShift = Math.floor(scrollAccRef.current);
+        if (colsToShift > 0) {
+          shiftGridLeft(state.grid, state.gridWidth, state.gridHeight, colsToShift);
+          scrollAccRef.current -= colsToShift;
+        }
+
         updatePlayer(player, state, keysRef.current);
 
         state.cameraX += WALK_SPEED;
@@ -116,6 +128,7 @@ export default function SandWizardGame() {
       canvas.removeEventListener('mousemove', onMouseMove);
       canvas.removeEventListener('mousedown', onMouseDown);
       canvas.removeEventListener('mouseup', onMouseUp);
+      canvas.removeEventListener('contextmenu', onContextMenu);
     };
   }, [startGame]);
 

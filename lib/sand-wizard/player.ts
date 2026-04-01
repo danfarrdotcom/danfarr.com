@@ -1,6 +1,6 @@
 import { Player, GameState } from './types';
 import { getCell } from './grid';
-import { GRAVITY, JUMP_VY, LOGICAL_H, WALK_SPEED } from './constants';
+import { GRAVITY, JUMP_VY, LOGICAL_H } from './constants';
 
 export function updatePlayer(
   player: Player,
@@ -15,7 +15,12 @@ export function updatePlayer(
 
   // Surface detection
   const groundY = findSurface(player, state);
-  if (player.y >= groundY) {
+  if (groundY === null) {
+    // No ground — player is in free fall off the world
+    if (player.y > LOGICAL_H + 10) {
+      player.state = 'dead';
+    }
+  } else if (player.y >= groundY) {
     player.y = groundY;
     player.vy = 0;
     if (player.state === 'jump') player.state = 'walk';
@@ -33,21 +38,16 @@ export function updatePlayer(
   } else if (player.state === 'duck' && !keys.has('ArrowDown')) {
     player.state = 'walk';
   }
-
-  // Die if fallen off screen
-  if (player.y > LOGICAL_H + 10) {
-    player.state = 'dead';
-  }
 }
 
-function findSurface(player: Player, state: GameState): number {
+function findSurface(player: Player, state: GameState): number | null {
   const { grid, gridWidth, gridHeight } = state;
-  const px = Math.round(player.x - state.cameraX);
+  const px = Math.round(player.x);  // screen-space, no cameraX offset
 
   for (let y = Math.ceil(player.y); y < gridHeight; y++) {
     if (getCell(grid, px, y, gridWidth) !== 0) {
       return y - 1;
     }
   }
-  return gridHeight + 10;
+  return null; // no ground found
 }
