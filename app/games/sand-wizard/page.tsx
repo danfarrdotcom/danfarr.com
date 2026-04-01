@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import SandWizardGame from '../../../components/sand-wizard/SandWizardGame';
 
 export const metadata: Metadata = {
   title: 'Sand Wizard — Dan Farr',
@@ -12,10 +13,7 @@ export default function SandWizardPage() {
         className="border border-amber-900/40 w-full max-w-[1200px] aspect-video"
         style={{ background: '#1a0a00' }}
       >
-        {/* SandWizardGame component goes here — added in Track D */}
-        <div className="w-full h-full flex items-center justify-center text-amber-600 font-mono text-sm">
-          canvas placeholder
-        </div>
+        <SandWizardGame />
       </div>
     </main>
   );
