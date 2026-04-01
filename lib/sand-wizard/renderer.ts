@@ -18,6 +18,62 @@ const WIZARD_PALETTE: Record<string, string> = {
   B: '#303030', // boot/foot
 };
 
+// Walk cycle — 3 frames, advance every 8 game frames
+// 8 cols × 14 rows. Column 0 is leftmost (staff side).
+const WALK_FRAMES: string[][] = [
+  // Frame 0 — left foot forward
+  [
+    '..hHHh..',
+    '.hHHHHh.',
+    '.hHEHHh.',
+    '.hHHHHh.',
+    'SsWWWWw.',
+    'SsWWWWw.',
+    '.sWwWWw.',
+    '..WWWWw.',
+    '.sWWwWw.',
+    '..WWWWw.',
+    '.sWwWww.',
+    '..WwWww.',
+    '.B...w..',
+    'BB....B.',
+  ],
+  // Frame 1 — mid-stride (feet together)
+  [
+    '..hHHh..',
+    '.hHHHHh.',
+    '.hHEHHh.',
+    '.hHHHHh.',
+    'SsWWWWw.',
+    'SsWWWWw.',
+    '.sWwWWw.',
+    '..WWWWw.',
+    '.sWWwWw.',
+    '..WWWWw.',
+    '.sWwWww.',
+    '..WWWww.',
+    '.BB.ww..',
+    '........',
+  ],
+  // Frame 2 — right foot forward
+  [
+    '..hHHh..',
+    '.hHHHHh.',
+    '.hHEHHh.',
+    '.hHHHHh.',
+    '.sWWWWwS',
+    '.sWWWWwS',
+    '.sWWwWws',
+    '..WWWWw.',
+    '.sWWwWw.',
+    '..WWWWw.',
+    '.sWwWww.',
+    '..WwWww.',
+    '..w...BB',
+    '.B......',
+  ],
+];
+
 let _imageData: ImageData | null = null;
 
 export function renderFrame(
