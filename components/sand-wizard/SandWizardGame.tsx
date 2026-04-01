@@ -119,7 +119,7 @@ export default function SandWizardGame() {
         }
       }
 
-      renderFrame(ctx, state);
+      renderFrame(ctx, state, player, frameCountRef.current);
       rafRef.current = requestAnimationFrame(loop);
     };
 
