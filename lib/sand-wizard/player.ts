@@ -39,7 +39,7 @@ function findSurface(player: Player, state: GameState): number | null {
 
   // If the player is inside a solid mass (walked into a sand pile),
   // scan upward to find the top of that mass and snap the player there.
-  if (py >= 0 && py < gridHeight && getCell(grid, px, py, gridWidth) !== 0) {
+  if (px >= 0 && px < gridWidth && py >= 0 && py < gridHeight && getCell(grid, px, py, gridWidth) !== 0) {
     let top = py;
     while (top > 0 && getCell(grid, px, top - 1, gridWidth) !== 0) {
       top--;
