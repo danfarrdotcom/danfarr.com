@@ -6,6 +6,18 @@ import {
 import { getCell } from './grid';
 import { fillBackground } from './background';
 
+const WIZARD_PALETTE: Record<string, string> = {
+  W: '#e8e8f0', // white robe body
+  w: '#c8c8d8', // robe shadow/fold
+  H: '#d0d0e8', // hood highlight
+  h: '#a0a0c0', // hood shadow
+  S: '#c2955a', // staff wood
+  s: '#8b6347', // staff shadow
+  G: '#aaddff', // staff gem
+  E: '#ffcc88', // eye glow
+  B: '#303030', // boot/foot
+};
+
 let _imageData: ImageData | null = null;
 
 export function renderFrame(
@@ -99,6 +111,27 @@ export function renderFrame(
 function hexToRgb(hex: string): [number, number, number] {
   const n = parseInt(hex.slice(1), 16);
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+function drawSprite(
+  ctx: CanvasRenderingContext2D,
+  sx: number,
+  sy: number,
+  bitmap: string[],
+  palette: Record<string, string>,
+): void {
+  const S = SCALE;
+  for (let row = 0; row < bitmap.length; row++) {
+    const line = bitmap[row];
+    for (let col = 0; col < line.length; col++) {
+      const ch = line[col];
+      if (ch === '.') continue;
+      const color = palette[ch];
+      if (!color) continue;
+      ctx.fillStyle = color;
+      ctx.fillRect(sx + col * S, sy + row * S, S, S);
+    }
+  }
 }
 
 function renderPlayer(
