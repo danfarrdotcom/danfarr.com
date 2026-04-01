@@ -34,9 +34,21 @@ export function updatePlayer(
 
 function findSurface(player: Player, state: GameState): number | null {
   const { grid, gridWidth, gridHeight } = state;
-  const px = Math.round(player.x);  // screen-space, no cameraX offset
+  const px = Math.round(player.x);
+  const py = Math.ceil(player.y);
 
-  for (let y = Math.ceil(player.y); y < gridHeight; y++) {
+  // If the player is inside a solid mass (walked into a sand pile),
+  // scan upward to find the top of that mass and snap the player there.
+  if (py >= 0 && py < gridHeight && getCell(grid, px, py, gridWidth) !== 0) {
+    let top = py;
+    while (top > 0 && getCell(grid, px, top - 1, gridWidth) !== 0) {
+      top--;
+    }
+    return top - 1;
+  }
+
+  // Normal case: scan downward to find the first solid surface below the player.
+  for (let y = py; y < gridHeight; y++) {
     if (getCell(grid, px, y, gridWidth) !== 0) {
       return y - 1;
     }
