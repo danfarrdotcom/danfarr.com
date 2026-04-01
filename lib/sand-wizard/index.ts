@@ -7,3 +7,4 @@ export * from './input';
 export * from './state';
 export * from './player';
 export * from './obstacles';
+export * from './worldgen';
