@@ -27,7 +27,7 @@ export function applyBrush(
       const gy = cy + dy;
 
       if (action === 'place') {
-        if (state.sandResource < SAND_COST) return;
+        if (state.sandResource < SAND_COST) continue;
         if (getCell(state.grid, gx, gy, state.gridWidth) === 0) {
           setCell(state.grid, gx, gy, 1, state.gridWidth);
           state.sandResource = Math.max(0, state.sandResource - SAND_COST);
