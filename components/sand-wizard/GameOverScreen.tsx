@@ -1,3 +1,5 @@
+'use client';
+
 interface GameOverScreenProps {
   score: number;
   onRestart: () => void;
@@ -8,8 +10,10 @@ export default function GameOverScreen({ score, onRestart }: GameOverScreenProps
     <div
       className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 cursor-pointer select-none"
       onClick={onRestart}
-      onKeyDown={(e) => e.key === ' ' && onRestart()}
+      onKeyDown={(e) => (e.key === ' ' || e.key === 'Enter') && onRestart()}
       tabIndex={0}
+      role="button"
+      aria-label="Restart game"
     >
       <p className="font-mono text-2xl text-red-500 mb-4 tracking-widest">
         YOU PERISHED

@@ -4,7 +4,7 @@ interface SandMeterProps {
 }
 
 export default function SandMeter({ value, max }: SandMeterProps) {
-  const pct = value / max;
+  const pct = Math.min(1, Math.max(0, value / max));
   const filled = Math.round(pct * 10);
   const empty = 10 - filled;
 
