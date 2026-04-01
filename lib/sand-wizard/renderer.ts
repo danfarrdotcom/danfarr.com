@@ -236,35 +236,21 @@ function renderPlayer(
 
   const sx = Math.round(player.x) * SCALE;
   const baseY = Math.round(player.y);
-  const isDucking = player.state === 'duck';
-  const S = SCALE;
 
-  // Body offset when ducking
-  const bodyY = isDucking ? baseY - 6 : baseY - 14;
-  const sy = bodyY * SCALE;
+  let bitmap: string[];
+  let spriteH: number;
 
-  // Robe/body — muted purple
-  ctx.fillStyle = '#5a3a7a';
-  ctx.fillRect(sx + S, sy + 4 * S, 6 * S, isDucking ? 4 * S : 8 * S);
-
-  // Hood — slightly lighter purple
-  ctx.fillStyle = '#6a4a8a';
-  ctx.fillRect(sx + S, sy, 6 * S, isDucking ? 3 * S : 5 * S);
-
-  // Eye — amber glow
-  ctx.fillStyle = '#ffcc88';
-  ctx.fillRect(sx + 4 * S, sy + 2 * S, S, S);
-
-  // Staff
-  ctx.fillStyle = '#c2955a';
-  const staffX = player.state === 'jump' ? sx + 8 * S : sx + 7 * S;
-  ctx.fillRect(staffX, sy + 2 * S, S, isDucking ? 6 * S : 10 * S);
-
-  // Walk animation — feet
-  if (!isDucking && player.state !== 'jump') {
-    const walkFrame = Math.floor(frame / 8) % 2;
-    ctx.fillStyle = '#3a2a5a';
-    ctx.fillRect(sx + S, sy + 11 * S + (walkFrame === 0 ? S : 0), 2 * S, 2 * S);
-    ctx.fillRect(sx + 4 * S, sy + 11 * S + (walkFrame === 1 ? S : 0), 2 * S, 2 * S);
+  if (player.state === 'duck') {
+    bitmap = DUCK_FRAME;
+    spriteH = DUCK_FRAME.length;
+  } else if (player.state === 'jump') {
+    bitmap = JUMP_FRAME;
+    spriteH = JUMP_FRAME.length;
+  } else {
+    bitmap = WALK_FRAMES[Math.floor(frame / 8) % 3];
+    spriteH = bitmap.length;
   }
+
+  const sy = (baseY - spriteH) * SCALE;
+  drawSprite(ctx, sx, sy, bitmap, WIZARD_PALETTE);
 }
