@@ -6,6 +6,8 @@ import {
 import { getCell } from './grid';
 import { fillBackground } from './background';
 
+let _imageData: ImageData | null = null;
+
 export function renderFrame(
   ctx: CanvasRenderingContext2D,
   state: GameState,
@@ -16,7 +18,11 @@ export function renderFrame(
   const canvasW = gridWidth * SCALE;
   const canvasH = gridHeight * SCALE;
 
-  const imageData = ctx.createImageData(canvasW, canvasH);
+  // Reuse ImageData across frames — allocate once
+  if (!_imageData || _imageData.width !== canvasW || _imageData.height !== canvasH) {
+    _imageData = ctx.createImageData(canvasW, canvasH);
+  }
+  const imageData = _imageData;
   const data = imageData.data;
 
   // Fill parallax background (sky gradient + dunes + sun)

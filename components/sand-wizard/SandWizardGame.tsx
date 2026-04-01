@@ -76,7 +76,7 @@ export default function SandWizardGame() {
     const onMouseUp = () => { mouseRef.current.action = null; };
     canvas.addEventListener('mousemove', onMouseMove);
     canvas.addEventListener('mousedown', onMouseDown);
-    canvas.addEventListener('mouseup', onMouseUp);
+    window.addEventListener('mouseup', onMouseUp);
     const onContextMenu = (e: Event) => e.preventDefault();
     canvas.addEventListener('contextmenu', onContextMenu);
 
@@ -136,7 +136,7 @@ export default function SandWizardGame() {
       window.removeEventListener('keyup', onKeyUp);
       canvas.removeEventListener('mousemove', onMouseMove);
       canvas.removeEventListener('mousedown', onMouseDown);
-      canvas.removeEventListener('mouseup', onMouseUp);
+      window.removeEventListener('mouseup', onMouseUp);
       canvas.removeEventListener('contextmenu', onContextMenu);
     };
   }, [startGame]);

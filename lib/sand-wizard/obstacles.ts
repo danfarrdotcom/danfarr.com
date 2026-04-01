@@ -71,6 +71,9 @@ export function spawnPowerUp(state: GameState, gx: number): void {
 
 export function updateObstacles(state: GameState, player: Player): void {
   state.obstacles = state.obstacles.filter((obs) => {
+    // Scroll left with terrain
+    obs.x -= WALK_SPEED;
+
     // Remove off left edge
     if (obs.x + obs.width < 0) return false;
 

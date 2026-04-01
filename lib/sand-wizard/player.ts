@@ -26,6 +26,14 @@ export function updatePlayer(
     if (player.state === 'jump') player.state = 'walk';
   }
 
+  // Horizontal wall collision — check cell at player's chest height
+  const frontX = Math.round(player.x) + 4; // one pixel ahead
+  const chestY = Math.round(player.y) - 4;  // mid-body
+  if (getCell(state.grid, frontX, chestY, state.gridWidth) !== 0) {
+    // Blocked by wall — kill player (they walked into it)
+    player.state = 'dead';
+  }
+
   // Jump
   if ((keys.has('Space') || keys.has('ArrowUp')) && player.state !== 'jump') {
     player.vy = JUMP_VY;
