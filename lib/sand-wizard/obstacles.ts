@@ -1,11 +1,12 @@
 import { GameState, Obstacle, PowerUp, Player } from './types';
 import { setCell, getCell } from './grid';
-import { GROUND_Y, LOGICAL_H, POWERUP_RESTORE } from './constants';
+import { GROUND_Y, LOGICAL_H, POWERUP_RESTORE, WALK_SPEED } from './constants';
 
-/** Carve a pit — clear cells from GROUND_Y-2 down across `width` columns starting at screen gx */
+/** Carve a pit — clear cells from GROUND_Y-1 down across `width` columns starting at screen gx */
 export function carvePit(state: GameState, gx: number, width: number): void {
   for (let x = gx; x < gx + width && x < state.gridWidth; x++) {
-    for (let y = GROUND_Y - 2; y < LOGICAL_H; y++) {
+    setCell(state.grid, x, GROUND_Y - 1, 0, state.gridWidth);
+    for (let y = GROUND_Y; y < LOGICAL_H; y++) {
       setCell(state.grid, x, y, 0, state.gridWidth);
     }
   }
@@ -75,22 +76,30 @@ export function updateObstacles(state: GameState, player: Player): void {
 
     if (obs.type === 'boulder') {
       obs.x += obs.vx;
-      // Displace sand pixels in boulder's path
+      // Displace sand in boulder's full occupied rectangle
       const gx = Math.round(obs.x);
-      const gy = Math.round(obs.y);
-      for (let dx = 0; dx < obs.width; dx++) {
-        if (getCell(state.grid, gx + dx, gy, state.gridWidth) === 1) {
-          setCell(state.grid, gx + dx, gy, 0, state.gridWidth);
+      for (let dy = 0; dy < obs.height; dy++) {
+        for (let dx = 0; dx < obs.width; dx++) {
+          if (getCell(state.grid, gx + dx, Math.round(obs.y) + dy, state.gridWidth) === 1) {
+            setCell(state.grid, gx + dx, Math.round(obs.y) + dy, 0, state.gridWidth);
+          }
         }
       }
     }
 
     if (obs.type === 'falling-rock') {
       obs.y += obs.vy;
+      // Check ground contact across full width
       const gx = Math.round(obs.x);
-      const gy = Math.round(obs.y + obs.height);
-      if (getCell(state.grid, gx, gy, state.gridWidth) !== 0) {
-        // Settle: bake into grid as solid rock
+      const bottomY = Math.round(obs.y + obs.height);
+      let hitGround = false;
+      for (let dx = 0; dx < obs.width; dx++) {
+        if (getCell(state.grid, gx + dx, bottomY, state.gridWidth) !== 0) {
+          hitGround = true;
+          break;
+        }
+      }
+      if (hitGround) {
         for (let dx = 0; dx < obs.width; dx++) {
           for (let dy = 0; dy < obs.height; dy++) {
             setCell(state.grid, gx + dx, Math.round(obs.y) + dy, 2, state.gridWidth);
@@ -140,6 +149,11 @@ export function updateObstacles(state: GameState, player: Player): void {
     return true;
   });
 
+  // Scroll power-ups leftward with the grid
+  state.powerUps.forEach((pu) => {
+    pu.x -= WALK_SPEED;
+  });
+
   // Power-up collection
   state.powerUps.forEach((pu) => {
     if (pu.collected) return;
@@ -152,5 +166,32 @@ export function updateObstacles(state: GameState, player: Player): void {
   });
 
   // Remove collected or off-screen power-ups
-  state.powerUps = state.powerUps.filter((pu) => !pu.collected && pu.x > -10);
+  state.powerUps = state.powerUps.filter((pu) => !pu.collected && pu.x > -20);
+
+  // Spawn next obstacle when the world has scrolled far enough
+  if (state.cameraX >= state.nextSpawnX) {
+    const roll = Math.random();
+    const difficulty = Math.min(state.score / 500, 1);
+    const spawnGx = state.gridWidth - 10; // spawn near right edge
+
+    if (roll < 0.25) {
+      carvePit(state, spawnGx - 20, 15 + Math.floor(Math.random() * 15));
+    } else if (roll < 0.45 && difficulty > 0.1) {
+      buildWall(state, spawnGx - 5, 10 + Math.floor(Math.random() * 15 * difficulty));
+      if (Math.random() < 0.4) spawnPowerUp(state, spawnGx - 60);
+    } else if (roll < 0.6 && difficulty > 0.2) {
+      spawnBoulder(state, spawnGx);
+    } else if (roll < 0.73 && difficulty > 0.4) {
+      spawnFallingRock(state, spawnGx - 20);
+      if (Math.random() < 0.5) spawnFallingRock(state, spawnGx - 50);
+    } else if (roll < 0.85 && difficulty > 0.5) {
+      spawnDustDevil(state, spawnGx - 30);
+    } else {
+      // Flat + occasional power-up
+      if (Math.random() < 0.3) spawnPowerUp(state, spawnGx - 40);
+    }
+
+    // Advance spawn frontier by 200–400 world units
+    state.nextSpawnX += 200 + Math.floor(Math.random() * 200);
+  }
 }

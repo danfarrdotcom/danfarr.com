@@ -22,7 +22,7 @@ export interface Player {
 }
 
 export interface Obstacle {
-  type: 'boulder' | 'falling-rock' | 'dust-devil' | 'geyser';
+  type: 'boulder' | 'falling-rock' | 'dust-devil';
   x: number;
   y: number;
   vx: number;
