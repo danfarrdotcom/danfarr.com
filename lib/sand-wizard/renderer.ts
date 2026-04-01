@@ -238,19 +238,15 @@ function renderPlayer(
   const baseY = Math.round(player.y);
 
   let bitmap: string[];
-  let spriteH: number;
 
   if (player.state === 'duck') {
     bitmap = DUCK_FRAME;
-    spriteH = DUCK_FRAME.length;
   } else if (player.state === 'jump') {
     bitmap = JUMP_FRAME;
-    spriteH = JUMP_FRAME.length;
   } else {
     bitmap = WALK_FRAMES[Math.floor(frame / 8) % 3];
-    spriteH = bitmap.length;
   }
 
-  const sy = (baseY - spriteH) * SCALE;
+  const sy = (baseY - bitmap.length) * SCALE;
   drawSprite(ctx, sx, sy, bitmap, WIZARD_PALETTE);
 }
