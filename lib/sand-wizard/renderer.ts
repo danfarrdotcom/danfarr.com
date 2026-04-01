@@ -120,7 +120,9 @@ function drawSprite(
   bitmap: string[],
   palette: Record<string, string>,
 ): void {
-  const S = SCALE;
+  const cellSize = SCALE;
+  // Group rects by color to minimise fillStyle state changes
+  const batches = new Map<string, Array<[number, number]>>();
   for (let row = 0; row < bitmap.length; row++) {
     const line = bitmap[row];
     for (let col = 0; col < line.length; col++) {
@@ -128,10 +130,17 @@ function drawSprite(
       if (ch === '.') continue;
       const color = palette[ch];
       if (!color) continue;
-      ctx.fillStyle = color;
-      ctx.fillRect(sx + col * S, sy + row * S, S, S);
+      let batch = batches.get(color);
+      if (!batch) { batch = []; batches.set(color, batch); }
+      batch.push([col, row]);
     }
   }
+  batches.forEach((cells, color) => {
+    ctx.fillStyle = color;
+    for (const [col, row] of cells) {
+      ctx.fillRect(sx + col * cellSize, sy + row * cellSize, cellSize, cellSize);
+    }
+  });
 }
 
 function renderPlayer(
