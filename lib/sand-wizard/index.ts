@@ -5,3 +5,4 @@ export * from './physics';
 export * from './renderer';
 export * from './input';
 export * from './state';
+export * from './player';
