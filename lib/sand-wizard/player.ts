@@ -34,8 +34,9 @@ export function updatePlayer(
 
 function findSurface(player: Player, state: GameState): number | null {
   const { grid, gridWidth, gridHeight } = state;
-  const px = Math.round(player.x);
-  for (let y = Math.floor(player.y); y < gridHeight; y++) {
+  const px = Math.round(player.x);  // screen-space, no cameraX offset
+
+  for (let y = 0; y < gridHeight; y++) {
     if (getCell(grid, px, y, gridWidth) !== 0) {
       return y - 1;
     }
