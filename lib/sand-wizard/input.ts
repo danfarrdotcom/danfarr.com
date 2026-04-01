@@ -1,5 +1,5 @@
 import { GameState } from './types';
-import { SCALE, SAND_COST, SAND_MAX } from './constants';
+import { SCALE, SAND_COST, SAND_MAX, SAND_REGEN_PER_FRAME } from './constants';
 import { setCell, getCell } from './grid';
 
 export type InputAction = 'place' | 'remove' | null;
@@ -41,6 +41,6 @@ export function applyBrush(
   }
 }
 
-export function regenSand(state: GameState, regenPerFrame: number): void {
-  state.sandResource = Math.min(SAND_MAX, state.sandResource + regenPerFrame);
+export function regenSand(state: GameState): void {
+  state.sandResource = Math.min(SAND_MAX, state.sandResource + SAND_REGEN_PER_FRAME);
 }

@@ -6,12 +6,14 @@ export function createGrid(width = LOGICAL_W, height = LOGICAL_H): Uint8Array {
 }
 
 export function getCell(grid: Uint8Array, x: number, y: number, width = LOGICAL_W): CellType {
-  if (x < 0 || x >= width || y < 0 || y >= LOGICAL_H) return 2;
+  const height = grid.length / width;
+  if (x < 0 || x >= width || y < 0 || y >= height) return 2;
   return grid[x + y * width] as CellType;
 }
 
 export function setCell(grid: Uint8Array, x: number, y: number, value: CellType, width = LOGICAL_W): void {
-  if (x < 0 || x >= width || y < 0 || y >= LOGICAL_H) return;
+  const height = grid.length / width;
+  if (x < 0 || x >= width || y < 0 || y >= height) return;
   grid[x + y * width] = value;
 }
 

@@ -1,9 +1,9 @@
 import { getCell, setCell } from './grid';
 import { LOGICAL_W, LOGICAL_H } from './constants';
 
-export function stepSand(grid: Uint8Array, width = LOGICAL_W, height = LOGICAL_H): void {
+export function stepSand(grid: Uint8Array, width = LOGICAL_W, height = LOGICAL_H, frame = 0): void {
   for (let y = height - 2; y >= 0; y--) {
-    const leftToRight = (y % 2 === 0);
+    const leftToRight = ((y + frame) % 2 === 0);
     for (let i = 0; i < width; i++) {
       const x = leftToRight ? i : width - 1 - i;
       if (getCell(grid, x, y, width) !== 1) continue;
