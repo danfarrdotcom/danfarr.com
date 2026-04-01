@@ -1,13 +1,16 @@
-import { GameState } from './types';
+import { GameState, Player } from './types';
 import {
   SCALE, GROUND_Y,
-  SAND_COLOURS, ROCK_COLOUR, SKY_TOP, SKY_BOTTOM,
+  SAND_COLOURS, ROCK_COLOUR,
 } from './constants';
 import { getCell } from './grid';
+import { fillBackground } from './background';
 
 export function renderFrame(
   ctx: CanvasRenderingContext2D,
   state: GameState,
+  player?: Player,
+  frame?: number,
 ): void {
   const { grid, gridWidth, gridHeight } = state;
   const canvasW = gridWidth * SCALE;
@@ -16,23 +19,8 @@ export function renderFrame(
   const imageData = ctx.createImageData(canvasW, canvasH);
   const data = imageData.data;
 
-  // Fill sky gradient directly into ImageData
-  const skyTop = hexToRgb(SKY_TOP);
-  const skyBot = hexToRgb(SKY_BOTTOM);
-
-  for (let py = 0; py < canvasH; py++) {
-    const t = py / canvasH;
-    const r = Math.round(skyTop[0] + (skyBot[0] - skyTop[0]) * t);
-    const g = Math.round(skyTop[1] + (skyBot[1] - skyTop[1]) * t);
-    const b = Math.round(skyTop[2] + (skyBot[2] - skyTop[2]) * t);
-    for (let px = 0; px < canvasW; px++) {
-      const idx = (py * canvasW + px) * 4;
-      data[idx] = r;
-      data[idx + 1] = g;
-      data[idx + 2] = b;
-      data[idx + 3] = 255;
-    }
-  }
+  // Fill parallax background (sky gradient + dunes + sun)
+  fillBackground(data, canvasW, canvasH, state.cameraX);
 
   // Paint sand and rock pixels on top
   for (let y = 0; y < gridHeight; y++) {
@@ -96,9 +84,55 @@ export function renderFrame(
     ctx.fillRect(sx + 2 * SCALE, sy + 2 * SCALE, 2 * SCALE, 6 * SCALE);
     ctx.fillRect(sx, sy + 8 * SCALE, 6 * SCALE, 2 * SCALE);
   });
+
+  if (player) {
+    renderPlayer(ctx, player, frame ?? 0);
+  }
 }
 
 function hexToRgb(hex: string): [number, number, number] {
   const n = parseInt(hex.slice(1), 16);
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+function renderPlayer(
+  ctx: CanvasRenderingContext2D,
+  player: Player,
+  frame: number,
+): void {
+  if (player.state === 'dead') return;
+
+  const sx = Math.round(player.x) * SCALE;
+  const baseY = Math.round(player.y);
+  const isDucking = player.state === 'duck';
+  const S = SCALE;
+
+  // Body offset when ducking
+  const bodyY = isDucking ? baseY - 6 : baseY - 14;
+  const sy = bodyY * SCALE;
+
+  // Robe/body — muted purple
+  ctx.fillStyle = '#5a3a7a';
+  ctx.fillRect(sx + S, sy + 4 * S, 6 * S, isDucking ? 4 * S : 8 * S);
+
+  // Hood — slightly lighter purple
+  ctx.fillStyle = '#6a4a8a';
+  ctx.fillRect(sx + S, sy, 6 * S, isDucking ? 3 * S : 5 * S);
+
+  // Eye — amber glow
+  ctx.fillStyle = '#ffcc88';
+  ctx.fillRect(sx + 4 * S, sy + 2 * S, S, S);
+
+  // Staff
+  ctx.fillStyle = '#c2955a';
+  const staffX = player.state === 'jump' ? sx + 8 * S : sx + 7 * S;
+  ctx.fillRect(staffX, sy + 2 * S, S, isDucking ? 6 * S : 10 * S);
+
+  // Walk animation — feet
+  if (!isDucking && player.state !== 'jump') {
+    const walkFrame = Math.floor(frame / 8) % 2;
+    ctx.fillStyle = '#3a2a5a';
+    ctx.fillRect(sx + S, sy + 11 * S + (walkFrame === 0 ? S : 0), 2 * S, 2 * S);
+    ctx.fillRect(sx + 4 * S, sy + 11 * S + (walkFrame === 1 ? S : 0), 2 * S, 2 * S);
+  }
 }
