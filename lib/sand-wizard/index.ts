@@ -6,3 +6,4 @@ export * from './renderer';
 export * from './input';
 export * from './state';
 export * from './player';
+export * from './obstacles';
