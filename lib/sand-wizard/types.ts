@@ -9,6 +9,9 @@ export interface GameState {
   score: number;
   phase: 'title' | 'playing' | 'dead';
   cameraX: number;
+  obstacles: Obstacle[];
+  powerUps: PowerUp[];
+  nextSpawnX: number;  // screen-space x where next obstacle will be spawned
 }
 
 export interface Player {

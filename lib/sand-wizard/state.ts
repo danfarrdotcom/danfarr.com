@@ -21,6 +21,9 @@ export function createInitialState(): GameState {
     score: 0,
     phase: 'title',
     cameraX: 0,
+    obstacles: [],
+    powerUps: [],
+    nextSpawnX: 350,  // first obstacle spawns near right edge of screen
   };
 }
 
