@@ -21,8 +21,8 @@ export function fillBackground(
   const skyH = canvasH - groundH;
 
   // Sky gradient
-  for (let py = 0; py < skyH; py++) {
-    const t = py / skyH;
+  for (let py = 0; py < canvasH; py++) {
+    const t = Math.min(1, py / skyH);
     const r = Math.round(skyTop[0] + (skyBot[0] - skyTop[0]) * t);
     const g = Math.round(skyTop[1] + (skyBot[1] - skyTop[1]) * t);
     const b = Math.round(skyTop[2] + (skyBot[2] - skyTop[2]) * t);
