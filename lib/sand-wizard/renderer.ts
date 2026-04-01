@@ -74,6 +74,34 @@ const WALK_FRAMES: string[][] = [
   ],
 ];
 
+const JUMP_FRAME: string[] = [
+  '..hHHh..',
+  '.hHHHHh.',
+  '.hHEHHh.',
+  '.hHHHHh.',
+  'GsWWWWw.',
+  'SsWWWWw.',
+  'SsWwWWw.',
+  '.sWWWWw.',
+  '.BWWwBw.',
+  '.BBWwBw.',
+  '..WWww..',
+  '..Wwww..',
+  '........',
+  '........',
+];
+
+const DUCK_FRAME: string[] = [
+  '..hHhh..',
+  '.hHHHHh.',
+  '.hHEHhh.',
+  'SsWWWWw.',
+  'SsWwWWw.',
+  '.BWWWwB.',
+  '.BBWwBB.',
+  '........',
+];
+
 let _imageData: ImageData | null = null;
 
 export function renderFrame(
