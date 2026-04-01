@@ -1,6 +1,6 @@
 import { GameState } from './types';
 import {
-  SCALE,
+  SCALE, GROUND_Y,
   SAND_COLOURS, ROCK_COLOUR, SKY_TOP, SKY_BOTTOM,
 } from './constants';
 import { getCell } from './grid';
@@ -59,6 +59,43 @@ export function renderFrame(
   }
 
   ctx.putImageData(imageData, 0, 0);
+
+  // Draw dynamic obstacles
+  state.obstacles.forEach((obs) => {
+    const sx = obs.x * SCALE;
+    const sy = obs.y * SCALE;
+    const sw = obs.width * SCALE;
+    const sh = obs.height * SCALE;
+
+    if (obs.type === 'boulder') {
+      ctx.fillStyle = '#555555';
+      ctx.fillRect(sx, sy, sw, sh);
+      ctx.fillStyle = '#888888';
+      ctx.fillRect(sx + SCALE, sy + SCALE, sw - SCALE * 2, sh - SCALE * 2);
+    }
+    if (obs.type === 'falling-rock') {
+      ctx.fillStyle = '#666666';
+      ctx.fillRect(sx, sy, sw, sh);
+      // Shadow telegraph on ground
+      ctx.fillStyle = 'rgba(0,0,0,0.35)';
+      ctx.fillRect(sx, GROUND_Y * SCALE, sw, SCALE * 2);
+    }
+    if (obs.type === 'dust-devil') {
+      ctx.fillStyle = 'rgba(194,149,90,0.35)';
+      ctx.fillRect(sx - sw / 2, sy, sw * 2, sh);
+    }
+  });
+
+  // Draw power-ups (cyan hourglass shape)
+  state.powerUps.forEach((pu) => {
+    if (pu.collected) return;
+    const sx = pu.x * SCALE;
+    const sy = pu.y * SCALE;
+    ctx.fillStyle = '#00ffcc';
+    ctx.fillRect(sx, sy, 6 * SCALE, 2 * SCALE);
+    ctx.fillRect(sx + 2 * SCALE, sy + 2 * SCALE, 2 * SCALE, 6 * SCALE);
+    ctx.fillRect(sx, sy + 8 * SCALE, 6 * SCALE, 2 * SCALE);
+  });
 }
 
 function hexToRgb(hex: string): [number, number, number] {
