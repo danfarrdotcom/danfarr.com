@@ -10,6 +10,7 @@ import { renderFrame } from '../../lib/sand-wizard/renderer';
 import { applyBrush, regenSand } from '../../lib/sand-wizard/input';
 import { updatePlayer } from '../../lib/sand-wizard/player';
 import { updateObstacles } from '../../lib/sand-wizard/obstacles';
+import { fillNewColumns } from '../../lib/sand-wizard/worldgen';
 import { GameState, Player } from '../../lib/sand-wizard/types';
 import GameHUD from './GameHUD';
 import TitleScreen from './TitleScreen';
@@ -98,6 +99,7 @@ export default function SandWizardGame() {
         if (colsToShift > 0) {
           shiftGridLeft(state.grid, state.gridWidth, state.gridHeight, colsToShift);
           scrollAccRef.current -= colsToShift;
+          fillNewColumns(state, colsToShift);
         }
 
         updatePlayer(player, state, keysRef.current);
