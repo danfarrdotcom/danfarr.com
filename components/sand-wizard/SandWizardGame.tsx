@@ -9,6 +9,7 @@ import { stepSand, shiftGridLeft } from '../../lib/sand-wizard/physics';
 import { renderFrame } from '../../lib/sand-wizard/renderer';
 import { applyBrush, regenSand } from '../../lib/sand-wizard/input';
 import { updatePlayer } from '../../lib/sand-wizard/player';
+import { updateObstacles } from '../../lib/sand-wizard/obstacles';
 import { GameState, Player } from '../../lib/sand-wizard/types';
 import GameHUD from './GameHUD';
 import TitleScreen from './TitleScreen';
@@ -100,6 +101,7 @@ export default function SandWizardGame() {
         }
 
         updatePlayer(player, state, keysRef.current);
+        updateObstacles(state, player);
 
         state.cameraX += WALK_SPEED;
         state.score = Math.floor(state.cameraX / 10);
