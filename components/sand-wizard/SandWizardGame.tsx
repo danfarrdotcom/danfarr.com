@@ -20,7 +20,6 @@ export default function SandWizardGame() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stateRef = useRef<GameState>(createInitialState());
   const playerRef = useRef<Player>(createInitialPlayer());
-  const keysRef = useRef<Set<string>>(new Set());
   const mouseRef = useRef<{ x: number; y: number; action: 'place' | 'remove' | null }>({
     x: 0, y: 0, action: null,
   });
@@ -36,7 +35,6 @@ export default function SandWizardGame() {
     playerRef.current = createInitialPlayer();
     frameCountRef.current = 0;
     scrollAccRef.current = 0;
-    keysRef.current.clear();
     setHud({ sand: SAND_MAX, score: 0, phase: 'playing' });
   }, []);
 
@@ -47,15 +45,12 @@ export default function SandWizardGame() {
     if (!ctx) return;
 
     const onKeyDown = (e: KeyboardEvent) => {
-      keysRef.current.add(e.code);
       if (e.code === 'Space') {
         if (stateRef.current.phase === 'title') startGame();
         if (stateRef.current.phase === 'dead') startGame();
       }
     };
-    const onKeyUp = (e: KeyboardEvent) => keysRef.current.delete(e.code);
     window.addEventListener('keydown', onKeyDown);
-    window.addEventListener('keyup', onKeyUp);
 
     const getCanvasPos = (clientX: number, clientY: number) => {
       const r = canvas.getBoundingClientRect();
@@ -94,7 +89,9 @@ export default function SandWizardGame() {
         stepSand(state.grid, state.gridWidth, state.gridHeight, frame);
         regenSand(state);
 
-        scrollAccRef.current += WALK_SPEED;
+        const effectiveSpeed = state.slowScrollFrames > 0 ? WALK_SPEED * 0.5 : WALK_SPEED;
+        if (state.slowScrollFrames > 0) state.slowScrollFrames--;
+        scrollAccRef.current += effectiveSpeed;
         const colsToShift = Math.floor(scrollAccRef.current);
         if (colsToShift > 0) {
           shiftGridLeft(state.grid, state.gridWidth, state.gridHeight, colsToShift);
@@ -133,7 +130,6 @@ export default function SandWizardGame() {
     return () => {
       cancelAnimationFrame(rafRef.current);
       window.removeEventListener('keydown', onKeyDown);
-      window.removeEventListener('keyup', onKeyUp);
       canvas.removeEventListener('mousemove', onMouseMove);
       canvas.removeEventListener('mousedown', onMouseDown);
       window.removeEventListener('mouseup', onMouseUp);
