@@ -102,7 +102,7 @@ export default function SandWizardGame() {
           fillNewColumns(state, colsToShift);
         }
 
-        updatePlayer(player, state, keysRef.current);
+        updatePlayer(player, state);
         updateObstacles(state, player);
 
         state.cameraX += WALK_SPEED;
