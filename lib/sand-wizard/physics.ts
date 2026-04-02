@@ -1,5 +1,6 @@
 import { getCell, setCell } from './grid';
 import { LOGICAL_W, LOGICAL_H } from './constants';
+import { rng } from './rng';
 
 export function stepSand(grid: Uint8Array, width = LOGICAL_W, height = LOGICAL_H, frame = 0): void {
   for (let y = height - 2; y >= 0; y--) {
@@ -14,7 +15,7 @@ export function stepSand(grid: Uint8Array, width = LOGICAL_W, height = LOGICAL_H
         continue;
       }
 
-      const tryLeft = Math.random() > 0.5;
+      const tryLeft = rng() > 0.5;
       const dx1 = tryLeft ? -1 : 1;
       const dx2 = tryLeft ? 1 : -1;
 
