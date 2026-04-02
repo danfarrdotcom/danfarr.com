@@ -184,7 +184,7 @@ export function updateObstacles(state: GameState, player: Player): void {
       const playerTop = py - 14; // wizard sprite is 14px tall
       const obsBottom = obs.y + obs.height;
 
-      if (playerTop < obsBottom && py > obs.y) {
+      if (playerTop < obsBottom && playerTop > obs.y) {
         const localTop = playerTop - obs.y;
         const localBot = py - obs.y;
         const inGap = localTop >= (obs.gapY ?? 0) && localBot <= (obs.gapY ?? 0) + (obs.gapH ?? 14);
@@ -206,13 +206,13 @@ export function updateObstacles(state: GameState, player: Player): void {
     const py = Math.round(player.y);
     const ox = Math.round(obs.x);
     const oy = Math.round(obs.y);
-    const playerH = 8;
+    const playerTop = py - 14;
 
     const collides =
       px < ox + obs.width &&
       px + 4 > ox &&
-      py < oy + obs.height &&
-      py + playerH > oy;
+      playerTop < oy + obs.height &&
+      py > oy;
 
     if (collides) {
       if (state.shieldActive) {
@@ -299,7 +299,7 @@ export function updateObstacles(state: GameState, player: Player): void {
 
     const minInterval = 150;
     const maxInterval = 400;
-    state.nextSpawnX += minInterval + Math.floor(rng() * (maxInterval - minInterval) * (1 - difficulty));
+    state.nextSpawnX = state.cameraX + minInterval + Math.floor(rng() * (maxInterval - minInterval) * (1 - difficulty));
   }
 
   // Power-up schedule — independent of obstacle spawner
