@@ -15,8 +15,7 @@ import { makeEngine } from './engine';
 export default function MemoryPage() {
   return (
     <EssayShell
-      dek="Ants don't understand how to read maps. There is no foreman, no schematic, and no ant that has seen both the nest and the food simultaneously and plotted the optimal route."
-      readingTime="11 min read"
+      dek="Ants don't understand how to read maps. There is no foreman, no schematic, and no ant that has seen both the nest and the food simultaneously and plotted the optimal route, so how does the colony find its way? The answer is that it doesn't find its way, it writes its way. The ground itself becomes the colony's external memory, and every ant is a reader and a writer of that memory. This is stigmergy, and it is a powerful example of how a memory system can be architected without a brain."
       title="Memory without a brain"
     >
       <ArticleSection>
@@ -48,15 +47,15 @@ export default function MemoryPage() {
         </p>
         <p>
           Every passing ant increments the value at its current position. Left
-          alone, every cell&apos;s value approaches zero exponentially. The reading
-          operation, an ant sampling concentration in three forward directions
-          and steering toward the maximum, is essentially a gradient ascent over
-          this field.
+          alone, every cell&apos;s value approaches zero exponentially. The
+          reading operation, an ant sampling concentration in three forward
+          directions and steering toward the maximum, is essentially a gradient
+          ascent over this field.
         </p>
         <p>
           There is no central index, no pointer structure, no query language.
-          The entire computation is local. And yet the colony &quot;knows&quot; where
-          food is. Or rather, the ground knows, and the ants are the query
+          The entire computation is local. And yet the colony &quot;knows&quot;
+          where food is. Or rather, the ground knows, and the ants are the query
           interface.
         </p>
       </ArticleSection>
@@ -84,7 +83,10 @@ export default function MemoryPage() {
       <ArticleSection title="Learn to Forget">
         <p>
           Here is a counterintuitive truth about memory systems:
-          <strong> the ability to forget is as important as the ability to remember.</strong>
+          <strong>
+            {' '}
+            the ability to forget is as important as the ability to remember.
+          </strong>
           Evaporation is not a limitation of ant biology; it is load-bearing.
         </p>
         <p>
@@ -152,15 +154,15 @@ export default function MemoryPage() {
           actions and eventually receives a reward, which actions caused it?
         </p>
         <p>
-          The ant colony&apos;s solution is elegant and implicit. Shorter paths get
-          traversed more often per unit time, so they receive more reinforcement
-          per unit time. Path length literally becomes its own reward signal,
-          written into the medium.
+          The ant colony&apos;s solution is elegant and implicit. Shorter paths
+          get traversed more often per unit time, so they receive more
+          reinforcement per unit time. Path length literally becomes its own
+          reward signal, written into the medium.
         </p>
         <p>
-          This is temporal difference learning, avant la lettre. The
-          eligibility trace is the physical trail left by the agent&apos;s body, and
-          time discount is implemented by evaporation.
+          This is temporal difference learning, avant la lettre. The eligibility
+          trace is the physical trail left by the agent&apos;s body, and time
+          discount is implemented by evaporation.
         </p>
       </ArticleSection>
 
@@ -191,15 +193,15 @@ export default function MemoryPage() {
           which make them better, which attracts more ants.
         </p>
         <p>
-          But positive feedback without a counter-force is explosive. Evaporation
-          and stochastic steering are the counter-forces that prevent premature
-          convergence and allow the system to respond when the environment
-          changes.
+          But positive feedback without a counter-force is explosive.
+          Evaporation and stochastic steering are the counter-forces that
+          prevent premature convergence and allow the system to respond when the
+          environment changes.
         </p>
         <p>
-          The complete simulation below is the system&apos;s catastrophic forgetting
-          test: can accumulated memory of the old path be unlearned fast enough
-          for the colony to adapt?
+          The complete simulation below is the system&apos;s catastrophic
+          forgetting test: can accumulated memory of the old path be unlearned
+          fast enough for the colony to adapt?
         </p>
       </ArticleSection>
 
@@ -207,8 +209,8 @@ export default function MemoryPage() {
 
       <ArticleSection title="Ant Colony Optimisation">
         <p>
-          Marco Dorigo&apos;s formalisation of Ant Colony Optimisation in 1992 was
-          part of the broader emergence of
+          Marco Dorigo&apos;s formalisation of Ant Colony Optimisation in 1992
+          was part of the broader emergence of
           <strong> swarm intelligence</strong> as a computational paradigm.
         </p>
         <p>
@@ -268,7 +270,11 @@ function Sim1() {
       label="Pheromone field only"
     >
       <div className="overflow-hidden bg-white">
-        <canvas ref={canvasRef} className="block w-full bg-white" height={200} />
+        <canvas
+          ref={canvasRef}
+          className="block w-full bg-white"
+          height={200}
+        />
       </div>
     </FigureBlock>
   );
@@ -326,7 +332,11 @@ function Sim2() {
       label="Memory decay interactive"
     >
       <div className="overflow-hidden bg-white">
-        <canvas ref={canvasRef} className="block w-full bg-white" height={200} />
+        <canvas
+          ref={canvasRef}
+          className="block w-full bg-white"
+          height={200}
+        />
       </div>
       <ControlRow>
         <label className="min-w-[220px] px-2 py-1">
@@ -384,7 +394,11 @@ function Sim3() {
       label="Dual channel memory"
     >
       <div className="overflow-hidden bg-white">
-        <canvas ref={canvasRef} className="block w-full bg-white" height={220} />
+        <canvas
+          ref={canvasRef}
+          className="block w-full bg-white"
+          height={220}
+        />
       </div>
       <p className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-[11px] uppercase tracking-[0.22em] text-stone-700">
         <span>Darker weave: home trail</span>
@@ -447,7 +461,11 @@ function Sim4() {
       label="Exploration vs exploitation"
     >
       <div className="overflow-hidden bg-white">
-        <canvas ref={canvasRef} className="block w-full bg-white" height={200} />
+        <canvas
+          ref={canvasRef}
+          className="block w-full bg-white"
+          height={200}
+        />
       </div>
       <ControlRow>
         <label className="min-w-[220px] px-2 py-1">
@@ -508,7 +526,11 @@ function Sim5() {
       label="Resource depletion"
     >
       <div className="overflow-hidden bg-white">
-        <canvas ref={canvasRef} className="block w-full bg-white" height={240} />
+        <canvas
+          ref={canvasRef}
+          className="block w-full bg-white"
+          height={240}
+        />
       </div>
     </FigureBlock>
   );
@@ -598,7 +620,11 @@ function Sandbox() {
       label="Open plate"
     >
       <div className="overflow-hidden bg-white">
-        <canvas ref={canvasRef} className="block w-full bg-white" height={400} />
+        <canvas
+          ref={canvasRef}
+          className="block w-full bg-white"
+          height={400}
+        />
       </div>
 
       <div className="grid gap-8 border-t border-stone-300 pt-4 md:grid-cols-[minmax(0,1fr)_200px]">

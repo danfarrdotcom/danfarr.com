@@ -132,6 +132,17 @@ export default async function Page() {
                     Ants don't understand how to read maps.
                   </div>
                 </Link>
+                <Link
+                  href="/essays/braitenberg"
+                  className="group block transition-all relative pl-3 border-l-2 border-transparent hover:border-blue-400"
+                >
+                  <div className="font-serif italic text-lg text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    Braitenberg&apos;s Vehicles
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                    Simple sensorimotor loops still explain more than we admit.
+                  </div>
+                </Link>
                 {posts.map((post) => {
                   const slug = post.slug.toLowerCase().replace(/\s+/g, '-');
                   return (
