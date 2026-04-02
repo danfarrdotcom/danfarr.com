@@ -27,7 +27,13 @@ export default function SandWizardGame() {
   const frameCountRef = useRef(0);
   const scrollAccRef = useRef(0);
 
-  const [hud, setHud] = useState({ sand: SAND_MAX, score: 0, phase: 'title' as GameState['phase'] });
+  const [hud, setHud] = useState({
+    sand: SAND_MAX,
+    score: 0,
+    phase: 'title' as GameState['phase'],
+    shieldActive: false,
+    slowScrollFrames: 0,
+  });
 
   const startGame = useCallback(() => {
     stateRef.current = createInitialState();
@@ -35,7 +41,7 @@ export default function SandWizardGame() {
     playerRef.current = createInitialPlayer();
     frameCountRef.current = 0;
     scrollAccRef.current = 0;
-    setHud({ sand: SAND_MAX, score: 0, phase: 'playing' });
+    setHud({ sand: SAND_MAX, score: 0, phase: 'playing', shieldActive: false, slowScrollFrames: 0 });
   }, []);
 
   useEffect(() => {
@@ -111,7 +117,13 @@ export default function SandWizardGame() {
         }
 
         if (timestamp - lastHudUpdate > 100) {
-          setHud({ sand: state.sandResource, score: state.score, phase: state.phase });
+          setHud({
+            sand: state.sandResource,
+            score: state.score,
+            phase: state.phase,
+            shieldActive: state.shieldActive,
+            slowScrollFrames: state.slowScrollFrames,
+          });
           lastHudUpdate = timestamp;
         }
       }
@@ -147,7 +159,12 @@ export default function SandWizardGame() {
         style={{ imageRendering: 'pixelated' }}
       />
       {hud.phase === 'playing' && (
-        <GameHUD sandResource={hud.sand} score={hud.score} />
+        <GameHUD
+          sandResource={hud.sand}
+          score={hud.score}
+          shieldActive={hud.shieldActive}
+          slowScrollFrames={hud.slowScrollFrames}
+        />
       )}
       {hud.phase === 'title' && (
         <TitleScreen onStart={startGame} />
