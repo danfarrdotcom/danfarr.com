@@ -4,14 +4,13 @@ export const SCALE = 3;
 export const CANVAS_W = LOGICAL_W * SCALE;   // 1200
 export const CANVAS_H = LOGICAL_H * SCALE;   // 675
 
-export const SAND_MAX = 1000;
-export const SAND_REGEN_PER_FRAME = 50 / 60;
+export const SAND_MAX = 10000;
+export const SAND_REGEN_BASE = 30 / 60;
 export const SAND_COST = 1;
-export const POWERUP_RESTORE = 300;
+export const POWERUP_RESTORE = 3000;
 
 export const WALK_SPEED = 1.2;
 export const GRAVITY = 0.4;
-export const JUMP_VY = -7;
 
 export const GROUND_Y = LOGICAL_H - 40;
 
