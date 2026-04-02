@@ -1,8 +1,10 @@
 import { GameState, Player } from './types';
 import { createGrid, setCell } from './grid';
 import { LOGICAL_W, LOGICAL_H, GROUND_Y, SAND_MAX } from './constants';
+import { resetRng } from './rng';
 
 export function createInitialState(): GameState {
+  resetRng();
   const grid = createGrid(LOGICAL_W, LOGICAL_H);
 
   // Seed flat ground: solid rock floor + sand surface
@@ -24,6 +26,9 @@ export function createInitialState(): GameState {
     obstacles: [],
     powerUps: [],
     nextSpawnX: 350,  // first obstacle spawns near right edge of screen
+    shieldActive: false,
+    slowScrollFrames: 0,
+    nextPowerUpX: 600,
   };
 }
 

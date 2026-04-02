@@ -12,6 +12,9 @@ export interface GameState {
   obstacles: Obstacle[];
   powerUps: PowerUp[];
   nextSpawnX: number;  // screen-space x where next obstacle will be spawned
+  shieldActive: boolean;
+  slowScrollFrames: number;
+  nextPowerUpX: number;
 }
 
 export interface Player {
