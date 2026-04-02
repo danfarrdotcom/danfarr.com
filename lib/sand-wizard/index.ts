@@ -8,3 +8,4 @@ export * from './state';
 export * from './player';
 export * from './obstacles';
 export * from './worldgen';
+export * from './rng';
