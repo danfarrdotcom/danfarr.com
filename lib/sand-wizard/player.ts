@@ -24,10 +24,10 @@ export function updatePlayer(
     if (player.state !== 'walk') player.state = 'walk';
   }
 
-  // Horizontal wall collision — chest height
+  // Horizontal wall collision — chest height (only solid rock kills)
   const frontX = Math.round(player.x) + 4;
   const chestY = Math.round(player.y) - 4;
-  if (getCell(state.grid, frontX, chestY, state.gridWidth) !== 0) {
+  if (getCell(state.grid, frontX, chestY, state.gridWidth) === 2) {
     player.state = 'dead';
   }
 }

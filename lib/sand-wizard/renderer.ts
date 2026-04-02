@@ -1,6 +1,6 @@
 import { GameState, Player } from './types';
 import {
-  SCALE, GROUND_Y,
+  SCALE, GROUND_Y, CANVAS_W,
   SAND_COLOURS, ROCK_COLOUR,
 } from './constants';
 import { getCell } from './grid';
@@ -74,70 +74,6 @@ const WALK_FRAMES: string[][] = [
   ],
 ];
 
-const JUMP_FRAME: string[] = [
-  '..hHHh..',
-  '.hHHHHh.',
-  '.hHEHHh.',
-  '.hHHHHh.',
-  'GsWWWWw.',
-  'SsWWWWw.',
-  'SsWwWWw.',
-  '.sWWWWw.',
-  '.BWWwBw.',
-  '.BBWwBw.',
-  '..WWww..',
-  '..Wwww..',
-  '........',
-  '........',
-];
-
-const DUCK_FRAME: string[] = [
-  '..hHhh..',
-  '.hHHHHh.',
-  '.hHEHhh.',
-  'SsWWWWw.',
-  'SsWwWWw.',
-  '.BWWWwB.',
-  '.BBWwBB.',
-  '........',
-];
-
-// --- Sprite-sheet walk cycle ---
-const SHEET_COLS = 4;
-const SHEET_ROWS = 2;
-const WALK_FRAME_COUNT = SHEET_COLS * SHEET_ROWS; // 8
-const SHEET_FRAME_W = 384; // source px per frame (1536 / 4)
-const SHEET_FRAME_H = 512; // source px per frame (1024 / 2)
-const WIZARD_WALK_W = 36;  // dest canvas px
-const WIZARD_WALK_H = 48;  // dest canvas px
-
-let _wizardSheet: HTMLCanvasElement | null = null;
-let _sheetPending = false;
-
-function loadWizardSheet(): void {
-  if (_sheetPending) return;
-  _sheetPending = true;
-  const img = new Image();
-  img.src = '/wizard-walk.png';
-  img.onload = () => {
-    const off = document.createElement('canvas');
-    off.width = img.width;
-    off.height = img.height;
-    const oc = off.getContext('2d')!;
-    oc.drawImage(img, 0, 0);
-    const id = oc.getImageData(0, 0, img.width, img.height);
-    const d = id.data;
-    const [br, bg, bb] = [d[0], d[1], d[2]];
-    const tol = 25;
-    for (let i = 0; i < d.length; i += 4) {
-      if (Math.abs(d[i] - br) < tol && Math.abs(d[i + 1] - bg) < tol && Math.abs(d[i + 2] - bb) < tol) {
-        d[i + 3] = 0;
-      }
-    }
-    oc.putImageData(id, 0, 0);
-    _wizardSheet = off;
-  };
-}
 
 let _imageData: ImageData | null = null;
 
@@ -194,6 +130,30 @@ export function renderFrame(
     const sw = obs.width * SCALE;
     const sh = obs.height * SCALE;
 
+    if (obs.type === 'cave-gate') {
+      const oy = obs.y * SCALE;
+      const gapYAbs = (obs.y + (obs.gapY ?? 0)) * SCALE;
+      const gapHPx = (obs.gapH ?? 14) * SCALE;
+
+      // Top slab
+      ctx.fillStyle = '#4a3728';
+      ctx.fillRect(0, oy, CANVAS_W, (obs.gapY ?? 0) * SCALE);
+      // Bottom slab
+      const bottomStart = gapYAbs + gapHPx;
+      const bottomH = (obs.height - (obs.gapY ?? 0)) * SCALE - gapHPx;
+      ctx.fillRect(0, bottomStart, CANVAS_W, bottomH);
+
+      // Gap outline hint
+      ctx.strokeStyle = 'rgba(255,200,100,0.4)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(0, gapYAbs, CANVAS_W, gapHPx);
+
+      // Ground shadow telegraph
+      ctx.fillStyle = 'rgba(0,0,0,0.25)';
+      ctx.fillRect(0, GROUND_Y * SCALE, CANVAS_W, SCALE * 2);
+      return; // skip other type checks for this obstacle
+    }
+
     if (obs.type === 'boulder') {
       ctx.fillStyle = '#555555';
       ctx.fillRect(sx, sy, sw, sh);
@@ -213,19 +173,30 @@ export function renderFrame(
     }
   });
 
-  // Draw power-ups (cyan hourglass shape)
+  // Draw power-ups — typed colored orbs with pulsing glow
+  const PU_COLORS: Record<string, string> = {
+    'sand-boost':  '#f5c842',
+    'shield':      '#42aaff',
+    'sand-burst':  '#ff8c00',
+    'slow-scroll': '#44dd88',
+  };
+
   state.powerUps.forEach((pu) => {
     if (pu.collected) return;
     const sx = pu.x * SCALE;
     const sy = pu.y * SCALE;
-    ctx.fillStyle = '#00ffcc';
-    ctx.fillRect(sx, sy, 6 * SCALE, 2 * SCALE);
-    ctx.fillRect(sx + 2 * SCALE, sy + 2 * SCALE, 2 * SCALE, 6 * SCALE);
-    ctx.fillRect(sx, sy + 8 * SCALE, 6 * SCALE, 2 * SCALE);
+    const color = PU_COLORS[pu.type] ?? '#00ffcc';
+    const pulse = 0.5 + 0.5 * Math.sin(Date.now() / 200);
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.3 + 0.4 * pulse;
+    ctx.fillRect(sx - SCALE, sy - SCALE, 8 * SCALE, 8 * SCALE);
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = color;
+    ctx.fillRect(sx + SCALE, sy + SCALE, 4 * SCALE, 4 * SCALE);
   });
 
   if (player) {
-    renderPlayer(ctx, player, frame ?? 0);
+    renderPlayer(ctx, player, frame ?? 0, state);
   }
 }
 
@@ -268,31 +239,28 @@ function renderPlayer(
   ctx: CanvasRenderingContext2D,
   player: Player,
   frame: number,
+  state: GameState,
 ): void {
   if (player.state === 'dead') return;
 
   const sx = Math.round(player.x) * SCALE;
   const baseY = Math.round(player.y);
+  const bitmap = WALK_FRAMES[Math.floor(frame / 8) % 3];
+  const sy = (baseY - bitmap.length) * SCALE;
+  drawSprite(ctx, sx, sy, bitmap, WIZARD_PALETTE);
 
-  if (player.state === 'duck') {
-    const sy = (baseY - DUCK_FRAME.length) * SCALE;
-    drawSprite(ctx, sx, sy, DUCK_FRAME, WIZARD_PALETTE);
-  } else if (player.state === 'jump') {
-    const sy = (baseY - JUMP_FRAME.length) * SCALE;
-    drawSprite(ctx, sx, sy, JUMP_FRAME, WIZARD_PALETTE);
-  } else if (_wizardSheet) {
-    const fi = Math.floor(frame / 8) % WALK_FRAME_COUNT;
-    const col = fi % SHEET_COLS;
-    const row = Math.floor(fi / SHEET_COLS);
-    ctx.drawImage(
-      _wizardSheet,
-      col * SHEET_FRAME_W, row * SHEET_FRAME_H, SHEET_FRAME_W, SHEET_FRAME_H,
-      sx, baseY * SCALE - WIZARD_WALK_H, WIZARD_WALK_W, WIZARD_WALK_H,
+  // Shield aura
+  if (state.shieldActive) {
+    ctx.strokeStyle = 'rgba(100,180,255,0.7)';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.ellipse(
+      sx + 4 * SCALE,
+      sy + 7 * SCALE,
+      6 * SCALE,
+      9 * SCALE,
+      0, 0, Math.PI * 2,
     );
-  } else {
-    loadWizardSheet();
-    const bitmap = WALK_FRAMES[Math.floor(frame / 8) % 3];
-    const sy = (baseY - bitmap.length) * SCALE;
-    drawSprite(ctx, sx, sy, bitmap, WIZARD_PALETTE);
+    ctx.stroke();
   }
 }
