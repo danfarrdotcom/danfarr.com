@@ -2,27 +2,67 @@ import { GameState } from './types';
 import { setCell } from './grid';
 import { GROUND_Y, LOGICAL_H } from './constants';
 
-/**
- * Simple hash for terrain height — deterministic from world-x position.
- * Produces varied ground: flat stretches, rocky jags, small mesas.
- */
-function terrainHeight(worldX: number): number {
-  // Layer multiple sine waves at different frequencies for organic feel
-  const base = GROUND_Y;
-  const h1 = Math.sin(worldX * 0.015) * 6;                    // broad rolling hills
-  const h2 = Math.sin(worldX * 0.047 + 2.3) * 3;              // medium bumps
-  const h3 = Math.sin(worldX * 0.13 + 5.1) * 1.5;             // small jags
-  // Occasional sharp mesa/spire: use a stepped function
-  const mesa = Math.abs(Math.sin(worldX * 0.0073 + 1.7));
-  const spike = mesa > 0.92 ? (mesa - 0.92) * 120 : 0;        // rare tall spikes
-  const ridge = mesa > 0.8 ? (mesa - 0.8) * 30 : 0;           // wider ridges
-
-  return Math.round(base - h1 - h2 - h3 - spike - ridge);
+// Deterministic hash
+function hash(n: number): number {
+  const x = Math.sin(n * 127.1 + 311.7) * 43758.5453;
+  return x - Math.floor(x);
 }
 
 /**
- * Fill newly exposed right-edge columns with varied terrain.
- * Called each frame after shiftGridLeft exposes new columns.
+ * Terrain height — mostly flat with deliberate traps.
+ * The traps are what make the game interesting:
+ * - Deep chasms (vertical drops the player falls into)
+ * - Tall rock walls (player walks into and gets stuck behind)
+ * - Stepped cliffs (series of ledges going up)
+ */
+function terrainHeight(worldX: number, state: GameState): number {
+  const base = GROUND_Y;
+  const difficulty = Math.min(state.score / 2000, 1);
+
+  // Gentle rolling baseline
+  const roll = Math.sin(worldX * 0.012) * 3 + Math.sin(worldX * 0.037 + 1.5) * 2;
+
+  // --- TRAP: Deep chasm (every ~200-400 units) ---
+  // A sudden drop to near screen-bottom. Player must place sand to bridge.
+  const chasmSeed = Math.floor(worldX / 250);
+  const chasmPos = chasmSeed * 250 + Math.floor(hash(chasmSeed * 7) * 100 + 50);
+  const distToChasm = worldX - chasmPos;
+  let chasm = 0;
+  const chasmW = 15 + Math.floor(difficulty * 15);
+  if (distToChasm >= 0 && distToChasm < chasmW) {
+    chasm = 35; // deep drop
+  }
+
+  // --- TRAP: Rock wall (every ~300-500 units, offset from chasms) ---
+  // A tall vertical wall. Player must place sand ramp to get over.
+  const wallSeed = Math.floor((worldX + 130) / 350);
+  const wallPos = wallSeed * 350 + Math.floor(hash(wallSeed * 13 + 5) * 120 + 60);
+  const distToWall = worldX - wallPos;
+  let wall = 0;
+  if (distToWall >= 0 && distToWall < 6) {
+    wall = -(15 + Math.floor(difficulty * 15)); // negative = higher ground
+  }
+
+  // --- TRAP: Stepped cliff (every ~400 units) ---
+  // Ground rises sharply then stays high for a stretch.
+  const cliffSeed = Math.floor((worldX + 200) / 400);
+  const cliffPos = cliffSeed * 400 + Math.floor(hash(cliffSeed * 19 + 11) * 150 + 80);
+  const distToCliff = worldX - cliffPos;
+  let cliff = 0;
+  if (distToCliff >= 0 && distToCliff < 3) {
+    cliff = -(10 + Math.floor(difficulty * 10)); // sharp rise
+  } else if (distToCliff >= 3 && distToCliff < 25) {
+    cliff = -(10 + Math.floor(difficulty * 10)); // plateau
+  } else if (distToCliff >= 25 && distToCliff < 30) {
+    // Gradual descent back down
+    cliff = -(10 + Math.floor(difficulty * 10)) * (1 - (distToCliff - 25) / 5);
+  }
+
+  return Math.round(base - roll + chasm + wall + cliff);
+}
+
+/**
+ * Fill newly exposed right-edge columns with terrain.
  */
 export function fillNewColumns(state: GameState, newCols: number): void {
   if (newCols <= 0) return;
@@ -31,31 +71,37 @@ export function fillNewColumns(state: GameState, newCols: number): void {
   const startX = width - newCols;
 
   for (let x = startX; x < width; x++) {
-    // World-space x for deterministic terrain
     const worldX = state.cameraX + x;
-    const surfaceY = terrainHeight(worldX);
+    const surfaceY = terrainHeight(worldX, state);
+
+    // Clamp: don't let terrain go above screen or below bottom
+    const clampedSurface = Math.max(10, Math.min(LOGICAL_H - 2, surfaceY));
 
     // Solid rock from surface down
-    for (let y = surfaceY; y < LOGICAL_H; y++) {
+    for (let y = clampedSurface; y < LOGICAL_H; y++) {
       setCell(state.grid, x, y, 2, width);
     }
 
-    // Sand layer on top (1-3 pixels depending on slope)
-    const prevSurface = terrainHeight(worldX - 1);
-    const sandDepth = Math.abs(surfaceY - prevSurface) < 2 ? 2 : 1; // less sand on steep slopes
+    // Sand layer on top (2-3 pixels)
+    const prevSurface = terrainHeight(worldX - 1, state);
+    const sandDepth = Math.abs(clampedSurface - prevSurface) < 3 ? 3 : 1;
     for (let d = 1; d <= sandDepth; d++) {
-      if (surfaceY - d >= 0) {
-        setCell(state.grid, x, surfaceY - d, 1, width);
+      if (clampedSurface - d >= 0) {
+        setCell(state.grid, x, clampedSurface - d, 1, width);
       }
     }
 
-    // Scattered loose rocks above surface (small pixel jags)
-    const jag = Math.sin(worldX * 0.31 + worldX * worldX * 0.0001);
-    if (jag > 0.7 && surfaceY - 3 >= 0) {
-      setCell(state.grid, x, surfaceY - 3, 2, width);
+    // Buried skeletons and treasure
+    const buried = Math.sin(worldX * 0.071 + 42.3);
+    if (buried > 0.92) {
+      for (let d = 5; d < 9; d++) {
+        if (clampedSurface + d < LOGICAL_H) setCell(state.grid, x, clampedSurface + d, 2, width);
+      }
     }
-    if (jag > 0.85 && surfaceY - 4 >= 0) {
-      setCell(state.grid, x, surfaceY - 4, 2, width);
+    if (buried < -0.94) {
+      for (let d = 3; d < 5; d++) {
+        if (clampedSurface + d < LOGICAL_H) setCell(state.grid, x, clampedSurface + d, 2, width);
+      }
     }
   }
 }

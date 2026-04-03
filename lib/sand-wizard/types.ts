@@ -26,7 +26,7 @@ export interface Player {
 }
 
 export interface Obstacle {
-  type: 'boulder' | 'falling-rock' | 'dust-devil' | 'cave-gate' | 'vulture' | 'rock-arch';
+  type: 'boulder' | 'falling-rock' | 'dust-devil' | 'cave-gate' | 'scorpion' | 'snake' | 'rock-arch' | 'cactus';
   x: number;
   y: number;
   vx: number;
@@ -35,9 +35,9 @@ export interface Obstacle {
   height: number;
   gapY?: number;
   gapH?: number;
-  swoopPhase?: 'glide' | 'dive' | 'climb';  // vulture only
-  startY?: number;   // vulture: altitude before dive
-  targetX?: number;  // vulture: x where it begins diving
+  swoopPhase?: 'glide' | 'dive' | 'climb';
+  startY?: number;
+  targetX?: number;
   frame?: number;    // animation frame counter
 }
 

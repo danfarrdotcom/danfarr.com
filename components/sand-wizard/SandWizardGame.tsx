@@ -12,7 +12,7 @@ import { updatePlayer } from '../../lib/sand-wizard/player';
 import { updateObstacles } from '../../lib/sand-wizard/obstacles';
 import { fillNewColumns } from '../../lib/sand-wizard/worldgen';
 import { GameState, Player } from '../../lib/sand-wizard/types';
-import { initAudio, playPlaceSand, playRemoveSand, playDeath, playPowerUp, playNearMiss } from '../../lib/sand-wizard/audio';
+import { initAudio, playPlaceSand, playRemoveSand, playDeath, playPowerUp, playNearMiss, startMusic, stopMusic } from '../../lib/sand-wizard/audio';
 import { updateParticles, spawnBurst, spawnSparkle, clearParticles } from '../../lib/sand-wizard/particles';
 import { triggerShake } from '../../lib/sand-wizard/screenshake';
 import { getHighScore, saveHighScore, checkNearMiss } from '../../lib/sand-wizard/score';
@@ -56,6 +56,7 @@ export default function SandWizardGame() {
     prevPowerUpCountRef.current = 0;
     clearParticles();
     setHud({ sand: SAND_MAX, score: 0, phase: 'playing', shieldActive: false, slowScrollFrames: 0, nearMiss: false });
+    startMusic();
   }, []);
 
   useEffect(() => {
@@ -177,6 +178,7 @@ export default function SandWizardGame() {
 
         if (player.state === 'dead') {
           state.phase = 'dead';
+          stopMusic();
           playDeath();
           triggerShake(6, 20);
           spawnBurst(player.x, player.y - 7, 20, '#c2955a');
@@ -203,6 +205,9 @@ export default function SandWizardGame() {
         state,
         state.phase === 'playing' ? player : undefined,
         frameCountRef.current,
+        state.phase === 'playing' ? mouseRef.current.x : undefined,
+        state.phase === 'playing' ? mouseRef.current.y : undefined,
+        state.phase === 'playing' ? mouseRef.current.action : undefined,
       );
       rafRef.current = requestAnimationFrame(loop);
     };
