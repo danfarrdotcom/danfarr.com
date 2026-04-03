@@ -9,3 +9,7 @@ export * from './player';
 export * from './obstacles';
 export * from './worldgen';
 export * from './rng';
+export * from './audio';
+export * from './particles';
+export * from './screenshake';
+export * from './score';

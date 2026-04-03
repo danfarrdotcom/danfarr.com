@@ -5,9 +5,14 @@ function hexToRgb(hex: string): [number, number, number] {
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 }
 
+function setPixel(data: Uint8ClampedArray, px: number, py: number, canvasW: number, canvasH: number, r: number, g: number, b: number): void {
+  if (px < 0 || px >= canvasW || py < 0 || py >= canvasH) return;
+  const idx = (py * canvasW + px) * 4;
+  data[idx] = r; data[idx + 1] = g; data[idx + 2] = b; data[idx + 3] = 255;
+}
+
 /**
- * Fill the sky portion of the ImageData buffer with a gradient + parallax dunes.
- * This replaces the flat gradient pass in renderer.ts.
+ * Fill the sky with gradient + parallax dunes + distant rock spires.
  */
 export function fillBackground(
   data: Uint8ClampedArray,
@@ -32,7 +37,34 @@ export function fillBackground(
     }
   }
 
-  // Parallax dune layers (drawn as horizontal scanlines in the lower sky)
+  // Distant rock spires / mesas (very slow parallax, dark silhouettes)
+  const spireColor = hexToRgb('#5a2810');
+  const spireOffset = cameraX * 0.04;
+  for (let lx = 0; lx < LOGICAL_W; lx++) {
+    const wx = lx + spireOffset;
+    // Spires: narrow tall peaks at irregular intervals
+    const spireVal = Math.sin(wx * 0.008) + Math.sin(wx * 0.023 + 1.4) * 0.5;
+    if (spireVal > 0.8) {
+      const spireH = Math.round((spireVal - 0.8) * 150);
+      const baseY = 155;
+      for (let ly = baseY - spireH; ly < baseY; ly++) {
+        // Taper: narrower at top
+        const t = (baseY - ly) / spireH;
+        const halfW = Math.max(1, Math.round((1 - t * 0.7) * 3));
+        for (let dx = -halfW; dx <= halfW; dx++) {
+          const px2 = lx + dx;
+          if (px2 < 0 || px2 >= LOGICAL_W) continue;
+          for (let sx = 0; sx < SCALE; sx++) {
+            for (let sy = 0; sy < SCALE; sy++) {
+              setPixel(data, px2 * SCALE + sx, ly * SCALE + sy, canvasW, canvasH, spireColor[0], spireColor[1], spireColor[2]);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Parallax dune layers
   const duneLayers = [
     { colour: '#7a3a18', yBase: 140, factor: 0.1, amp: 8, freq: 0.02 },
     { colour: '#a05a28', yBase: 155, factor: 0.3, amp: 10, freq: 0.035 },
@@ -61,7 +93,7 @@ export function fillBackground(
     }
   });
 
-  // Sun (simple filled circle in pixel blocks)
+  // Sun
   const sunLx = Math.round(LOGICAL_W * 0.78);
   const sunLy = 25;
   const sunR = 10;
@@ -71,11 +103,7 @@ export function fillBackground(
       if ((lx - sunLx) ** 2 + (ly - sunLy) ** 2 > sunR * sunR) continue;
       for (let sx = 0; sx < SCALE; sx++) {
         for (let sy = 0; sy < SCALE; sy++) {
-          const py = ly * SCALE + sy;
-          const px = lx * SCALE + sx;
-          if (py < 0 || py >= canvasH || px < 0 || px >= canvasW) continue;
-          const idx = (py * canvasW + px) * 4;
-          data[idx] = sr; data[idx + 1] = sg; data[idx + 2] = sb; data[idx + 3] = 255;
+          setPixel(data, lx * SCALE + sx, ly * SCALE + sy, canvasW, canvasH, sr, sg, sb);
         }
       }
     }

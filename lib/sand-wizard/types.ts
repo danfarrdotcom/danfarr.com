@@ -11,10 +11,11 @@ export interface GameState {
   cameraX: number;
   obstacles: Obstacle[];
   powerUps: PowerUp[];
-  nextSpawnX: number;  // screen-space x where next obstacle will be spawned
+  nextSpawnX: number;
   shieldActive: boolean;
   slowScrollFrames: number;
   nextPowerUpX: number;
+  terrainSeed: number;  // rolling seed for terrain height variation
 }
 
 export interface Player {
@@ -25,15 +26,19 @@ export interface Player {
 }
 
 export interface Obstacle {
-  type: 'boulder' | 'falling-rock' | 'dust-devil' | 'cave-gate';
+  type: 'boulder' | 'falling-rock' | 'dust-devil' | 'cave-gate' | 'vulture' | 'rock-arch';
   x: number;
   y: number;
   vx: number;
   vy: number;
   width: number;
   height: number;
-  gapY?: number;    // cave-gate only: y of the gap start (grid units from top of obstacle)
-  gapH?: number;   // cave-gate only: gap height in grid units
+  gapY?: number;
+  gapH?: number;
+  swoopPhase?: 'glide' | 'dive' | 'climb';  // vulture only
+  startY?: number;   // vulture: altitude before dive
+  targetX?: number;  // vulture: x where it begins diving
+  frame?: number;    // animation frame counter
 }
 
 export type PowerUpType = 'sand-boost' | 'shield' | 'sand-burst' | 'slow-scroll';
