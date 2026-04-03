@@ -25,10 +25,11 @@ export function createInitialState(): GameState {
     cameraX: 0,
     obstacles: [],
     powerUps: [],
-    nextSpawnX: 350,  // first obstacle spawns near right edge of screen
+    nextSpawnX: 350,
     shieldActive: false,
     slowScrollFrames: 0,
     nextPowerUpX: 600,
+    terrainSeed: 0,
   };
 }
 
