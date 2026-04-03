@@ -7,9 +7,10 @@ interface GameHUDProps {
   score: number;
   shieldActive: boolean;
   slowScrollFrames: number;
+  nearMiss?: boolean;
 }
 
-export default function GameHUD({ sandResource, score, shieldActive, slowScrollFrames }: GameHUDProps) {
+export default function GameHUD({ sandResource, score, shieldActive, slowScrollFrames, nearMiss }: GameHUDProps) {
   return (
     <div className="absolute inset-0 pointer-events-none p-3 flex justify-between items-start">
       <div className="flex flex-col gap-1">
@@ -21,7 +22,12 @@ export default function GameHUD({ sandResource, score, shieldActive, slowScrollF
           <div style={{ color: '#44dd88', fontWeight: 'bold', fontSize: '0.8em' }}>⏱ SLOW ({Math.ceil(slowScrollFrames / 60)}s)</div>
         )}
       </div>
-      <ScoreDisplay metres={score} />
+      <div className="flex flex-col items-end gap-1">
+        <ScoreDisplay metres={score} />
+        {nearMiss && (
+          <div className="font-mono text-xs text-yellow-300 animate-pulse">NEAR MISS +50</div>
+        )}
+      </div>
     </div>
   );
 }

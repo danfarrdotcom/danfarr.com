@@ -20,9 +20,8 @@ export default function TitleScreen({ onStart }: TitleScreenProps) {
     >
       <div className="flex flex-col items-center mb-16 gap-4">
         <div className="flex flex-col items-center gap-1 text-xs font-mono text-amber-200/80">
-          <p>Left click → place sand</p>
-          <p>Right click → remove sand</p>
-          <p>Space → jump · Down → duck</p>
+          <p>Tap / click → place sand</p>
+          <p className="hidden sm:block">Right click → remove sand</p>
         </div>
         <button
           onClick={onStart}

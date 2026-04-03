@@ -5,6 +5,8 @@ import {
 } from './constants';
 import { getCell } from './grid';
 import { fillBackground } from './background';
+import { getParticles } from './particles';
+import { updateShake } from './screenshake';
 
 const WIZARD_PALETTE: Record<string, string> = {
   W: '#e8e8f0', // white robe body
@@ -197,6 +199,24 @@ export function renderFrame(
 
   if (player) {
     renderPlayer(ctx, player, frame ?? 0, state);
+  }
+
+  // Particles
+  const parts = getParticles();
+  for (const p of parts) {
+    const alpha = p.life / p.maxLife;
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x * SCALE, p.y * SCALE, p.size * SCALE, p.size * SCALE);
+  }
+  ctx.globalAlpha = 1;
+
+  // Screen shake
+  const shake = updateShake();
+  if (shake.x !== 0 || shake.y !== 0) {
+    const img = ctx.getImageData(0, 0, canvasW, canvasH);
+    ctx.clearRect(0, 0, canvasW, canvasH);
+    ctx.putImageData(img, Math.round(shake.x * SCALE), Math.round(shake.y * SCALE));
   }
 }
 
