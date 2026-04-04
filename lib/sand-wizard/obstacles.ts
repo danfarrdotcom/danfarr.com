@@ -137,11 +137,20 @@ export function spawnRockArch(state: GameState, gx: number): void {
 export function spawnTypedPowerUp(state: GameState, gx: number, difficulty: number): void {
   const roll = rng();
   let type: PowerUpType;
-  if (roll < 0.45) type = 'sand-boost';
-  else if (roll < 0.7) type = 'shield';
-  else if (roll < 0.85) type = 'sand-burst';
-  else type = 'slow-scroll';
-  state.powerUps.push({ x: gx, y: GROUND_Y - 12, collected: false, type });
+  if (roll < 0.35) type = 'sand-boost';
+  else if (roll < 0.55) type = 'shield';
+  else if (roll < 0.7) type = 'sand-burst';
+  else if (roll < 0.85) type = 'slow-scroll';
+  else type = 'sand-full';
+  // Find terrain surface at spawn x so power-up sits on ground
+  let spawnY = GROUND_Y - 8;
+  for (let y = 0; y < LOGICAL_H; y++) {
+    if (getCell(state.grid, gx, y, state.gridWidth) !== 0) {
+      spawnY = y - 8;
+      break;
+    }
+  }
+  state.powerUps.push({ x: gx, y: Math.max(5, spawnY), collected: false, type });
 }
 
 export function updateObstacles(state: GameState, player: Player): void {
@@ -263,7 +272,7 @@ export function updateObstacles(state: GameState, player: Player): void {
     if (pu.collected) return;
     const px = Math.round(player.x);
     const py = Math.round(player.y);
-    if (Math.abs(px - pu.x) < 8 && Math.abs(py - pu.y) < 12) {
+    if (Math.abs(px - pu.x) < 12 && Math.abs(py - pu.y) < 16) {
       pu.collected = true;
       if (pu.type === 'sand-boost') {
         state.sandResource = Math.min(SAND_MAX, state.sandResource + POWERUP_RESTORE);
@@ -280,6 +289,8 @@ export function updateObstacles(state: GameState, player: Player): void {
         }
       } else if (pu.type === 'slow-scroll') {
         state.slowScrollFrames = 300;
+      } else if (pu.type === 'sand-full') {
+        state.sandResource = SAND_MAX;
       }
     }
   });

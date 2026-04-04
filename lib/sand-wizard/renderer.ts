@@ -416,19 +416,35 @@ export function renderFrame(
   const PU_COLORS: Record<string, string> = {
     'sand-boost': '#f5c842', 'shield': '#42aaff',
     'sand-burst': '#ff8c00', 'slow-scroll': '#44dd88',
+    'sand-full': '#ff44ff',
   };
   state.powerUps.forEach((pu) => {
     if (pu.collected) return;
-    const sx = pu.x * SCALE;
-    const sy = pu.y * SCALE;
+    const cx = pu.x * SCALE + 3 * SCALE;
+    const cy = pu.y * SCALE + 3 * SCALE;
+    const r = 4 * SCALE;
     const color = PU_COLORS[pu.type] ?? '#00ffcc';
     const pulse = 0.5 + 0.5 * Math.sin(Date.now() / 200);
+
+    // Outer glow
+    ctx.globalAlpha = 0.2 + 0.2 * pulse;
     ctx.fillStyle = color;
-    ctx.globalAlpha = 0.3 + 0.4 * pulse;
-    ctx.fillRect(sx - SCALE, sy - SCALE, 8 * SCALE, 8 * SCALE);
+    ctx.beginPath();
+    ctx.arc(cx, cy, r + 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Main circle
+    ctx.globalAlpha = 0.6 + 0.3 * pulse;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r - 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Bright center
     ctx.globalAlpha = 1;
-    ctx.fillStyle = color;
-    ctx.fillRect(sx + SCALE, sy + SCALE, 4 * SCALE, 4 * SCALE);
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(cx, cy, r * 0.3, 0, Math.PI * 2);
+    ctx.fill();
   });
 
   if (player) renderPlayer(ctx, player, frame ?? 0, state);

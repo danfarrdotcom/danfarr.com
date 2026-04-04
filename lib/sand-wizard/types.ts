@@ -41,7 +41,7 @@ export interface Obstacle {
   frame?: number;    // animation frame counter
 }
 
-export type PowerUpType = 'sand-boost' | 'shield' | 'sand-burst' | 'slow-scroll';
+export type PowerUpType = 'sand-boost' | 'shield' | 'sand-burst' | 'slow-scroll' | 'sand-full';
 
 export interface PowerUp {
   x: number;
