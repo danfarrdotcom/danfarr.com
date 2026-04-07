@@ -1,13 +1,42 @@
 let ctx: AudioContext | null = null;
 let musicPlaying = false;
 let musicGain: GainNode | null = null;
+let _sfxMuted = false;
+let _musicMuted = false;
+
+const SFX_KEY = 'sand-wizard-sfx-muted';
+const MUSIC_KEY = 'sand-wizard-music-muted';
+
+// Load saved prefs
+try {
+  _sfxMuted = localStorage.getItem(SFX_KEY) === '1';
+  _musicMuted = localStorage.getItem(MUSIC_KEY) === '1';
+} catch {}
+
+export function isSfxMuted(): boolean { return _sfxMuted; }
+export function isMusicMuted(): boolean { return _musicMuted; }
+
+export function setSfxMuted(v: boolean): void {
+  _sfxMuted = v;
+  try { localStorage.setItem(SFX_KEY, v ? '1' : '0'); } catch {}
+}
+
+export function setMusicMuted(v: boolean): void {
+  _musicMuted = v;
+  try { localStorage.setItem(MUSIC_KEY, v ? '1' : '0'); } catch {}
+  if (v && musicGain) {
+    musicGain.gain.linearRampToValueAtTime(0.001, (ctx?.currentTime ?? 0) + 0.2);
+  } else if (!v && musicPlaying && musicGain && ctx) {
+    musicGain.gain.linearRampToValueAtTime(1.0, ctx.currentTime + 0.2);
+  }
+}
 
 export function initAudio(): void {
   if (!ctx) ctx = new AudioContext();
 }
 
 function noise(duration: number, freq: number, type: OscillatorType = 'sine', gain = 0.3): void {
-  if (!ctx) return;
+  if (!ctx || _sfxMuted) return;
   const o = ctx.createOscillator();
   const g = ctx.createGain();
   o.type = type;
@@ -140,7 +169,7 @@ export function startMusic(): void {
   if (!ctx || musicPlaying) return;
   musicPlaying = true;
   musicGain = ctx.createGain();
-  musicGain.gain.value = 1.0;
+  musicGain.gain.value = _musicMuted ? 0 : 1.0;
   musicGain.connect(ctx.destination);
   scheduleLoop();
 }
@@ -160,7 +189,7 @@ export function playNearMiss(): void { noise(0.1, 1200, 'sine', 0.15); }
 export function playBoulderRumble(): void { noise(0.2, 60, 'square', 0.15); }
 
 export function playPowerUp(): void {
-  if (!ctx) return;
+  if (!ctx || _sfxMuted) return;
   const o = ctx.createOscillator();
   const g = ctx.createGain();
   o.type = 'sine';
