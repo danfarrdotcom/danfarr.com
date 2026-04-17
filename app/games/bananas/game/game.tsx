@@ -369,48 +369,7 @@ function initTickets(): Ticket[] {
   return t;
 }
 
-const excuses = [
-  'Yesterday I mass-updated Jira tickets so it looks like I did something. Today: same. No blockers.',
-  "I investigated why tests pass locally but not in CI. Today I'll investigate again. Blocked by the concept of time.",
-  "I attended a 3-hour 'quick sync'. Today I'll attend another one. Blocked by meetings about meetings.",
-  "I refactored the refactor of the refactor. Today I'll refactor it again. No blockers, just regret.",
-  "I attended 6 meetings about why we're not shipping. Today: 7 meetings. Blocked by meetings.",
-  'I stared at a PR review until it approved itself. Today: same strategy. No blockers, just denial.',
-  "I moved tickets from 'To Do' to 'Doing' and back. Today I'll add a third column. Blocked by indecision.",
-  'I Googled the same Stack Overflow answer for the 4th time. Today will be the 5th. No blockers.',
-  "I pretended to understand the architecture diagram. Today I'll nod more confidently. Blocked by the architecture.",
-  "I wrote a Confluence doc nobody will read. Today I'll write another. No blockers, just futility.",
-  "I estimated a 2-point story at 13 points for padding. Today I'll estimate lunch. No blockers, just strategy.",
-  'I debugged CSS for 6 hours. Today: hour 7. Blocked by CSS.',
-  "I asked 'can everyone see my screen?' 14 times. Today I'll aim for 15. No blockers.",
-];
-
-function ExcuseGenerator() {
-  const [excuse, setExcuse] = useState('');
-  return (
-    <div className="max-w-2xl mx-auto p-8 bg-[#1a1a2e] rounded-2xl border-2 border-[#1a1a2e] text-yellow-400">
-      <h2 className="text-3xl font-bold text-center">
-        🎰 Standup Excuse Generator
-      </h2>
-      <p className="text-center text-yellow-400/60 mt-1">
-        For when you forgot what you did yesterday
-      </p>
-      <p className="text-center text-lg mt-4 min-h-[3rem] text-white">
-        {excuse}
-      </p>
-      <button
-        onClick={() =>
-          setExcuse(excuses[Math.floor(Math.random() * excuses.length)])
-        }
-        className="block mx-auto mt-4 px-8 py-3 bg-yellow-400 text-[#1a1a2e] rounded-lg text-xl font-bold cursor-pointer hover:scale-105 transition-transform"
-      >
-        🍌 Generate Excuse
-      </button>
-    </div>
-  );
-}
-
-function Game() {
+export default function Game() {
   const [showIntro, setShowIntro] = useState(true);
   const [gameStarted, setGameStarted] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -432,12 +391,12 @@ function Game() {
   const lastFireTime = useRef(0);
 
   const DEADLINE_LABELS = [
-    { at: 90, msg: 'CYCLE KICKED OFF' },
+    { at: 90, msg: 'SPRINT STARTED' },
     { at: 60, msg: 'STANDUP IN 60s' },
     { at: 30, msg: 'DEADLINE APPROACHING' },
-    { at: 15, msg: 'PM TYPING...' },
-    { at: 10, msg: 'JIRA BOARD LOADING' },
-    { at: 5, msg: 'WAITING FOR PO APPROVAL' },
+    { at: 15, msg: 'PM IS TYPING...' },
+    { at: 10, msg: 'JIRA BOARD ON FIRE' },
+    { at: 5, msg: 'CLIENT ON THE CALL' },
     { at: 0, msg: 'SPRINT OVER 💀' },
   ];
 
@@ -487,7 +446,6 @@ function Game() {
   const mouseY = useRef(H - 180);
   const throwing = useRef(false);
   const throwAnim = useRef(0);
-  const lastThrowAngle = useRef(0);
 
   const onDown = useCallback(
     (e: React.MouseEvent | React.TouchEvent) => {
@@ -552,7 +510,6 @@ function Game() {
       });
       throwing.current = true;
       throwAnim.current = 12;
-      lastThrowAngle.current = a;
       lastFireTime.current = now;
       // Spawn fire particles
       for (let i = 0; i < 8; i++) {
@@ -922,7 +879,7 @@ function Game() {
               p.hasFile = true;
               p.escaping = true;
               p.seekingLaptop = false;
-              p.bubble = 'Scrum banana!';
+              p.bubble = 'Got it!';
               p.bubbleTimer = 60;
             }
           } else if (p.escaping && p.hasFile) {
@@ -971,7 +928,7 @@ function Game() {
                   p.sheltering = true;
                   p.shelterX = o.x + o.w / 2 - SPRITE_W / 2;
                   p.shelterTimer = Math.floor(rand(120, 300));
-                  p.bubble = 'Are you blocked?';
+                  p.bubble = 'Taking cover!';
                   p.bubbleTimer = 40;
                   break;
                 }
@@ -986,7 +943,7 @@ function Game() {
               p.shelterTimer--;
               if (p.shelterTimer <= 0) {
                 p.sheltering = false;
-                // p.bubble = 'Back to work!';
+                p.bubble = 'Back to work!';
                 p.bubbleTimer = 30;
               }
             } else if (!p.movingTicket) {
@@ -1116,7 +1073,7 @@ function Game() {
           if (b.x > p.x && b.x < p.x + SPRITE_W && b.y > py && b.y < py + ph) {
             // Crouched people have 40% chance to dodge
             if (p.sheltering && Math.random() < 0.4) {
-              p.bubble = "I'm blocked!";
+              p.bubble = 'Missed me!';
               p.bubbleTimer = 60;
               splats.current.push({ x: b.x, y: b.y, timer: 20 });
               return false; // Banana hits but person dodges
@@ -1132,7 +1089,7 @@ function Game() {
             // Different scoring based on whether they had a file
             if (p.hasFile) {
               score.current += 200; // Bonus for stopping a data thief!
-              p.bubble = "I'm blocked!";
+              p.bubble = 'My files!';
             } else {
               score.current += 100; // Regular hit
             }
@@ -1159,183 +1116,60 @@ function Game() {
 
       // Floating hand — follows mouse X, fixed Y
       const handX = mouseX.current;
-      const handY = H - 140;
+      const handY = H - 180;
 
       // Throw animation
       if (throwing.current) {
         throwAnim.current--;
         if (throwAnim.current <= 0) throwing.current = false;
       }
+      const throwOffset = throwing.current ? -40 * (throwAnim.current / 12) : 0;
+      const tipY = handY + throwOffset;
 
-      // Compute aim angle for hand tilt
-      let aimAngle = 0;
-      if (drag.current) {
-        const d = drag.current;
-        const adx = d.start.x - d.current.x;
-        const ady = d.start.y - d.current.y;
-        if (Math.sqrt(adx * adx + ady * ady) > 10) {
-          aimAngle = Math.atan2(ady, adx);
-        }
-      }
-
-      // Throw: wind-up then snap forward
-      let armTilt = 0;
-      let armOffsetY = 0;
-      let armScale = 1;
-      if (throwing.current) {
-        const t = throwAnim.current / 12; // 1 → 0
-        if (t > 0.5) {
-          // Wind-up phase: pull back
-          const wt = (t - 0.5) / 0.5;
-          armTilt = lastThrowAngle.current * 0.3 + wt * 0.4;
-          armOffsetY = -wt * 30;
-          armScale = 1 + wt * 0.08;
-        } else {
-          // Snap forward phase
-          const st = t / 0.5;
-          armTilt = lastThrowAngle.current * 0.2 * st - (1 - st) * 0.3;
-          armOffsetY = (1 - st) * 15;
-          armScale = 1 - (1 - st) * 0.05;
-        }
-      } else if (drag.current) {
-        // Tilt toward aim while dragging
-        armTilt = aimAngle * 0.15;
-        const d = drag.current;
-        const pull = Math.min(
-          Math.sqrt(
-            (d.start.x - d.current.x) ** 2 + (d.start.y - d.current.y) ** 2
-          ) / MAX_POWER,
-          1
-        );
-        armOffsetY = -pull * 12;
-        armScale = 1 + pull * 0.06;
-      }
-
-      const tipY = handY + armOffsetY;
-
-      ctx.save();
-      ctx.translate(handX, tipY);
-      ctx.rotate(armTilt);
-      ctx.scale(armScale, armScale);
-
-      // Arm / forearm emerging from below
+      // Hand shadow
+      ctx.fillStyle = 'rgba(0,0,0,0.15)';
+      ctx.beginPath();
+      ctx.ellipse(handX, handY + 30, 28, 8, 0, 0, Math.PI * 2);
+      ctx.fill();
+      // Fist
       ctx.fillStyle = '#fdbcb4';
       ctx.beginPath();
-      ctx.roundRect(-18, 10, 36, 55, 14);
+      ctx.roundRect(handX - 22, tipY - 20, 44, 44, 10);
       ctx.fill();
-      // Arm outline
-      ctx.strokeStyle = '#d4937e';
-      ctx.lineWidth = 2.5;
-      ctx.beginPath();
-      ctx.roundRect(-18, 10, 36, 55, 14);
-      ctx.stroke();
-
-      // Wristband / cuff
-      ctx.fillStyle = '#ffe135';
-      ctx.beginPath();
-      ctx.roundRect(-20, 4, 40, 14, 5);
-      ctx.fill();
-      ctx.strokeStyle = '#c4a000';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.roundRect(-20, 4, 40, 14, 5);
-      ctx.stroke();
-      // Cuff detail line
-      ctx.strokeStyle = '#b89600';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(-14, 11);
-      ctx.lineTo(14, 11);
-      ctx.stroke();
-
-      // Fist — chunky rounded shape
-      ctx.fillStyle = '#fdbcb4';
-      ctx.beginPath();
-      ctx.roundRect(-24, -28, 48, 38, 12);
-      ctx.fill();
-      // Fist outline
-      ctx.strokeStyle = '#d4937e';
-      ctx.lineWidth = 2.5;
-      ctx.beginPath();
-      ctx.roundRect(-24, -28, 48, 38, 12);
-      ctx.stroke();
-
-      // Thumb — on the side
+      // Thumb
       ctx.fillStyle = '#f0a8a0';
       ctx.beginPath();
-      ctx.roundRect(-29, -14, 13, 24, 6);
+      ctx.roundRect(handX - 26, tipY - 4, 12, 22, 6);
       ctx.fill();
-      ctx.strokeStyle = '#d4937e';
+      // Knuckle lines
+      ctx.strokeStyle = '#e8a098';
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.roundRect(-29, -14, 13, 24, 6);
-      ctx.stroke();
-
-      // Finger segments (three knuckle bumps on top)
-      ctx.fillStyle = '#fdbcb4';
-      for (let i = 0; i < 3; i++) {
-        const fx = -14 + i * 14;
-        ctx.beginPath();
-        ctx.arc(fx, -28, 7, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.strokeStyle = '#d4937e';
-      ctx.lineWidth = 1.5;
-      for (let i = 0; i < 3; i++) {
-        const fx = -14 + i * 14;
-        ctx.beginPath();
-        ctx.arc(fx, -28, 7, Math.PI, Math.PI * 2);
-        ctx.stroke();
-      }
-
-      // Knuckle creases
-      ctx.strokeStyle = '#e0998c';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(-16, -12);
-      ctx.lineTo(16, -12);
+      ctx.moveTo(handX - 10, tipY + 2);
+      ctx.lineTo(handX + 10, tipY + 2);
       ctx.stroke();
       ctx.beginPath();
-      ctx.moveTo(-14, -5);
-      ctx.lineTo(14, -5);
+      ctx.moveTo(handX - 8, tipY + 8);
+      ctx.lineTo(handX + 8, tipY + 8);
       ctx.stroke();
 
-      // Highlight on fist
-      ctx.fillStyle = 'rgba(255,255,255,0.15)';
-      ctx.beginPath();
-      ctx.roundRect(-18, -26, 20, 10, 5);
-      ctx.fill();
-
-      ctx.restore();
-
-      // Hand shadow on floor
-      const shadowAlpha = throwing.current ? 0.08 : 0.15;
-      ctx.fillStyle = `rgba(0,0,0,${shadowAlpha})`;
-      ctx.beginPath();
-      ctx.ellipse(handX, handY + 50, 30 * armScale, 8, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Banana in hand (hide during snap-forward of throw)
-      const showBanana = !throwing.current || throwAnim.current > 6;
-      if (showBanana) {
+      // Banana in hand (not during throw flash)
+      if (!throwing.current || throwAnim.current < 8) {
         ctx.save();
-        ctx.translate(handX, tipY);
-        ctx.rotate(armTilt);
-        ctx.scale(armScale, armScale);
-        ctx.translate(0, -42);
-        const bs = 4;
+        ctx.translate(handX, tipY - 28);
+        const bs = 5;
         for (let r = 0; r < BANANA_SPRITE.length; r++) {
           for (let c = 0; c < BANANA_SPRITE[r].length; c++) {
             const ch = BANANA_SPRITE[r][c];
             if (ch === '.') continue;
             ctx.fillStyle = ch === 'Y' ? '#ffe135' : '#8B6914';
-            ctx.fillRect(-32 + c * bs, -22 + r * bs, bs, bs);
+            ctx.fillRect(-40 + c * bs, -28 + r * bs, bs, bs);
           }
         }
         ctx.restore();
       }
 
-      // Drag aim — trajectory preview
+      // Drag aim line — trajectory preview
       if (drag.current) {
         const d = drag.current;
         const dx = d.start.x - d.current.x,
@@ -1349,10 +1183,11 @@ function Game() {
         if (power > 15) {
           let sx = handX,
             sy = tipY - 30,
+            svx = simVx,
             svy = simVy;
           const steps = 30;
           for (let i = 0; i < steps; i++) {
-            sx += simVx;
+            sx += svx;
             sy += svy;
             svy += GRAVITY;
             if (sy > H || sx < 0 || sx > W) break;
@@ -1408,7 +1243,7 @@ function Game() {
         return true;
       });
 
-      // Cooldown indicator (ring around hand)
+      // Cooldown indicator (subtle ring around hand)
       const cooldownElapsed = now - lastFireTime.current;
       if (cooldownElapsed < COOLDOWN_MS && lastFireTime.current > 0) {
         const cdPct = cooldownElapsed / COOLDOWN_MS;
@@ -1583,10 +1418,4 @@ function Game() {
       </div>
     </>
   );
-}
-
-// export const metadata = { title: 'ScrumBanana 🍌 Banana Launcher' };
-
-export default function Page() {
-  return <Game />;
 }
