@@ -12,6 +12,15 @@ export const metadata: Metadata = {
 
 const entries: EssayEntry[] = [
   {
+    slug: 'building-sand-wizard',
+    title: 'Building Sand Wizard',
+    hook: 'No physics engine required.',
+    description:
+      'How a 400×225 grid, a deterministic RNG, and a circular brush become a falling-sand survival game — with interactive examples you can play with.',
+    status: 'published',
+    label: 'Games',
+  },
+  {
     slug: 'flow-without-traffic-lights',
     title: 'Flow without traffic lights',
     hook: 'Crowds discover lanes on their own.',

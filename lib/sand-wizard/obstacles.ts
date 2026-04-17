@@ -3,11 +3,26 @@ import { setCell, getCell } from './grid';
 import { GROUND_Y, LOGICAL_H, POWERUP_RESTORE, WALK_SPEED, SAND_MAX } from './constants';
 import { rng } from './rng';
 
-/** Carve a pit */
+/** Carve a pit — steep drop on left (player faces wall), sand slope on right to climb out */
 export function carvePit(state: GameState, gx: number, width: number): void {
+  const pitDepth = LOGICAL_H - GROUND_Y + 4;
+  const slopeW = Math.min(Math.floor(width * 0.6), 20);
+
   for (let x = gx; x < gx + width && x < state.gridWidth; x++) {
+    const distFromRight = gx + width - 1 - x;
+
+    // Clear everything first
     for (let y = GROUND_Y - 4; y < LOGICAL_H; y++) {
       setCell(state.grid, x, y, 0, state.gridWidth);
+    }
+
+    // On the right side, rebuild a sand slope rising from pit floor to surface
+    if (distFromRight < slopeW) {
+      const t = 1 - distFromRight / slopeW; // 0 at far right edge, 1 deep in pit
+      const slopeTop = Math.round(GROUND_Y - 4 + t * pitDepth);
+      for (let y = slopeTop; y < LOGICAL_H; y++) {
+        setCell(state.grid, x, y, 1, state.gridWidth); // sand, not rock — can be dug
+      }
     }
   }
 }
@@ -37,7 +52,7 @@ export function spawnBoulderFast(state: GameState, gx: number): void {
 }
 
 export function spawnFallingRock(state: GameState, gx: number, difficulty: number): void {
-  const sizes = [4, 8, 12];
+  const sizes = [16, 20, 24];
   const maxSize = difficulty > 0.5 ? 3 : difficulty > 0.25 ? 2 : 1;
   const size = sizes[Math.floor(rng() * maxSize)];
   state.obstacles.push({
@@ -53,6 +68,16 @@ export function spawnDustDevil(state: GameState, gx: number): void {
   });
 }
 
+export function spawnCactus(state: GameState, gx: number, difficulty: number): void {
+  const sizes = [8, 12, 16, 20];
+  const maxSize = difficulty > 0.5 ? 4 : difficulty > 0.25 ? 3 : 2;
+  const size = sizes[Math.floor(rng() * maxSize)];
+  state.obstacles.push({
+    type: 'cactus', x: gx, y: GROUND_Y - size,
+    vx: 0, vy: 0, width: size, height: size,
+  });
+}
+
 export function spawnCaveGate(state: GameState, _gx: number, difficulty: number): void {
   const gateW = state.gridWidth;
   const gateH = 30 + Math.floor(rng() * 20 * difficulty);
@@ -65,14 +90,20 @@ export function spawnCaveGate(state: GameState, _gx: number, difficulty: number)
   });
 }
 
-/** Spawn a vulture — glides in from the right, swoops down at the player, climbs back up */
-export function spawnVulture(state: GameState, gx: number): void {
-  const altitude = 20 + Math.floor(rng() * 30);
+/** Spawn a scorpion — stationary ground hazard */
+export function spawnScorpion(state: GameState, gx: number): void {
   state.obstacles.push({
-    type: 'vulture', x: gx, y: altitude,
-    vx: -1.8, vy: 0, width: 12, height: 8,
-    swoopPhase: 'glide', startY: altitude,
-    targetX: 80 + Math.floor(rng() * 100), // x where it starts diving
+    type: 'scorpion', x: gx, y: GROUND_Y - 4,
+    vx: 0, vy: 0, width: 8, height: 4,
+    frame: 0,
+  });
+}
+
+/** Spawn a snake — stationary ground hazard */
+export function spawnSnake(state: GameState, gx: number): void {
+  state.obstacles.push({
+    type: 'snake', x: gx, y: GROUND_Y - 3,
+    vx: 0, vy: 0, width: 10, height: 3,
     frame: 0,
   });
 }
@@ -106,11 +137,20 @@ export function spawnRockArch(state: GameState, gx: number): void {
 export function spawnTypedPowerUp(state: GameState, gx: number, difficulty: number): void {
   const roll = rng();
   let type: PowerUpType;
-  if (roll < 0.45) type = 'sand-boost';
-  else if (roll < 0.7) type = 'shield';
-  else if (roll < 0.85) type = 'sand-burst';
-  else type = 'slow-scroll';
-  state.powerUps.push({ x: gx, y: GROUND_Y - 12, collected: false, type });
+  if (roll < 0.35) type = 'sand-boost';
+  else if (roll < 0.55) type = 'shield';
+  else if (roll < 0.7) type = 'sand-burst';
+  else if (roll < 0.85) type = 'slow-scroll';
+  else type = 'sand-full';
+  // Find terrain surface at spawn x so power-up sits on ground
+  let spawnY = GROUND_Y - 8;
+  for (let y = 0; y < LOGICAL_H; y++) {
+    if (getCell(state.grid, gx, y, state.gridWidth) !== 0) {
+      spawnY = y - 8;
+      break;
+    }
+  }
+  state.powerUps.push({ x: gx, y: Math.max(5, spawnY), collected: false, type });
 }
 
 export function updateObstacles(state: GameState, player: Player): void {
@@ -173,29 +213,8 @@ export function updateObstacles(state: GameState, player: Player): void {
       }
     }
 
-    if (obs.type === 'vulture') {
+    if (obs.type === 'scorpion' || obs.type === 'snake') {
       obs.frame = (obs.frame ?? 0) + 1;
-      const phase = obs.swoopPhase ?? 'glide';
-
-      if (phase === 'glide') {
-        // Glide toward targetX, slight sine bob
-        obs.y = (obs.startY ?? 30) + Math.sin(obs.frame * 0.08) * 3;
-        if (obs.x <= (obs.targetX ?? 80)) {
-          obs.swoopPhase = 'dive';
-        }
-      } else if (phase === 'dive') {
-        // Dive toward player's y
-        obs.vy += 0.3;
-        obs.y += obs.vy;
-        if (obs.y >= GROUND_Y - 14) {
-          obs.swoopPhase = 'climb';
-          obs.vy = -2.5;
-        }
-      } else if (phase === 'climb') {
-        obs.vy += 0.05; // slow deceleration upward
-        obs.y += obs.vy;
-        if (obs.y < -20) return false;
-      }
     }
 
     if (obs.type === 'cave-gate') {
@@ -217,13 +236,14 @@ export function updateObstacles(state: GameState, player: Player): void {
       return true;
     }
 
-    // rock-arch is static terrain, just scroll off
-    if (obs.type === 'rock-arch') {
+    // rock-arch, boulder, dust-devil — no kill, just scroll off
+    if (obs.type === 'rock-arch' || obs.type === 'boulder'
+      || obs.type === 'dust-devil') {
       if (obs.x + obs.width < -10) return false;
       return true;
     }
 
-    // Generic AABB collision for boulder, falling-rock, dust-devil, vulture
+    // falling-rock, scorpion, snake, cactus kill the player on contact
     const px = Math.round(player.x);
     const py = Math.round(player.y);
     const ox = Math.round(obs.x);
@@ -252,7 +272,7 @@ export function updateObstacles(state: GameState, player: Player): void {
     if (pu.collected) return;
     const px = Math.round(player.x);
     const py = Math.round(player.y);
-    if (Math.abs(px - pu.x) < 8 && Math.abs(py - pu.y) < 12) {
+    if (Math.abs(px - pu.x) < 12 && Math.abs(py - pu.y) < 16) {
       pu.collected = true;
       if (pu.type === 'sand-boost') {
         state.sandResource = Math.min(SAND_MAX, state.sandResource + POWERUP_RESTORE);
@@ -269,6 +289,8 @@ export function updateObstacles(state: GameState, player: Player): void {
         }
       } else if (pu.type === 'slow-scroll') {
         state.slowScrollFrames = 300;
+      } else if (pu.type === 'sand-full') {
+        state.sandResource = SAND_MAX;
       }
     }
   });
@@ -282,43 +304,48 @@ export function updateObstacles(state: GameState, player: Player): void {
     const roll = rng();
 
     if (difficulty < 0.25) {
-      // Early: pits, small falling rocks, occasional vulture
-      if (roll < 0.4) carvePit(state, spawnGx - 20, 10 + Math.floor(rng() * 10));
-      else if (roll < 0.75) spawnFallingRock(state, spawnGx - 20, difficulty);
-      else spawnVulture(state, spawnGx);
+      if (roll < 0.3) carvePit(state, spawnGx - 20, 10 + Math.floor(rng() * 10));
+      else if (roll < 0.5) spawnFallingRock(state, spawnGx - 20, difficulty);
+      else if (roll < 0.7) spawnCactus(state, spawnGx - 15, difficulty);
+      else if (roll < 0.85) spawnScorpion(state, spawnGx);
+      else spawnSnake(state, spawnGx);
     } else if (difficulty < 0.5) {
-      if (roll < 0.2) carvePit(state, spawnGx - 20, 12 + Math.floor(rng() * 12));
-      else if (roll < 0.35) spawnFallingRock(state, spawnGx - 20, difficulty);
-      else if (roll < 0.5) spawnBoulder(state, spawnGx);
-      else if (roll < 0.65) spawnVulture(state, spawnGx);
-      else if (roll < 0.8) spawnRockArch(state, spawnGx - 15);
+      if (roll < 0.15) carvePit(state, spawnGx - 20, 12 + Math.floor(rng() * 12));
+      else if (roll < 0.3) spawnFallingRock(state, spawnGx - 20, difficulty);
+      else if (roll < 0.42) spawnCactus(state, spawnGx - 15, difficulty);
+      else if (roll < 0.52) spawnBoulder(state, spawnGx);
+      else if (roll < 0.62) spawnScorpion(state, spawnGx);
+      else if (roll < 0.72) spawnSnake(state, spawnGx);
+      else if (roll < 0.85) spawnRockArch(state, spawnGx - 15);
       else spawnCaveGate(state, 0, difficulty);
     } else if (difficulty < 0.75) {
-      if (roll < 0.15) carvePit(state, spawnGx - 20, 15 + Math.floor(rng() * 15));
-      else if (roll < 0.3) {
+      if (roll < 0.12) carvePit(state, spawnGx - 20, 15 + Math.floor(rng() * 15));
+      else if (roll < 0.25) {
         spawnFallingRock(state, spawnGx - 20, difficulty);
         if (rng() < 0.5) spawnFallingRock(state, spawnGx - 50, difficulty);
       }
-      else if (roll < 0.42) spawnBoulder(state, spawnGx);
-      else if (roll < 0.55) spawnVulture(state, spawnGx);
-      else if (roll < 0.65) spawnRockArch(state, spawnGx - 15);
-      else if (roll < 0.8) spawnCaveGate(state, 0, difficulty);
+      else if (roll < 0.35) spawnCactus(state, spawnGx - 15, difficulty);
+      else if (roll < 0.45) spawnBoulder(state, spawnGx);
+      else if (roll < 0.55) spawnScorpion(state, spawnGx);
+      else if (roll < 0.62) spawnSnake(state, spawnGx);
+      else if (roll < 0.72) spawnRockArch(state, spawnGx - 15);
+      else if (roll < 0.85) spawnCaveGate(state, 0, difficulty);
       else spawnDustDevil(state, spawnGx - 30);
     } else {
-      // Max difficulty: everything, combos
-      if (roll < 0.12) carvePit(state, spawnGx - 20, 20 + Math.floor(rng() * 20));
-      else if (roll < 0.28) {
+      if (roll < 0.10) carvePit(state, spawnGx - 20, 20 + Math.floor(rng() * 20));
+      else if (roll < 0.24) {
         spawnFallingRock(state, spawnGx - 10, difficulty);
         spawnFallingRock(state, spawnGx - 30, difficulty);
         if (rng() < 0.5) spawnFallingRock(state, spawnGx - 50, difficulty);
       }
-      else if (roll < 0.38) spawnBoulderFast(state, spawnGx);
-      else if (roll < 0.5) {
-        spawnVulture(state, spawnGx);
-        if (rng() < 0.3) spawnVulture(state, spawnGx + 30); // pair of vultures
+      else if (roll < 0.32) spawnCactus(state, spawnGx - 15, difficulty);
+      else if (roll < 0.40) spawnBoulderFast(state, spawnGx);
+      else if (roll < 0.50) {
+        spawnScorpion(state, spawnGx);
+        if (rng() < 0.3) spawnSnake(state, spawnGx + 20);
       }
-      else if (roll < 0.6) spawnRockArch(state, spawnGx - 15);
-      else if (roll < 0.78) spawnCaveGate(state, 0, difficulty);
+      else if (roll < 0.60) spawnRockArch(state, spawnGx - 15);
+      else if (roll < 0.80) spawnCaveGate(state, 0, difficulty);
       else spawnDustDevil(state, spawnGx - 30);
     }
 

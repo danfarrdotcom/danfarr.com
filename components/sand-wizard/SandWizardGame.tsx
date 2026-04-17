@@ -12,7 +12,7 @@ import { updatePlayer } from '../../lib/sand-wizard/player';
 import { updateObstacles } from '../../lib/sand-wizard/obstacles';
 import { fillNewColumns } from '../../lib/sand-wizard/worldgen';
 import { GameState, Player } from '../../lib/sand-wizard/types';
-import { initAudio, playPlaceSand, playRemoveSand, playDeath, playPowerUp, playNearMiss } from '../../lib/sand-wizard/audio';
+import { initAudio, playPlaceSand, playRemoveSand, playDeath, playPowerUp, playNearMiss, startMusic, stopMusic } from '../../lib/sand-wizard/audio';
 import { updateParticles, spawnBurst, spawnSparkle, clearParticles } from '../../lib/sand-wizard/particles';
 import { triggerShake } from '../../lib/sand-wizard/screenshake';
 import { getHighScore, saveHighScore, checkNearMiss } from '../../lib/sand-wizard/score';
@@ -42,6 +42,8 @@ export default function SandWizardGame() {
     nearMiss: false,
   });
   const [highScore, setHighScore] = useState(0);
+  const [powerUpMsg, setPowerUpMsg] = useState<string | null>(null);
+  const powerUpTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => { setHighScore(getHighScore()); }, []);
 
@@ -56,6 +58,7 @@ export default function SandWizardGame() {
     prevPowerUpCountRef.current = 0;
     clearParticles();
     setHud({ sand: SAND_MAX, score: 0, phase: 'playing', shieldActive: false, slowScrollFrames: 0, nearMiss: false });
+    startMusic();
   }, []);
 
   useEffect(() => {
@@ -154,12 +157,30 @@ export default function SandWizardGame() {
         updatePlayer(player, state);
 
         // Track power-up count before obstacle update
-        const puBefore = state.powerUps.filter(p => !p.collected).length;
+        const puSnapshot = state.powerUps.filter(p => !p.collected).map(p => p.type);
         updateObstacles(state, player);
-        const puAfter = state.powerUps.filter(p => !p.collected).length;
-        if (puAfter < puBefore) {
+        const puAfterList = state.powerUps.filter(p => !p.collected).map(p => p.type);
+        if (puAfterList.length < puSnapshot.length) {
           playPowerUp();
           spawnSparkle(player.x, player.y - 7);
+          // Find which type was collected
+          const collected = puSnapshot.find(t => {
+            const beforeCount = puSnapshot.filter(x => x === t).length;
+            const afterCount = puAfterList.filter(x => x === t).length;
+            return afterCount < beforeCount;
+          });
+          const PU_LABELS: Record<string, string> = {
+            'sand-boost': '🏜 +Sand',
+            'shield': '🛡 Shield!',
+            'sand-burst': '💥 Sand Burst!',
+            'slow-scroll': '⏱ Slow Time!',
+            'sand-full': '✨ Full Sand!',
+          };
+          if (collected) {
+            setPowerUpMsg(PU_LABELS[collected] ?? collected);
+            if (powerUpTimerRef.current) clearTimeout(powerUpTimerRef.current);
+            powerUpTimerRef.current = setTimeout(() => setPowerUpMsg(null), 1500);
+          }
         }
 
         state.cameraX += WALK_SPEED;
@@ -177,6 +198,7 @@ export default function SandWizardGame() {
 
         if (player.state === 'dead') {
           state.phase = 'dead';
+          stopMusic();
           playDeath();
           triggerShake(6, 20);
           spawnBurst(player.x, player.y - 7, 20, '#c2955a');
@@ -203,6 +225,9 @@ export default function SandWizardGame() {
         state,
         state.phase === 'playing' ? player : undefined,
         frameCountRef.current,
+        state.phase === 'playing' ? mouseRef.current.x : undefined,
+        state.phase === 'playing' ? mouseRef.current.y : undefined,
+        state.phase === 'playing' ? mouseRef.current.action : undefined,
       );
       rafRef.current = requestAnimationFrame(loop);
     };
@@ -239,6 +264,13 @@ export default function SandWizardGame() {
           slowScrollFrames={hud.slowScrollFrames}
           nearMiss={hud.nearMiss}
         />
+      )}
+      {powerUpMsg && (
+        <div className="absolute inset-x-0 top-1/3 flex justify-center pointer-events-none animate-fade-in">
+          <span className="font-mono text-lg text-amber-200 bg-black/50 px-4 py-2 rounded-lg backdrop-blur-sm">
+            {powerUpMsg}
+          </span>
+        </div>
       )}
       {hud.phase === 'title' && (
         <TitleScreen onStart={startGame} />

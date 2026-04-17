@@ -1,5 +1,9 @@
+'use client';
+
+import { useState } from 'react';
 import SandMeter from './SandMeter';
 import ScoreDisplay from './ScoreDisplay';
+import SettingsPanel from './SettingsPanel';
 import { SAND_MAX } from '../../lib/sand-wizard/constants';
 
 interface GameHUDProps {
@@ -11,23 +15,34 @@ interface GameHUDProps {
 }
 
 export default function GameHUD({ sandResource, score, shieldActive, slowScrollFrames, nearMiss }: GameHUDProps) {
+  const [showSettings, setShowSettings] = useState(false);
+
   return (
-    <div className="absolute inset-0 pointer-events-none p-3 flex justify-between items-start">
-      <div className="flex flex-col gap-1">
-        <SandMeter value={sandResource} max={SAND_MAX} />
-        {shieldActive && (
-          <div style={{ color: '#42aaff', fontWeight: 'bold', fontSize: '0.8em' }}>🛡 SHIELD</div>
-        )}
-        {slowScrollFrames > 0 && (
-          <div style={{ color: '#44dd88', fontWeight: 'bold', fontSize: '0.8em' }}>⏱ SLOW ({Math.ceil(slowScrollFrames / 60)}s)</div>
-        )}
+    <>
+      <div className="absolute inset-0 pointer-events-none p-3 flex justify-between items-start">
+        <div className="flex flex-col gap-1">
+          <SandMeter value={sandResource} max={SAND_MAX} />
+          {shieldActive && (
+            <div style={{ color: '#42aaff', fontWeight: 'bold', fontSize: '0.8em' }}>🛡 SHIELD</div>
+          )}
+          {slowScrollFrames > 0 && (
+            <div style={{ color: '#44dd88', fontWeight: 'bold', fontSize: '0.8em' }}>⏱ SLOW ({Math.ceil(slowScrollFrames / 60)}s)</div>
+          )}
+        </div>
+        <div className="flex flex-col items-end gap-1">
+          <ScoreDisplay metres={score} />
+          {nearMiss && (
+            <div className="font-mono text-xs text-yellow-300 animate-pulse">NEAR MISS +50</div>
+          )}
+          <button
+            onClick={() => setShowSettings(true)}
+            className="pointer-events-auto mt-1 px-2 py-1 bg-black/40 hover:bg-black/60 rounded text-amber-400/70 hover:text-amber-300 font-mono text-xs cursor-pointer"
+          >
+            ⚙
+          </button>
+        </div>
       </div>
-      <div className="flex flex-col items-end gap-1">
-        <ScoreDisplay metres={score} />
-        {nearMiss && (
-          <div className="font-mono text-xs text-yellow-300 animate-pulse">NEAR MISS +50</div>
-        )}
-      </div>
-    </div>
+      {showSettings && <SettingsPanel onClose={() => setShowSettings(false)} />}
+    </>
   );
 }

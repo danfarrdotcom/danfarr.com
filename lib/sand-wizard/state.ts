@@ -35,7 +35,7 @@ export function createInitialState(): GameState {
 
 export function createInitialPlayer(): Player {
   return {
-    x: 40,
+    x: 150,
     y: GROUND_Y - 2,
     vy: 0,
     state: 'walk',

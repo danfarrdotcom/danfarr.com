@@ -87,3 +87,11 @@ footer ol {
     transform: rotate(0deg);
   }
 }
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out;
+}
