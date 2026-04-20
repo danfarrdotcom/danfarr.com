@@ -20,12 +20,12 @@ export const metadata = {
     'bionics',
     'Bluecrest Wellness',
   ],
-  authors: [{ name: 'Dan Farr', url: 'https://dans.computer' }],
-  metadataBase: new URL('https://dans.computer'),
+  authors: [{ name: 'Dan Farr', url: 'https://danfarr.com' }],
+  metadataBase: new URL('https://danfarr.com'),
   alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
-    url: 'https://dans.computer',
+    url: 'https://danfarr.com',
     siteName: 'Dan Farr',
     title: 'Dan Farr',
     description:
