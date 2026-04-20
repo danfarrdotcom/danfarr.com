@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useEffect, useCallback, useState } from 'react';
+import { BananaSoundtrack } from '@/lib/bananas/soundtrack';
 
 interface Vec {
   x: number;
@@ -413,6 +414,8 @@ function ExcuseGenerator() {
 function Game() {
   const [showIntro, setShowIntro] = useState(true);
   const [gameStarted, setGameStarted] = useState(false);
+  const [muted, setMuted] = useState(false);
+  const soundtrack = useRef<BananaSoundtrack | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const people = useRef<Person[]>([]);
   const bananas = useRef<Banana[]>([]);
@@ -572,9 +575,24 @@ function Game() {
     drag.current = null;
   }, []);
 
+  const toggleMute = useCallback(() => {
+    setMuted((m) => {
+      if (soundtrack.current) {
+        soundtrack.current.volume = m ? 0.25 : 0;
+      }
+      return !m;
+    });
+  }, []);
+
   const startGame = useCallback(() => {
     setGameStarted(true);
     setShowIntro(false);
+    // Start soundtrack
+    if (!soundtrack.current) {
+      soundtrack.current = new BananaSoundtrack();
+    }
+    soundtrack.current.volume = 0.25;
+    soundtrack.current.start();
     // Reset game state when starting
     score.current = 0;
     setScoreDisplay(0);
@@ -1477,13 +1495,13 @@ function Game() {
         ctx.strokeRect(W / 2 - 400, H / 2 - 120, 800, 280);
         ctx.fillStyle = '#222';
         ctx.font = 'bold 64px monospace';
-        const t1 = 'SPRINT OVER!';
+        const t1 = 'You have gone over estimated story points!';
         ctx.fillText(t1, W / 2 - ctx.measureText(t1).width / 2, H / 2 - 40);
         ctx.font = 'bold 36px monospace';
         const t2 = `SCORE: ${score.current}`;
         ctx.fillText(t2, W / 2 - ctx.measureText(t2).width / 2, H / 2 + 20);
         ctx.font = '22px monospace';
-        const t3 = '"We\'ll get it next sprint" — Everyone, every sprint';
+        const t3 = 'Lets figure out what went wrong next retro';
         ctx.fillText(t3, W / 2 - ctx.measureText(t3).width / 2, H / 2 + 70);
         ctx.fillStyle = '#222';
         ctx.fillRect(W / 2 - 120, H / 2 + 100, 240, 50);
@@ -1495,7 +1513,13 @@ function Game() {
       animRef.current = requestAnimationFrame(loop);
     }
     animRef.current = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(animRef.current);
+    return () => {
+      cancelAnimationFrame(animRef.current);
+      if (soundtrack.current) {
+        soundtrack.current.stop();
+        soundtrack.current = null;
+      }
+    };
   }, [spawnPerson, gameOver, gameStarted]);
 
   // Keyboard handling for intro screen
@@ -1559,6 +1583,14 @@ function Game() {
               </div>
             </div>
           </div>
+        )}
+        {gameStarted && (
+          <button
+            onClick={toggleMute}
+            className="absolute bottom-3 left-3 z-10 px-4 py-2 bg-[#ffe135] text-[#222] font-bold font-mono rounded cursor-pointer hover:scale-105 transition-transform text-lg border-2 border-[#222]"
+          >
+            {muted ? '🔇' : '🔊'}
+          </button>
         )}
         <button
           onClick={() => containerRef.current?.requestFullscreen?.()}

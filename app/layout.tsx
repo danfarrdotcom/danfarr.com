@@ -5,9 +5,45 @@ import { Lexend } from 'next/font/google';
 const schibsted = Lexend({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'Dan Farr',
+  title: {
+    default: 'Dan Farr',
+    template: '%s | Dan Farr',
+  },
   description:
-    'Developer, skeptical optimist, Currently working as a tech lead at Bluecrest Wellness I like empowering teams, sharing knowledge, and driving innovation.',
+    'Dan Farr — technical lead, developer, and skeptical optimist. Writing about cybernetics, distributed systems, and bionics applied to software engineering.',
+  keywords: [
+    'Dan Farr',
+    'software engineer',
+    'technical lead',
+    'cybernetics',
+    'distributed systems',
+    'bionics',
+    'Bluecrest Wellness',
+  ],
+  authors: [{ name: 'Dan Farr', url: 'https://dans.computer' }],
+  metadataBase: new URL('https://dans.computer'),
+  alternates: { canonical: '/' },
+  openGraph: {
+    type: 'website',
+    url: 'https://dans.computer',
+    siteName: 'Dan Farr',
+    title: 'Dan Farr',
+    description:
+      'Technical lead, developer, and skeptical optimist. Writing about cybernetics, distributed systems, and emergent behaviour in software.',
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Dan Farr' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Dan Farr',
+    description:
+      'Technical lead, developer, and skeptical optimist. Writing about cybernetics, distributed systems, and emergent behaviour in software.',
+    images: ['/og.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
 };
 
 export default function RootLayout({

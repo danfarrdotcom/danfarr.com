@@ -8,7 +8,10 @@ import { Metadata } from 'next';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 
 export const metadata: Metadata = {
-  title: 'Dan Farr',
+  title: 'Dan Farr — Technical Lead & Developer',
+  description:
+    'Dan Farr — technical lead at Bluecrest Wellness, interested in cybernetics, distributed systems, and bionics applied to software engineering.',
+  alternates: { canonical: '/' },
 };
 
 // Using the image referenced in the original file
@@ -44,7 +47,15 @@ export default async function Page() {
             <div className="space-y-2">
               <p>
                 I'm interested in cybernetics, distributed systems and bionics
-                applied in software engineering.
+                applied in software engineering. I write{' '}
+                <Link className="text-blue-500 hover:underline" href="/essays">
+                  essays
+                </Link>{' '}
+                about it and build{' '}
+                <Link className="text-blue-500 hover:underline" href="/games">
+                  games
+                </Link>{' '}
+                to explore ideas.
               </p>
             </div>
           </ChatMessage>
@@ -251,6 +262,17 @@ export default async function Page() {
                     Walk through the desert. Place sand. Survive.
                   </div>
                 </Link>
+                <Link
+                  href="/games/bananas"
+                  className="group block transition-all relative pl-3 border-l-2 border-transparent hover:border-amber-400"
+                >
+                  <div className="font-serif italic text-lg text-gray-900 dark:text-gray-100 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                    ScrumBananas
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                    Launch bananas at scrum ceremonies. It&apos;s therapeutic.
+                  </div>
+                </Link>
               </div>
             </div>
           </ChatMessage>
@@ -274,7 +296,7 @@ export default async function Page() {
           </ChatMessage>
           <ChatMessage role="assistant" avatarUrl={AVATAR_URL}>
             <a
-              href="https://github.com/danfarr"
+              href="https://linkedin.com/in/drfarr"
               target="_blank"
               rel="noreferrer"
               className="py-2 flex bg-gray-100 gap-x-1 dark:bg-zinc-900 rounded-lg hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors"
