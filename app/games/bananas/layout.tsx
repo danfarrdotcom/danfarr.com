@@ -8,7 +8,14 @@ export const metadata: Metadata = {
     title: 'ScrumBananas',
     description:
       'Hurl bananas at unsuspecting office workers in this pixel-art slingshot game.',
-    images: [{ url: '/games/bananas/og.png', width: 1200, height: 630 }],
+    images: [
+      {
+        url: '/games/bananas/og.png',
+        width: 1536,
+        height: 1024,
+        alt: 'ScrumBananas — banana throwing game',
+      },
+    ],
     type: 'website',
   },
   twitter: {
