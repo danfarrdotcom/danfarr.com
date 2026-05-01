@@ -1,4 +1,4 @@
-name: Auto Release
+name: Conventional Commit Release
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   release:
-    name: Create Release
+    name: Create Release from Conventional Commits
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -17,30 +17,78 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate release notes
+      - name: Get Previous Tag
+        id: prev-tag
+        run: |
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          echo "prev_tag=$PREV_TAG" >> $GITHUB_OUTPUT
+          echo "Previous tag: $PREV_TAG"
+
+      - name: Generate Conventional Release Notes
         id: notes
         run: |
-          # Get the previous tag
-          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          PREV_TAG="${{ steps.prev-tag.outputs.prev_tag }}"
           
           if [ -z "$PREV_TAG" ]; then
-            # First release - get all commits
-            NOTES=$(git log --pretty=format:"- %s" --no-merges)
+            COMMITS=$(git log --pretty=format:"%s" --no-merges)
           else
-            # Get commits since last tag
-            NOTES=$(git log --pretty=format:"- %s" --no-merges ${PREV_TAG}..HEAD)
+            COMMITS=$(git log --pretty=format:"%s" --no-merges ${PREV_TAG}..HEAD)
           fi
           
-          # Save notes to file
-          echo "$NOTES" > release-notes.txt
-          echo "Generated release notes"
+          # Parse conventional commits
+          FEATURES=""
+          FIXES=""
+          DOCS=""
+          OTHERS=""
+          
+          while IFS= read -r commit; do
+            if [[ "$commit" =~ ^feat(\([^)]*\))?!?: ]]; then
+              FEATURES="${FEATURES}- 🎉 ${commit}\n"
+            elif [[ "$commit" =~ ^feat(\([^)]*\))?: ]]; then
+              FEATURES="${FEATURES}- ✨ ${commit}\n"
+            elif [[ "$commit" =~ ^fix(\([^)]*\))?!?: ]]; then
+              FIXES="${FIXES}- 🐛 ${commit}\n"
+            elif [[ "$commit" =~ ^fix(\([^)]*\))?: ]]; then
+              FIXES="${FIXES}- 🔧 ${commit}\n"
+            elif [[ "$commit" =~ ^docs(\([^)]*\))?!?: ]]; then
+              DOCS="${DOCS}- 📝 ${commit}\n"
+            elif [[ "$commit" =~ ^docs(\([^)]*\))?: ]]; then
+              DOCS="${DOCS}- 📚 ${commit}\n"
+            else
+              OTHERS="${OTHERS}- ${commit}\n"
+            fi
+          done <<< "$COMMITS"
+          
+          # Build release notes
+          NOTES="## 🚀 Release ${{ github.ref_name }}\n\n"
+          
+          if [ -n "$FEATURES" ]; then
+            NOTES="${NOTES}### ✨ Features\n${FEATURES}\n"
+          fi
+          
+          if [ -n "$FIXES" ]; then
+            NOTES="${NOTES}### 🐛 Fixes\n${FIXES}\n"
+          fi
+          
+          if [ -n "$DOCS" ]; then
+            NOTES="${NOTES}### 📚 Documentation\n${DOCS}\n"
+          fi
+          
+          if [ -n "$OTHERS" ]; then
+            NOTES="${NOTES}### 🔧 Other Changes\n${OTHERS}\n"
+          fi
+          
+          NOTES="${NOTES}\n---\n\n*Auto-generated from conventional commits*"
+          
+          echo -e "$NOTES" > release-notes.txt
+          echo "Generated conventional release notes"
         shell: bash
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
-          name: v${{ github.ref_name }} - Auto-generated Release 🚀
+          name: v${{ github.ref_name }}
           body_path: release-notes.txt
           draft: false
           prerelease: false
