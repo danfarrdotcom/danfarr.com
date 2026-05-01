@@ -1,0 +1,48 @@
+name: Auto Release
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate release notes
+        id: notes
+        run: |
+          # Get the previous tag
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          
+          if [ -z "$PREV_TAG" ]; then
+            # First release - get all commits
+            NOTES=$(git log --pretty=format:"- %s" --no-merges)
+          else
+            # Get commits since last tag
+            NOTES=$(git log --pretty=format:"- %s" --no-merges ${PREV_TAG}..HEAD)
+          fi
+          
+          # Save notes to file
+          echo "$NOTES" > release-notes.txt
+          echo "Generated release notes"
+        shell: bash
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: v${{ github.ref_name }} - Auto-generated Release 🚀
+          body_path: release-notes.txt
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

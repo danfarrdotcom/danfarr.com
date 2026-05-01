@@ -13,6 +13,7 @@
 ### Task 1: Add palette and `drawSprite` helper
 
 **Files:**
+
 - Modify: `lib/sand-wizard/renderer.ts`
 
 **Step 1: Add the palette constant** after the imports block (around line 8):
@@ -39,7 +40,7 @@ function drawSprite(
   sx: number,
   sy: number,
   bitmap: string[],
-  palette: Record<string, string>,
+  palette: Record<string, string>
 ): void {
   const S = SCALE;
   for (let row = 0; row < bitmap.length; row++) {
@@ -59,9 +60,10 @@ function drawSprite(
 **Step 3: Verify TypeScript compiles** (no test needed for pure data/helper):
 
 ```bash
-cd /Users/drfarr/code/dans.computer/.claude/worktrees/nostalgic-neumann
+cd /Users/drfarr/code/danfarr.com/.claude/worktrees/nostalgic-neumann
 npx tsc --noEmit
 ```
+
 Expected: no errors
 
 **Step 4: Commit**
@@ -76,6 +78,7 @@ git commit -m "feat: add WIZARD_PALETTE and drawSprite helper"
 ### Task 2: Define walk-cycle bitmap frames
 
 **Files:**
+
 - Modify: `lib/sand-wizard/renderer.ts`
 
 **Step 1: Add the 3 walk frames** after the palette constant. Each frame is 8 chars wide × 14 rows tall. `.` = transparent.
@@ -143,6 +146,7 @@ const WALK_FRAMES: string[][] = [
 ```bash
 npx tsc --noEmit
 ```
+
 Expected: no errors
 
 **Step 3: Commit**
@@ -157,6 +161,7 @@ git commit -m "feat: add 3-frame walk cycle bitmaps"
 ### Task 3: Define jump and duck bitmaps
 
 **Files:**
+
 - Modify: `lib/sand-wizard/renderer.ts`
 
 **Step 1: Add jump frame** (8×14, feet tucked, staff raised):
@@ -200,6 +205,7 @@ const DUCK_FRAME: string[] = [
 ```bash
 npx tsc --noEmit
 ```
+
 Expected: no errors
 
 **Step 4: Commit**
@@ -214,6 +220,7 @@ git commit -m "feat: add jump and duck sprite bitmaps"
 ### Task 4: Replace renderPlayer with sprite-based drawing
 
 **Files:**
+
 - Modify: `lib/sand-wizard/renderer.ts:104-144`
 
 **Step 1: Replace the entire `renderPlayer` function** with:
@@ -222,7 +229,7 @@ git commit -m "feat: add jump and duck sprite bitmaps"
 function renderPlayer(
   ctx: CanvasRenderingContext2D,
   player: Player,
-  frame: number,
+  frame: number
 ): void {
   if (player.state === 'dead') return;
 
@@ -254,6 +261,7 @@ function renderPlayer(
 ```bash
 npx tsc --noEmit
 ```
+
 Expected: no errors
 
 **Step 3: Run the dev server and visually verify:**
@@ -263,6 +271,7 @@ npm run dev
 ```
 
 Open the game, check:
+
 - [ ] Wizard appears with white robe
 - [ ] Walk cycle animates through 3 frames
 - [ ] Jump pose shows on space/up arrow
@@ -283,6 +292,7 @@ git commit -m "feat: pixel art wizard — white robe, 3-frame walk cycle, jump+d
 If the sprite looks off during visual review, the bitmaps in Tasks 2 & 3 are the place to edit. Each row is a string — add/remove/change characters to reshape the wizard. The palette in Task 1 controls all colors.
 
 Common fixes:
+
 - Feet too high/low → adjust the boot rows (`B`) in walk frames
 - Staff position → move the `S`/`s` column left or right
 - Hood too small → extend the `H`/`h` rows at the top

@@ -1,6 +1,6 @@
 # Vehicles, Translated
 
-Implementation brief for a Braitenberg-inspired interactive article series on `dans.computer`.
+Implementation brief for a Braitenberg-inspired interactive article series on `danfarr.com`.
 
 ## Goal
 
@@ -496,6 +496,6 @@ If companion content is published on other sites, keep it short and derivative o
 
 - one narrow idea from the article
 - one still image or short clip from a simulation
-- clear link back to the canonical `dans.computer` version
+- clear link back to the canonical `danfarr.com` version
 
 Do not split the main interactive experience across multiple sites.
