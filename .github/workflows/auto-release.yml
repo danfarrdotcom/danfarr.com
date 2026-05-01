@@ -42,21 +42,29 @@ jobs:
           OTHERS=""
           
           while IFS= read -r commit; do
-            if [[ "$commit" =~ ^feat(\([^)]*\))?!?: ]]; then
-              FEATURES="${FEATURES}- 🎉 ${commit}\n"
-            elif [[ "$commit" =~ ^feat(\([^)]*\))?: ]]; then
-              FEATURES="${FEATURES}- ✨ ${commit}\n"
-            elif [[ "$commit" =~ ^fix(\([^)]*\))?!?: ]]; then
-              FIXES="${FIXES}- 🐛 ${commit}\n"
-            elif [[ "$commit" =~ ^fix(\([^)]*\))?: ]]; then
-              FIXES="${FIXES}- 🔧 ${commit}\n"
-            elif [[ "$commit" =~ ^docs(\([^)]*\))?!?: ]]; then
-              DOCS="${DOCS}- 📝 ${commit}\n"
-            elif [[ "$commit" =~ ^docs(\([^)]*\))?: ]]; then
-              DOCS="${DOCS}- 📚 ${commit}\n"
-            else
-              OTHERS="${OTHERS}- ${commit}\n"
-            fi
+            case "$commit" in
+              feat!*:*)
+                FEATURES="${FEATURES}- 🎉 ${commit}\n"
+                ;;
+              feat*:*)
+                FEATURES="${FEATURES}- ✨ ${commit}\n"
+                ;;
+              fix!*:*)
+                FIXES="${FIXES}- 🐛 ${commit}\n"
+                ;;
+              fix*:*)
+                FIXES="${FIXES}- 🔧 ${commit}\n"
+                ;;
+              docs!*:*)
+                DOCS="${DOCS}- 📝 ${commit}\n"
+                ;;
+              docs*:*)
+                DOCS="${DOCS}- 📚 ${commit}\n"
+                ;;
+              *)
+                OTHERS="${OTHERS}- ${commit}\n"
+                ;;
+            esac
           done <<< "$COMMITS"
           
           # Build release notes
