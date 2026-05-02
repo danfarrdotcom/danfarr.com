@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/meet/auth';
 import { supabaseAdmin } from '@/lib/meet/supabase';
+import { getAdminAccessToken, getOAuth2Client } from '@/lib/meet/google';
+import { google } from 'googleapis';
+import { sendCancellation } from '@/lib/meet/email';
 
 async function requireAdmin() {
   const session = await auth();
@@ -56,12 +59,51 @@ export async function POST(req: NextRequest) {
     case 'upsert_override':
       result = await supabaseAdmin.from('availability_overrides').upsert(payload);
       break;
-    case 'cancel_booking':
+    case 'cancel_booking': {
+      const { data: booking } = await supabaseAdmin
+        .from('bookings')
+        .select('*, slot_types(title)')
+        .eq('id', payload.id)
+        .eq('status', 'confirmed')
+        .single();
+
+      if (!booking) {
+        return NextResponse.json({ error: 'Booking not found or already cancelled' }, { status: 404 });
+      }
+
       result = await supabaseAdmin
         .from('bookings')
         .update({ status: 'cancelled' })
         .eq('id', payload.id);
+
+      if (booking.google_event_id) {
+        const accessToken = await getAdminAccessToken();
+        if (accessToken) {
+          try {
+            const oauth = getOAuth2Client();
+            oauth.setCredentials({ access_token: accessToken });
+            const calendar = google.calendar({ version: 'v3', auth: oauth });
+            await calendar.events.delete({
+              calendarId: 'primary',
+              eventId: booking.google_event_id,
+            });
+          } catch (e) {
+            console.error('Failed to delete calendar event:', e);
+          }
+        }
+      }
+
+      sendCancellation({
+        bookingId: payload.id,
+        guestName: booking.guest_name,
+        guestEmail: booking.guest_email,
+        title: booking.slot_types?.title ?? 'Meeting',
+        startsAt: booking.starts_at,
+        endsAt: booking.ends_at,
+      }).catch((e) => console.error('Email error:', e));
+
       break;
+    }
     case 'upsert_synced_calendar':
       result = await supabaseAdmin.from('synced_calendars').upsert(payload);
       break;

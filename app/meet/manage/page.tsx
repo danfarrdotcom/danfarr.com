@@ -63,13 +63,6 @@ function ManageInner() {
   }
 
   async function handleReschedule() {
-    // Cancel old, then book new
-    await fetch('/api/meet/manage', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ bookingId: id, token, action: 'cancel' }),
-    });
-
     const res = await fetch('/api/meet/book', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -82,12 +75,19 @@ function ManageInner() {
       }),
     });
 
-    if (res.ok) {
-      setStatus('done');
-      setMessage('Rescheduled! Check your email for the new confirmation.');
-    } else {
+    if (!res.ok) {
       setMessage('Failed to reschedule. Please try again.');
+      return;
     }
+
+    await fetch('/api/meet/manage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ bookingId: id, token, action: 'cancel' }),
+    });
+
+    setStatus('done');
+    setMessage('Rescheduled! Check your email for the new confirmation.');
   }
 
   if (status === 'loading') return <div className="p-8">Loading...</div>;

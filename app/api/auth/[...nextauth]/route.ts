@@ -1,1 +1,3 @@
-export { handlers as GET, handlers as POST } from '@/lib/meet/auth';
+import { handlers } from '@/lib/meet/auth';
+
+export const { GET, POST } = handlers;
