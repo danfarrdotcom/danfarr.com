@@ -4,12 +4,30 @@ import { getSlotTypeBySlug, getAvailableSlots } from '@/lib/meet/availability';
 import { createCalendarEvent, getAdminAccessToken } from '@/lib/meet/google';
 import { sendConfirmation } from '@/lib/meet/email';
 
+const RATE_LIMIT_MINUTES = 15;
+const MAX_BOOKINGS_PER_WINDOW = 3;
+
 export async function POST(req: NextRequest) {
   const body = await req.json();
   const { slug, date, time, guestName, guestEmail } = body;
 
   if (!slug || !date || !time || !guestName || !guestEmail) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
+  }
+
+  // Rate limiting: check recent bookings from this email
+  const windowStart = new Date(Date.now() - RATE_LIMIT_MINUTES * 60000).toISOString();
+  const { count, error: countError } = await supabaseAdmin
+    .from('bookings')
+    .select('*', { count: 'exact', head: true })
+    .eq('guest_email', guestEmail)
+    .gte('created_at', windowStart);
+
+  if (!countError && count && count >= MAX_BOOKINGS_PER_WINDOW) {
+    return NextResponse.json(
+      { error: `Too many booking attempts. Please wait ${RATE_LIMIT_MINUTES} minutes.` },
+      { status: 429 }
+    );
   }
 
   const slotType = await getSlotTypeBySlug(slug);
